@@ -156,14 +156,7 @@
           </div>
         </div>
 
-      <label for="role"><b>Roles:</b></label> <br>
-        {{--ROLE TABLE--}}
-        <div id="role_table" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-          @foreach ($roles as $item)
-            <input type="checkbox" class="btn-check" name="role_id[]" id="check{{$item->id}}" onclick="if(this.checked){RadioLocation(<?php echo $item->id ?>);}" value="{{$item->id}}">
-            <label class="btn btn-outline-dark" for="check{{$item->id}}">{{$item->display_name}}</label>
-          @endforeach
-        </div>
+
 
           {{--Hidden stuff--}}
           @csrf

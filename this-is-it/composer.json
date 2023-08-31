@@ -89,12 +89,16 @@
     ],
     "post-create-project-cmd": [
       "@php artisan key:generate --ansi"
+    ],
+    "test-coverage": [
+      "@php -d xdebug.mode=coverage vendor/phpunit/phpunit/phpunit --coverage-html ./.build/coverage --verbose"
     ]
   },
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
-    "sort-packages": true
+    "sort-packages": true,
+    "process-timeout": 0
   },
   "minimum-stability": "dev",
   "prefer-stable": true

@@ -43,31 +43,31 @@
                 <div class="btn-group btn-group-toggle" aria-label="Toolbar with button groups" data-toggle="buttons">
                     @foreach ($permissions as $permission)
                         <label class="btn
-                        @foreach ($assigned[$permission->id] as $check)
-                            @switch($action)
-                                @case('attach')
-                                    @if($check->role_id == $role->id)
-                                        {{'btn-dark disabled'}}
-                                    @else 
-                                        {{'btn-outline-dark'}}
-                                    @endif
-                                    @break
-                                @case('detach')
-                                    @if($check->role_id != $role->id)
-                                        {{'btn-outline-dark disabled'}}
-                                    @else
-                                        {{'btn-dark'}}
-                                    @endif
-                                    @break
-                                @default
-                                    {{'btn-outline-dark'}}
-                            @endswitch
-                        @endforeach
+                        @php
+                            $active = false;
+                            foreach ($assigned[$permission->id] as $check) {
+                                if($check->role_id == $role->id){
+                                    $active = true;
+                                }
+                            }
+                            $active ? $msg = 'btn-dark' : $msg = 'btn-outline-dark';
+                            switch ($msg) {
+                                case 'btn-dark':
+                                    if($action == 'attach') $msg .= ' disabled';
+                                    break;
+                                case 'btn-outline-dark':
+                                    if ($action == 'detach') $msg .= ' disabled';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            echo $msg;
+                        @endphp
                         ">
                             <input type="checkbox" name="permissions_ids[]" id="checkR{{$role->id}}P{{$permission->id}}" value="{{$permission->id}}"
                             @foreach ($assigned[$permission->id] as $check)
                                 @if($check->role_id == $role->id)
-                                    {{''}}
+                                    {{ '' }}
                                 @endif
                             @endforeach
                             >{{$permission->name}}
@@ -76,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" name="role_id" value="{{$role->id}}">
+        <input type="hidden" name="role_id" value="{{ $role->id }}">
     </form>
     @endforeach
 @endsection

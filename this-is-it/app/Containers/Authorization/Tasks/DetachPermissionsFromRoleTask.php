@@ -22,6 +22,8 @@ class DetachPermissionsFromRoleTask extends Task
      */
     public function run(Role $role, $singleOrMultiplePermissionIds): Role
     {
+        if (!$singleOrMultiplePermissionIds) return $role;
+
         if (!is_array($singleOrMultiplePermissionIds)) {
             $singleOrMultiplePermissionIds = [$singleOrMultiplePermissionIds];
         };
