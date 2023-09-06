@@ -54,6 +54,7 @@
                             switch ($msg) {
                                 case 'btn-dark':
                                     if($action == 'attach') $msg .= ' disabled';
+                                    else $msg = 'btn-outline-dark active';
                                     break;
                                 case 'btn-outline-dark':
                                     if ($action == 'detach') $msg .= ' disabled';

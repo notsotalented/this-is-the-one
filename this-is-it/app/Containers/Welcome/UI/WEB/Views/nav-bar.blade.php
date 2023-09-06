@@ -44,7 +44,7 @@
             @endcan
 
         </ul>
-        @can('search-users')
+        {{--@can('search-users')--}}
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
 
@@ -65,7 +65,7 @@
             <b>Search <i class="fa-solid fa-magnifying-glass fa-2xs"></i></b>
         </button>
 
-        @endcan
+        {{--@endcan--}}
 
         @if(auth()->check())
         <div class="btn-group mb-2 mb-lg-0 ml-1" style="margin-left: 1%">

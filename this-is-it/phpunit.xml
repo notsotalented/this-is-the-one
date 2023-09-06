@@ -22,8 +22,24 @@
                 <!--
                 NOTE: Exclude the following directories because they fail when directly included with code-coverage
                 -->
+                <directory suffix=".php">./app/Ship</directory>
+                <directory suffix=".php">./app/Containers/*/Configs</directory>
+                <directory suffix=".php">./app/Containers/Includes</directory>
+                <directory suffix=".php">./app/Containers/Debugger</directory>
+                <directory suffix=".php">./app/Containers/Documentation</directory>
+                <directory suffix=".php">./app/Containers/Settings</directory>
+                <directory suffix=".php">./app/Containers/SocialAuth</directory>
+                <directory suffix=".php">./app/Containers/*/Data</directory>
+                <directory suffix=".php">./app/Containers/*/Exceptions</directory>
+                <directory suffix=".php">./app/Containers/*/Mails</directory>
+                <directory suffix=".php">./app/Containers/*/Middlewares</directory>
+                <directory suffix=".php">./app/Containers/*/Tests</directory>
+                <directory suffix=".php">./app/Containers/*/Providers</directory>
+                <directory suffix=".php">./app/Containers/*/UI/CLI</directory>
                 <directory suffix=".php">./app/Containers/*/UI/*/Routes</directory>
-                <directory suffix=".php">./app/Containers/*/Data/Factories</directory>
+                <directory suffix=".php">./app/Containers/*/UI/*/Views</directory>
+                <directory suffix=".php">./app/Containers/*/UI/*/Tests</directory>
+                <directory suffix=".php">./app/Containers/*/UI/*/Traits</directory>
             </exclude>
         </whitelist>
     </filter>

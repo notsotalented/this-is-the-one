@@ -21,3 +21,4 @@ _ide_helper*.php
 /.idea
 /.vscode
 /.build
+/reports
