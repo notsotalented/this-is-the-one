@@ -33,12 +33,6 @@ class Controller extends WebController
         return view('welcome::welcome-page');
     }
 
-    public function sayList()
-    {
-        //
-        return view('welcome::list-page');    
-    }
-
     /**
      * Searches the database for users based on the given request.
      *
@@ -69,11 +63,6 @@ class Controller extends WebController
                     if($counter <= $current + $offset) {
                         $add = '<li><a class="dropdown-item" href="/users/' .$item->id. '">' . $item->id . '</a></li>';
                         $result->push($add);
-                    }
-                    else {
-                        $result->push('<li><a class="dropdown-item disabled">Not found anything!</a></li>');
-                        $show_all = true;
-                        break;
                     }
                 }
             }

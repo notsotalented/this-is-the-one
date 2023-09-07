@@ -79,10 +79,10 @@ class DashboardPageTest extends TestCase
      *
      * @return void
      */
-    public function test_dashboard_access_with_login_main() 
+    public function testDashboardAccessAfterLogin() 
     {
         //Access main dashboard
-        $response = $this->actingAs($this->testingUser)->get($this->endpointDashboard . "?table=2");
+        $response = $this->actingAs($this->testingUser)->get($this->endpointDashboard);
         $response->assertStatus(200);
     }
 }

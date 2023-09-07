@@ -10,28 +10,6 @@
     </a>
 </div>
 @php
-    function findelement(&$menus, $check) {
-        $first; $second; $third; $fourth;
-
-
-        foreach ($menus as $key1 => $menu) {
-            foreach($menu['children'] as $key2 => $child) {
-                if ($child['url'] == $check) {
-                    $change_to = '<i class="fa fa-circle fa-xs"></i>' . $child['label'];
-
-                    //$menus[$key1]['children'][$key2]['url'] = $child['url'] . '" class="dropdown-item" style="background: navy';
-                    $menus[$key1]['children'][$key2]['label'] = $change_to;
-
-
-                    break;
-                }
-            }
-        }
-
-        //replace element
-
-        return $menus;
-    }
 
     $menus = [
         [

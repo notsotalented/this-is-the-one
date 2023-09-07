@@ -23,14 +23,12 @@
         $list_url = explode('/', request()->url());
         $list_url = array_slice($list_url, 3);
 
-        //if ($list.length > $list_url.length) return false;
+        //print_r($list);
+        //print_r($list_url);
 
+        $diff = array_diff($list_url, $list);
 
-        print_r($list);
-        print_r($list_url);
-        
-        $isChild = false;
-        if($isChild !== false) {
+        if (!$diff) {
             return true;
         }
         else {

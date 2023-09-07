@@ -2,6 +2,7 @@
 
 namespace App\Containers\Authentication\Tests\Unit;
 
+use Apiato\Core\Foundation\Facades\Apiato;
 use App\Containers\Authentication\Actions\WebAdminLoginAction;
 use App\Containers\Authentication\Tests\TestCase;
 use App\Containers\User\Models\User;
@@ -105,7 +106,7 @@ class ActionUnitTest extends TestCase
         //Perform ajax search: By nothing
         $result = $this->actingAs($this->testUser)
                        ->json('get', '/search',
-                       ['search_bar' => 'kekekekeke', "_method" => "GET"],
+                       ['search_bar' => 'kekekekeke32746238', "_method" => "GET"],
                        ['X-Requested-With' => 'XMLHttpRequest']);
         //Assert response
         $result->assertStatus(200);
@@ -163,5 +164,14 @@ class ActionUnitTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function testShowHomePage() {
+        $response = $this->actingAs($this->testUser)->get('/home');
+        $response->assertStatus(200);
+    }
 
+    public function testShowTestPage()
+    {
+        $response = $this->actingAs($this->testUser)->get('/test-page');
+        $response->assertStatus(200);
+    }
 }

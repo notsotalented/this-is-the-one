@@ -20,7 +20,7 @@
     @include('includes::css.include-css');
 </style>
 
-<title>Users' Profile</title>
+<title>Home</title>
 
 </head>
 
