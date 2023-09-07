@@ -80,7 +80,7 @@ class Controller extends WebController
 
             if($by_name) {
                 if ($by_id->first() != NULL) {
-                    $result->push('<li class="dropdown-divider">Name</li><li>');
+                    $result->push('<li class="dropdown-divider">Name</li>');
                 }
                 if ($by_name->first() != NULL) {
                     $result->push('<a class="dropdown-item disabled">By Name:</a></li>');
@@ -103,7 +103,7 @@ class Controller extends WebController
 
             if($by_email) {
                 if ($by_name->first() != NULL) {
-                    $result->push('<li class="dropdown-divider">Name</li><li>');
+                    $result->push('<li class="dropdown-divider">Name</li>');
                 }
                 if ($by_email->first() != NULL) {
                     $result->push('<a class="dropdown-item disabled">By Email:</a></li>');
@@ -135,11 +135,16 @@ class Controller extends WebController
                 return response($result);
             }
             else {
-                return response('<li><a class="dropdown-item disabled">Not found anything!</a></li>');
+                $result = new Collection;
+                $result->push('<li><a class="dropdown-item disabled">Not found anything!</a></li>');
+                return response($result);
             }
-
-            return response('Not found anything!');
-        } 
+        }
+        else {
+            $result = new Collection;
+            $result->push('<li><a class="dropdown-item disabled">Not Ajax!</a></li>');
+            return response($result);
+        }
     }
 
     public function showTest($id = NULL, $uri = NULL) {
