@@ -2,6 +2,7 @@
 
 namespace App\Containers\Welcome\UI\WEB\Controllers;
 
+use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Parents\Controllers\WebController;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;

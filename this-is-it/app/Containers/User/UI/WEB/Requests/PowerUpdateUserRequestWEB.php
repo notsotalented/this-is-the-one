@@ -54,7 +54,7 @@ class PowerUpdateUserRequestWEB extends Request
             'id'       => 'required|exists:users,id',
             'password_new' => 'nullable|min:5|max:40',
             'name'     => 'min:0|max:50',
-            'roles_id' => '',
+            'roles_ids' => '',
             'roles_ids*' => 'exists:roles,id'
         ];
     }

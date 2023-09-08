@@ -55,6 +55,7 @@ class GetAllUsersTask extends Task
     public function withRole($roles)
     {
         $this->repository->pushCriteria(new RoleCriteria($roles));
+        return $this;
     }
 
 }

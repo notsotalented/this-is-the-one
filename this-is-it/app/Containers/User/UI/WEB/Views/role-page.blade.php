@@ -37,7 +37,7 @@
             <div class="card-header">
                 <h5 style="float: left">{{ $role->display_name . " (" . $role->name . ")" }}<h5>
                 @csrf
-                <button class="btn btn-info" type="submit" name="form{{$role->id}}" style="float: right"><b>@if($action=='attach') Attach @else Detach @endif</b></button>
+                <button class="btn btn-@if($action=='attach'){{'success'}}@else{{'danger'}}@endif" type="submit" name="form{{$role->id}}" style="float: right"><b>@if($action=='attach') Attach @else Detach @endif</b></button>
             </div>
             <div class="card-body text-center" style="overflow: scroll">
                 <div class="btn-group btn-group-toggle" aria-label="Toolbar with button groups" data-toggle="buttons">
@@ -50,13 +50,13 @@
                                     $active = true;
                                 }
                             }
-                            $active ? $msg = 'btn-dark' : $msg = 'btn-outline-dark';
+                            $active ? $msg = 'btn-danger' : $msg = 'btn-outline-success';
                             switch ($msg) {
-                                case 'btn-dark':
+                                case 'btn-danger':
                                     if($action == 'attach') $msg .= ' disabled';
-                                    else $msg = 'btn-outline-dark active';
+                                    else $msg = 'btn-outline-danger';
                                     break;
-                                case 'btn-outline-dark':
+                                case 'btn-outline-success':
                                     if ($action == 'detach') $msg .= ' disabled';
                                     break;
                                 default:

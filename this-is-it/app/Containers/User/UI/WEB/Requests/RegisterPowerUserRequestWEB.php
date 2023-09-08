@@ -55,8 +55,8 @@ class RegisterPowerUserRequestWEB extends Request
             'name'     => 'min:2|max:50',
             'gender'   => '',
             'birth' => 'date',
-            'role_id' => '',
-            'role_id*' => 'exists:roles,id'
+            'roles_ids' => '',
+            'roles_ids*' => 'exists:roles,id'
         ];
     }
 
@@ -65,6 +65,7 @@ class RegisterPowerUserRequestWEB extends Request
      */
     public function authorize()
     {
+
         $id = Auth::user()->id;
 
         $user_role = User::find($id)->roles()->get();
@@ -79,12 +80,13 @@ class RegisterPowerUserRequestWEB extends Request
             }
         }
 
-        $roles_ids = $this->role_id;
+        $roles_ids = $this->roles_ids;
         if($roles_ids != null) 
             {        
                 $role_valid = true;
                 foreach ($roles_ids as $item) {
                     $role_level = Role::findById($item)->level;
+
                     if ($user_level <= $role_level) {
                         $role_valid = false;
                         break;
@@ -92,9 +94,8 @@ class RegisterPowerUserRequestWEB extends Request
                 }
                 if(!$role_valid) return false;
             }
-
         return $this->check([
-            'hasAccess|isOwner',
+            'hasAccess',
         ]);
     }
 }

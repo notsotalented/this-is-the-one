@@ -12,15 +12,6 @@
  * @apiSuccessExample  {json}       Success-Response:
  * HTTP/1.1 202 OK
  */
-
-$router->get('/role-page', [
-    'as' => 'role-page',
-    'uses'       => 'Controller@showRolePage',
-    'middleware' => [
-        'auth:web'
-    ],
-]);
-
 $router->get('/role-page/{action}', [
     'as' => 'role-page-action',
     'uses'       => 'Controller@showRolePage',

@@ -65,7 +65,6 @@ class Controller extends WebController
      * Register a power user.
      *
      * @param RegisterPowerUserRequestWEB $request the request object containing the user information
-     * @throws Some_Exception_Class description of exception
      * @return void
      */
     public function registerPowerCheck(RegisterPowerUserRequestWEB $request)

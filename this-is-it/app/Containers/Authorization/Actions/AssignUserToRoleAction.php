@@ -22,6 +22,7 @@ class AssignUserToRoleAction extends Action
      */
     public function run(DataTransporter $data): User
     {
+
         $user = Apiato::call('User@FindUserByIdTask', [$data->user_id]);
 
         // convert to array in case single ID was passed

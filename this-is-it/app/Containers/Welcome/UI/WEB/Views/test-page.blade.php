@@ -39,8 +39,6 @@
 @endphp
 
 @section('content')
-    
-
     <div>
         <a id="test" href="{{ $child }}" target="_self">
             <div class="items-center" style="width: 100%">

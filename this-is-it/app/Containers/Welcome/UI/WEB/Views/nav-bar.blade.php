@@ -33,7 +33,7 @@
                     <li><a class="dropdown-item" href="{{route('list-page')}}">Data Tables</a></li>
                     @can('manage-roles')
                         <li><hr class="dropdown-divider"></li>
-                        <li><a id="go-to-permission" class="dropdown-item" href="{{ route('role-page', ['action' => 'attach']) }}">Manage Permissions</a></li>
+                        <li><a id="go-to-permission" class="dropdown-item" href="{{ route('role-page-action', ['action' => 'attach']) }}">Manage Permissions</a></li>
                         <li><a id="go-to-role" class="dropdown-item" href="{{route('create-role')}}">Manage Roles</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" aria-current="page" href="{{route('register-power')}}">Add Power User</a></li>

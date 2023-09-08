@@ -23,11 +23,8 @@ class FindUserByIdAction extends Action
      */
     public function run(DataTransporter $data): User
     {
-        $user = Apiato::call('User@FindUserByIdTask', [$data->id]);
 
-        if (!$user) {
-            throw new NotFoundException();
-        }
+        $user = Apiato::call('User@FindUserByIdTask', [$data->id]);
 
         return $user;
     }
