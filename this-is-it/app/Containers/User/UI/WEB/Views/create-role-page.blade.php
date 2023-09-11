@@ -10,11 +10,11 @@
 
 
 @section('content')
-  <div class="container" style="margin-top: 5vh">
+  <div class="container-fluid">
     <label><b>Create new role:</b></label> <br>
     <form action="/create-role-page" method="POST">
       {{--Standard info--}}
-      <label for="name"><b>Name<i class="fa-regular fa-asterisk fa-2xs" style="color: #ff0000;"></i></b></label>
+      <label for="name"><b>Name<i class="fa fa-asterisk fa-xs" style="color: #ff0000;"></i></b></label>
       <input type="text" class="form-control" placeholder="Length [2:20] Syntax: No spaces" name="name" value="{{old('name')}}" required>
 
       <label for="display_name"><b>Display name</b></label>

@@ -114,7 +114,7 @@ class Controller extends WebController
         $permissions = Apiato::call('Authorization@GetAllPermissionsAction');
 
         $assigned = null;
-        $assigned = Apiato::call('Authorization@GetAllPermissionsAssignedToRoleAction');
+        $assigned = Apiato::call('Authorization@GetAllPermissionsAssignedToRoleAction');    
 
         return view('user::role-page', [
             'roles' => $roles->all(),

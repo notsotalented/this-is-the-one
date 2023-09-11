@@ -3,11 +3,14 @@
 namespace App\Containers\User\Tests\Unit;
 
 use App\Containers\Authorization\Actions\CreateRoleAction;
+use App\Containers\Authorization\Actions\GetAllPermissionsAssignedToRoleAction;
 use App\Containers\Authorization\Actions\GetAllRolesAction;
 use App\Containers\User\Models\User;
 use App\Containers\User\Tests\TestCase;
 use App\Ship\Transporters\DataTransporter;
+use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Commands\CreateRole;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -149,6 +152,19 @@ class UserControllerUnitTest extends TestCase
     }
 
     public function testShowRolePage() {
-        
+        $response = $this->get('/role-page/attach');
+        $response->assertStatus(401);
+
+        $response = $this->actingAs($this->guest)->get('/role-page/attach');
+        $response->assertStatus(403);
+
+        $response = $this->actingAs($this->admin)->get('/role-page/attach');
+        $response->assertStatus(200);
+
+        $content = $response->getOriginalContent();
+
+        $this->assertEquals(Collection::make($content['roles']), \App\Containers\Authorization\Models\Role::all());
+
+        $this->assertEquals(Collection::make($content['permissions']), \App\Containers\Authorization\Models\Permission::all());
     }
 }
