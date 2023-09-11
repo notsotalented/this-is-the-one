@@ -44,12 +44,7 @@
                     @foreach ($permissions as $permission)
                         <label class="btn
                         @php
-                            $active = false;
-                            foreach ($assigned[$permission->id] as $check) {
-                                if($check->role_id == $role->id){
-                                    $active = true;
-                                }
-                            }
+                            $active = $permission->hasRole($role->name);
                             $active ? $msg = 'btn-danger' : $msg = 'btn-outline-success';
                             switch ($msg) {
                                 case 'btn-danger':
@@ -66,11 +61,6 @@
                         @endphp
                         ">
                             <input type="checkbox" name="permissions_ids[]" id="checkR{{$role->id}}P{{$permission->id}}" value="{{$permission->id}}"
-                            @foreach ($assigned[$permission->id] as $check)
-                                @if($check->role_id == $role->id)
-                                    {{ '' }}
-                                @endif
-                            @endforeach
                             >{{$permission->name}}
                         </label>
                     @endforeach

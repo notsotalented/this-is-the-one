@@ -109,25 +109,18 @@ class Controller extends WebController
 
     public function showRolePage(RolePageAccessRequest $request, $action = null)
     {   
-
         $roles = Apiato::call('Authorization@GetAllRolesAction');
         $permissions = Apiato::call('Authorization@GetAllPermissionsAction');
-
-        $assigned = null;
-        $assigned = Apiato::call('Authorization@GetAllPermissionsAssignedToRoleAction');    
 
         return view('user::role-page', [
             'roles' => $roles->all(),
             'permissions' => $permissions->all(),
-            'assigned' => $assigned,
-            'action' => $action,
+            'action' => $action ? $action : 'attach',
         ]);
     }
 
     public function changePermissionToRoleWEB(AttachPermissionToRoleRequestWEB $request, $action = null)
     {
-        //dd($request->all());
-
         if($action == "attach") {
             Apiato::call('Authorization@AttachPermissionsToRoleAction', [new DataTransporter($request)]);
             $status = "Attached successfully!";
@@ -144,15 +137,11 @@ class Controller extends WebController
         $roles = Apiato::call('Authorization@GetAllRolesAction');
         $permissions = Apiato::call('Authorization@GetAllPermissionsAction');
 
-        $assigned = null;
-        $assigned = Apiato::call('Authorization@GetAllPermissionsAssignedToRoleAction');
-
 
         return view('user::role-page', [
             'roles' => $roles->all(),
             'permissions' => $permissions->all(),
-            'assigned' => $assigned,
-            'action' => $action,
+            'action' => $action ? $action : null,
             'status' => $status,
         ]);
     }
