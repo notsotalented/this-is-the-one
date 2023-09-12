@@ -332,7 +332,5 @@ class UserControllerUnitTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirect('users/' . $this->admin->id);
         $response->assertSessionHas('status', 'Uploaded profile picture successfully. File: ' . $response->getSession()->all()['time'] . '.jpg');
-
-        //Storage::disk('public/uploads/photos')->assertExists($response->getSession()->all()['time'] . '.jpg');
     }
 }

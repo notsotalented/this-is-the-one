@@ -11,11 +11,9 @@ use App\Containers\User\UI\WEB\Requests\UpdateUserRequestWEB;
 use App\Containers\User\UI\WEB\Requests\DeleteUserRequestWEB;
 use App\Containers\User\UI\WEB\Requests\AttachPermissionToRoleRequestWEB;
 use App\Containers\User\UI\WEB\Requests\RolePageAccessRequest;
-use App\Containers\User\UI\WEB\Requests\AssignUserToRoleRequestWEB;
 use App\Containers\User\UI\WEB\Requests\CreateRoleRequestWEB;
 use App\Containers\User\UI\WEB\Requests\DeleteRoleRequestWEB;
 use App\Containers\User\UI\WEB\Requests\PowerUpdateUserRequestWEB;
-use App\Containers\User\UI\WEB\Requests\RevokeUserFromRoleRequestWEB;
 use App\Containers\User\UI\WEB\Requests\UpdateUserAccessRequest;
 use App\Containers\User\UI\WEB\Requests\UserProfileAccessRequest;
 use App\Containers\User\UI\WEB\Requests\UserProfilePictureRequest;
@@ -196,20 +194,6 @@ class Controller extends WebController
             'users' => $users,
         ]);
     }
-
-    /*
-    public function assignUserToRole(AssignUserToRoleRequestWEB $request) {
-        $user = Apiato::call('Authorization@AssignUserToRoleAction', [new DataTransporter($request)]);
-
-        return redirect(route('user-role-page', ['action' => 'assign']))->with('status', 'Assigned role to user successfully!');
-    }
-
-    public function revokeUserFromRole(RevokeUserFromRoleRequestWEB $request) {
-        $user = Apiato::call('Authorization@RevokeUserFromRoleAction', [new DataTransporter($request)]);
-
-        return redirect(route('user-role-page', ['action' => 'revoke']))->with('status', 'Revoked role from user successfully!');
-    }
-    */
 
     public function showCreateRolePage(RolePageAccessRequest $request) {
         $roles = Apiato::call('Authorization@GetAllRolesAction');
