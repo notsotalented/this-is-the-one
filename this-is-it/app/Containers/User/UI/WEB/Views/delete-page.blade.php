@@ -120,14 +120,14 @@
 
   @include('welcome::nav-bar')
 
-  <form method="POST" action = "/delete-page">
+  <form method="POST" action = "/users/{{$id}}/delete">
     <div class="container">
-      {{--Target aquisition--}}
+      {{--Target acquisition--}}
       <p>
-        <label for="targetid" style="color: orangered"><strong>Target user:</strong></label>
+        <label for="targetID" style="color: orangered"><strong>Target user:</strong></label>
         <b>@isset($id){{$id}}@endisset<b>
         </p>
-        <label for="targetname" style="color: orangered"><strong>Name:</strong></label>
+        <label for="targetName" style="color: orangered"><strong>Name:</strong></label>
         <b>@isset($name){{$name}}@endisset<b>
       </p>
 

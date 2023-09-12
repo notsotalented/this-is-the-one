@@ -232,6 +232,28 @@ class UserControllerUnitTest extends TestCase
     }
 
     public function testDeleteUser() {
-        
+        $target = factory(User::class)->create();
+
+        $url = 'users/' . $target->id . '/delete';
+
+        $data = [
+            'id' => $target->id,
+        ];
+
+        $falseData = [
+            'id' => 6391.
+        ];
+
+        $response = $this->actingAs($this->guest)->postJson($url, $data);
+        $response->assertStatus(403);
+
+        $this->assertDatabaseHas('users', ['id' => $target->id]);
+        $response = $this->actingAs($this->admin)->postJson($url, $data);
+        $response->assertStatus(302);
+        $response->assertRedirect('/dashboard');
+        $this->assertSoftDeleted('users', ['id' => $target->id]);
+
+        $response = $this->actingAs($this->admin)->postJson($url, $falseData);
+        $response->assertStatus(404);
     }
 }

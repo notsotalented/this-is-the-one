@@ -40,7 +40,7 @@ class DeleteUserRequestWEB extends Request
      * @var  array
      */
     protected $urlParameters = [
-        //'id',
+        'id',
     ];
 
     /**
@@ -49,7 +49,7 @@ class DeleteUserRequestWEB extends Request
     public function rules()
     {
         return [
-            //'id' => 'required|exists:users,id',
+            'id' => 'required|exists:users,id',
         ];
     }
 
@@ -64,7 +64,7 @@ class DeleteUserRequestWEB extends Request
         //IF USER_LEVEL <= TARGET_LEVEL -> FALSE
         $id = Auth::user()->id;
 
-        $user_role = User::find($id)->roles()->get();
+        $user_role = User::findOrFail($id)->roles()->get();
 
         if ($user_role->first() == null) {
             $user_level = -1;
@@ -76,7 +76,7 @@ class DeleteUserRequestWEB extends Request
             }
         }
 
-        $target_role = User::find($this->id)->roles()->get();
+        $target_role = User::findOrFail($this->id)->roles()->get();
 
         if($target_role->first() == null) {
             $target_level = -1;
