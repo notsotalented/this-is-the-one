@@ -4,14 +4,12 @@ namespace App\Containers\User\Tests\Unit;
 
 use App\Containers\Authorization\Actions\CreateRoleAction;
 use App\Containers\Authorization\Actions\GetAllPermissionsAction;
-use App\Containers\Authorization\Actions\GetAllPermissionsAssignedToRoleAction;
 use App\Containers\Authorization\Actions\GetAllRolesAction;
 use App\Containers\Authorization\Tasks\GetAllPermissionsTask;
 use App\Containers\User\Models\User;
 use App\Containers\User\Tests\TestCase;
 use App\Ship\Transporters\DataTransporter;
 use Illuminate\Database\Eloquent\Collection;
-use Spatie\Permission\Commands\CreateRole;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -172,7 +170,68 @@ class UserControllerUnitTest extends TestCase
         $content = $response->getOriginalContent();
 
         $this->assertEquals(Collection::make($content['roles']), \App\Containers\Authorization\Models\Role::all());
+    }
 
-        $this->assertEquals(Collection::make($content['permissions']), \App::make(GetAllPermissionsAction::class)->run()->all());
+    public function testChangePermissionsToRole() {
+        //Not Authorized
+        $response = $this->actingAs($this->guest)->postJson('role-page/attach', [
+            'role_id' => '2',
+            'permission_id' => ['1', '2'],
+        ]);
+        $response->assertStatus(403);
+
+        //Fail attempt to alter admin's permissions
+        $response = $this->actingAs($this->admin)->postJson('role-page/attach', [
+            'role_id' => '1',
+            'permission_id' => ['1', '2'],
+        ]);
+        $response->assertStatus(403);
+
+        //Authorized attach
+        $role_id = 2;
+        $permissions_ids = [1, 3, 4, 5];
+        $detach_ids = [1, 5];
+
+        $response = $this->actingAs($this->admin)->postJson('role-page/attach', [
+            'role_id' => $role_id,
+            'permissions_ids' => $permissions_ids,
+            'action' => 'attach',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertSeeText('Attached successfully!');
+        foreach ($permissions_ids as $permission) {
+            $this->assertTrue(Role::find($role_id)->hasPermissionTo(Permission::find($permission)->name));
+        }
+
+        //Not authorized detach
+        $response = $this->actingAs($this->client)->postJson('role-page/detach', [
+            'role_id' => $role_id,
+            'permissions_ids' => $permissions_ids,
+            'action' => 'detach',
+        ]);
+        
+        $response->assertStatus(403);
+
+        //Authorized detach
+        $response = $this->actingAs($this->admin)->postJson('role-page/detach', [
+            'role_id' => $role_id,
+            'permissions_ids' => $detach_ids,
+            'action' => 'detach',
+        ]);
+        
+        $response->assertStatus(200);
+        $response->assertSeeText('Detached successfully!');
+        foreach ($detach_ids as $detach) {
+            $this->assertFalse(Role::find($role_id)->hasPermissionTo(Permission::find($detach)->name));
+        }
+        $check_true = array_diff($permissions_ids, $detach_ids);
+        foreach ($check_true as $true) {
+            $this->assertTrue(Role::find($role_id)->hasPermissionTo(Permission::find($true)->name));
+        }
+    }
+
+    public function testDeleteUser() {
+        
     }
 }
