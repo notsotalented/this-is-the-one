@@ -10,6 +10,8 @@
 
 @section('content')
 
+    {{-- @dd($permissions) --}}
+
     @isset($status)
         <div class="alert alert-success" role="alert">
             {{ $status }}

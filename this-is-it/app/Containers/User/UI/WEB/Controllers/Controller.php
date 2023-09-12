@@ -118,7 +118,7 @@ class Controller extends WebController
             'action' => $action ? $action : 'attach',
         ]);
     }
-
+    
     public function changePermissionToRoleWEB(AttachPermissionToRoleRequestWEB $request, $action = null)
     {
         if($action == "attach") {
@@ -129,11 +129,7 @@ class Controller extends WebController
             Apiato::call('Authorization@DetachPermissionsFromRoleAction', [new DataTransporter($request)]);
             $status = "Detached successfully!";
         }
-        else {
-            return redirect(back())->with('errors', 'Invalid action!');
-        }
 
-        
         $roles = Apiato::call('Authorization@GetAllRolesAction');
         $permissions = Apiato::call('Authorization@GetAllPermissionsAction');
 
@@ -142,7 +138,7 @@ class Controller extends WebController
             'roles' => $roles->all(),
             'permissions' => $permissions->all(),
             'action' => $action ? $action : null,
-            'status' => $status,
+            'status' => $status ? $status : null,
         ]);
     }
 

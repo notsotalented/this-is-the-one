@@ -3,6 +3,7 @@
 namespace App\Containers\Welcome\UI\WEB\Controllers;
 
 use Apiato\Core\Foundation\Facades\Apiato;
+use App\Containers\Authorization\Models\Permission;
 use App\Ship\Parents\Controllers\WebController;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -138,6 +139,11 @@ class Controller extends WebController
     }
 
     public function showTest($id = NULL, $uri = NULL) {
+        //TEST GROUND
+        //$output = Permission::all();
+        //dd($output->all());
+        //TEST GROUND
+
         return view('welcome::test-page');
     }
 }
