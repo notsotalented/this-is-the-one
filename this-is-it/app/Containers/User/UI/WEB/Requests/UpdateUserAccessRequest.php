@@ -77,7 +77,7 @@ class UpdateUserAccessRequest extends Request
             }
         }
 
-        $target_role = User::find($this->id)->roles()->get();
+        $target_role = User::findOrFail($this->id)->roles()->get();
 
         if($target_role->first() == null) {
             $target_level = 0;

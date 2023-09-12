@@ -44,7 +44,7 @@ class UserProfilePictureRequest extends Request
      * @var  array
      */
     protected $urlParameters = [
-        // 'id',
+        //'id',
     ];
 
     /**
@@ -53,9 +53,7 @@ class UserProfilePictureRequest extends Request
     public function rules()
     {
         return [
-            //'roles_ids'   => 'array|required',
-            //'roles_ids.*' => 'exists:roles,id',
-            'id'     => 'exists:id',
+            //'id'     => 'exists:id',
             'photo' => 'image|max: 5120',
         ];
     }
@@ -65,10 +63,8 @@ class UserProfilePictureRequest extends Request
      */
     public function authorize()
     {
-
-
         return $this->check([
-            'hasAccess|isOwner',
+            'isOwner'
         ]);
     }
 }

@@ -140,8 +140,6 @@ class Controller extends WebController
 
     public function showTest($id = NULL, $uri = NULL) {
         //TEST GROUND
-        //$output = Permission::all();
-        //dd($output->all());
         //TEST GROUND
 
         return view('welcome::test-page');

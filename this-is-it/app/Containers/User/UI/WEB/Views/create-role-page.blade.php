@@ -11,6 +11,21 @@
 
 @section('content')
   <div class="container-fluid">
+
+    @isset($status)
+      <div class="alert alert-success" role="alert">
+          {{ $status }}
+      </div>
+    @endisset
+
+    @isset($errors)
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger" role="alert">
+                {{ $error }}
+            </div>
+        @endforeach
+    @endisset
+
     <label><b>Create new role:</b></label> <br>
     <form action="/create-role-page" method="POST">
       {{--Standard info--}}
@@ -65,8 +80,8 @@
                         </button>
 
                         {{-- Modal --}}
-                        <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
+                        <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-2" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
                             <div class="modal-content">
                               <div class="modal-header">
                                 <p class="modal-title" id="exampleModalLabel"><b>Final confirmation</b></p>

@@ -190,7 +190,6 @@
     
                             {{--HIDDEN INPUT--}}
                             @csrf
-    
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="submit" style="white-space: nowrap"><b>Upload <i class="fa-regular fa-image fa-2xs"></i></b></button>

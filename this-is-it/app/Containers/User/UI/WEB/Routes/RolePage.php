@@ -17,7 +17,7 @@ $router->post('/create-role-page', [
     ],
 ]);
 
-$router->get('/delete-role', [
+$router->get('/delete-role/{id}', [
     'as' => 'delete-role',
     'uses'  => 'Controller@deleteRole',
     'middleware' => [

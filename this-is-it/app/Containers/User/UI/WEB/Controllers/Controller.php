@@ -197,6 +197,7 @@ class Controller extends WebController
         ]);
     }
 
+    /*
     public function assignUserToRole(AssignUserToRoleRequestWEB $request) {
         $user = Apiato::call('Authorization@AssignUserToRoleAction', [new DataTransporter($request)]);
 
@@ -208,6 +209,7 @@ class Controller extends WebController
 
         return redirect(route('user-role-page', ['action' => 'revoke']))->with('status', 'Revoked role from user successfully!');
     }
+    */
 
     public function showCreateRolePage(RolePageAccessRequest $request) {
         $roles = Apiato::call('Authorization@GetAllRolesAction');
@@ -231,29 +233,28 @@ class Controller extends WebController
         return redirect(route('create-role'))->with('status','Role deleted successfully!');
     }
 
-    public function searchResult() {
-        $users = Apiato::call('User@ListAndSearchUsersAction');
+    public function profilePictureUpload(UserProfilePictureRequest $request, $id) {  
         
-        return;
-    }
-
-    public function profilePictureUpload(UserProfilePictureRequest $request, $id) {
-
         $user = Apiato::call('User@FindUserByIdAction', [new DataTransporter($request->merge(['id' => $id]))]);
 
         if(!$user) return redirect(route('users-profile'))->with('error', 'Invalid User\' id');
+
+        $time_info = time();
 
         if($request->hasFile('photo')) {
             $file = $request->file('photo');
             $extension = $file->getClientOriginalExtension();
 
-            $filename = time(). '.' .$extension;
+            $filename = $time_info . '.' .$extension;
             $file->move('uploads/photos/', $filename);
 
             $user->social_avatar = $filename;
         }
         $user->save();
 
-        return redirect(route('user-profile', ['id' => $request->id]))->with('status', 'Uploaded profile picture successfully');
+        return redirect(route('user-profile', ['id' => $request->id]))->with([
+            'status' => 'Uploaded profile picture successfully. File: ' . $filename,
+            'time' => $time_info
+        ]);
     }
 }

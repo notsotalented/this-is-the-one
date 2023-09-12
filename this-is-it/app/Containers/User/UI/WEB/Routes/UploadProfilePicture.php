@@ -1,6 +1,6 @@
 <?php
 
-$router->post('/user/{id}/upload', [
+$router->post('/users/{id}/upload', [
     'as'   => 'profile-picture-upload',
     'uses' => 'Controller@profilePictureUpload',
 ]);

@@ -41,7 +41,7 @@ class DeleteRoleRequestWEB extends Request
      * @var  array
      */
     protected $urlParameters = [
-        //'id',
+        'id',
     ];
 
     /**
