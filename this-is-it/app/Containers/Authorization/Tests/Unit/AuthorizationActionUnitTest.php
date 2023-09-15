@@ -126,4 +126,8 @@ class AuthorizationActionUnitTest extends TestCase
 
         $this->assertDatabaseHas('permissions', $data);
     }
+
+    public function testCreateResourceFailed() {
+        
+    }
 }
