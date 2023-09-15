@@ -169,14 +169,6 @@ class UserControllerUnitTest extends TestCase
 
         $response = $this->actingAs($this->admin)->get('role-page/attach');
         $response->assertStatus(200);
-
-        $content = $response->getOriginalContent();
-
-        //dd($permissions_db);
-        
-        //$this->assertEquals(Collection::make($content['roles']), \App\Containers\Authorization\Models\Role::all());
-
-        //$this->assertEquals(Collection::make($content['permissions']), \App\Containers\Authorization\Models\Permission::all());
     }
 
     public function testChangePermissionsToRole() {
@@ -251,6 +243,8 @@ class UserControllerUnitTest extends TestCase
             'id' => 6391.
         ];
 
+        $target_2 = factory(User::class)->create();
+
         $response = $this->actingAs($this->guest)->postJson($url, $data);
         $response->assertStatus(403);
 
@@ -262,6 +256,13 @@ class UserControllerUnitTest extends TestCase
 
         $response = $this->actingAs($this->admin)->postJson($url, $falseData);
         $response->assertStatus(404);
+
+        $this->guest->givePermissionTo('delete-users');
+
+        $response = $this->actingAs($this->guest)->postJson('users/' . $target_2->id . '/delete', ['id' => $this->client->id]);
+        $response->assertStatus(302);
+        $response->assertRedirect('/dashboard');
+        $this->assertSoftDeleted('users', ['id' => $target_2->id]);
     }
 
     public function testShowCreateRolePage() {
@@ -278,13 +279,18 @@ class UserControllerUnitTest extends TestCase
      * @return void
      */
     public function testCreateNewRoleAndDeleteRole() {
+        $data_role0 = [
+            'name' => 'test0',
+            'display_name' => 'Tester Role',
+            'description' => 'Do Test',
+            'level' => '0',
+        ];
         $data_role5 = [
             'name' => 'test5',
             'display_name' => 'Tester Role',
             'description' => 'Do Test',
             'level' => '5',
         ];
-
         $data_role10 = [
             'name' => 'test10',
             'display_name' => 'Tester Role',
@@ -320,6 +326,15 @@ class UserControllerUnitTest extends TestCase
         $response = $this->actingAs($this->admin)->get('delete-role/' . $target_id_10)->assertStatus(302);
         $response->assertRedirect('/create-role-page');
         $this->assertDatabaseMissing('roles', ['id' => $target_id_10]);
+
+        $this->actingAs($this->admin)->postJson('create-role-page', $data_role0);
+        $target_id_0 = Role::findByName($data_role0['name'])->id;
+        $this->assertDatabaseHas('roles', ['id' => $target_id_0]);
+        $this->guest->givePermissionTo('manage-roles');
+        //Delete without role
+        $response = $this->actingAs($this->guest)->get('delete-role/' . $target_id_0)->assertStatus(302);
+        $response->assertRedirect('/create-role-page');
+        $this->assertDatabaseMissing('roles', ['id' => $target_id_0]);
     }
 
     public function testProfilePictureUpload() {

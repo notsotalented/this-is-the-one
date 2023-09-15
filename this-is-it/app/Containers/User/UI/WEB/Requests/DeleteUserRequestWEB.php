@@ -79,7 +79,7 @@ class DeleteUserRequestWEB extends Request
         $target_role = User::findOrFail($this->id)->roles()->get();
 
         if($target_role->first() == null) {
-            $target_level = -1;
+            $target_level = -2;
         }
         else {
             $target_level = 0;

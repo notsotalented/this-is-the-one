@@ -72,7 +72,7 @@ class PowerUpdateUserRequestWEB extends Request
         $user_role = User::find($id)->roles()->get();
 
         if ($user_role->first() == null) {
-            $user_level = -1;
+            $user_level = 1;
         }
         else {
             $user_level = 0;
