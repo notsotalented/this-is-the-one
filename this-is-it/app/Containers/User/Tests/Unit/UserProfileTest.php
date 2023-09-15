@@ -204,7 +204,7 @@ class UserProfileTest extends TestCase
         //Create a role
         $role_user = factory(Role::class)->create([
             'name' => 'user',
-            'level' => 0,
+            'level' => 10,
             'description' => 'User'
         ]);
 
@@ -238,5 +238,131 @@ class UserProfileTest extends TestCase
             'gender' => 'female',
             'birth' => '2000-02-10',
         ]);
+
+        //Init tester3
+        $tester3 = factory(User::class)->create();
+
+        //Test access
+        $response = $this->actingAs($tester)->get($this->endpoint . '/' . $tester3->id . '/update');
+        $response->assertStatus(200);
+
+        //Test update method
+        $response = $this->actingAs($tester)->putJson($this->endpoint . '/' . $tester3->id . '/power-update', [
+            'email' => 'toiLaBeto@gmail.com',
+            'id' => $tester3->id,
+            'name' => 'Beethoven',
+            'gender' => 'male',
+            'birth' => '1770-12-10',
+            'password_new' => '123456',
+            'password_new2' => '123456',
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect($this->endpoint . '/' . $tester3->id . '/update');
+
+        //Check updated information
+        $this->assertDatabaseHas('users', [
+            'id' => $tester3->id,
+            'email' => 'toiLaBeto@gmail.com',
+            'name' => 'Beethoven',
+            'gender' => 'male',
+            'birth' => '1770-12-10',
+        ]);
+        
+        //Assign permissions for tester3
+        $tester3->syncPermissions('manage-roles', 'update-users', 'search-users', 'list-users');
+
+        //Test access
+        $response = $this->actingAs($tester)->get($this->endpoint . '/' . $tester3->id . '/update');
+        $response->assertStatus(200);
+
+        //Test update method
+        $response = $this->actingAs($tester)->putJson($this->endpoint . '/' . $tester3->id . '/power-update', [
+            'email' => 'toikhongphailaibaba@gmail.com',
+            'id' => $tester3->id,
+            'name' => 'toikhongphailaalibaba',
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect($this->endpoint . '/' . $tester3->id . '/update');
+
+        //Check updated information
+        $this->assertDatabaseHas('users', [
+            'id' => $tester3->id,
+            'email' => 'toikhongphailaibaba@gmail.com',
+            'name' => 'toikhongphailaalibaba',
+        ]);
+    }
+
+    public function testNoRoleAssignToRole() {
+        //Create a role
+        $role_user = factory(Role::class)->create([
+            'name' => 'user',
+            'level' => 10,
+            'description' => 'User'
+        ]);
+        
+        //Init tester
+        $tester = factory(User::class)->create();
+        //Set level via set role
+        $tester->assignRole('user');
+        $tester->syncPermissions('search-users','list-users', 'update-users', 'manage-roles');
+
+        //Init tester2
+        $tester2 = factory(User::class)->create();
+        //Set level via set role
+        $tester->syncPermissions('search-users','list-users', 'update-users', 'manage-roles');
+
+        //Init tester3 = admin
+        $tester3 = factory(User::class)->create();
+        //Set level via set role
+        $tester3->assignRole('admin');
+        $tester3->syncPermissions('search-users','list-users', 'update-users', 'manage-roles');
+
+        //Tester2 access tester page failed 403
+        $response = $this->actingAs($tester2)->get($this->endpoint . '/' . $tester->id . '/update');
+        $response->assertStatus(403);
+
+        //Tester2 update method to tester failed 403
+        $response = $this->actingAs($tester2)->putJson($this->endpoint . '/' . $tester->id . '/power-update', [
+            'email' => 'toilaibaba_123@gmail.com',
+            'id' => $tester->id,
+            'name' => 'alibababababababonnam_123',
+        ]);
+        $response->assertStatus(403);
+        
+
+        //Tester access tester2 page
+        $response = $this->actingAs($tester)->get($this->endpoint . '/' . $tester2->id . '/update');
+        $response->assertStatus(200);
+
+        //Tester update method to tester2 failed 403
+        $response = $this->actingAs($tester)->putJson($this->endpoint . '/' . $tester2->id . '/power-update', [
+            'email' => 'toilaibaba_123@gmail.com',
+            'id' => $tester2->id,
+            'name' => 'alibababababababonnam_123',
+            'roles_ids' => ['1'],
+        ]);
+        $response->assertStatus(403);
+
+        //Tester3 access tester2 page
+        $response = $this->actingAs($tester3)->get($this->endpoint . '/' . $tester2->id . '/update');
+        $response->assertStatus(200);
+
+        //Tester3 update method to tester2
+        $response = $this->actingAs($tester3)->putJson($this->endpoint . '/' . $tester2->id . '/power-update', [
+            'email' => 'toilaibaba_123@gmail.com',
+            'id' => $tester2->id,
+            'name' => 'alibababababababonnam_123',
+            'roles_ids' => ['2'],
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect($this->endpoint . '/' . $tester2->id . '/update');
+
+        //Check updated information
+        $this->assertDatabaseHas('users', [
+            'id' => $tester2->id,
+            'email' => 'toilaibaba_123@gmail.com',
+            'name' => 'alibababababababonnam_123',
+        ]);
+        $this->assertTrue($tester2->hasRole('user'));
     }
 }
