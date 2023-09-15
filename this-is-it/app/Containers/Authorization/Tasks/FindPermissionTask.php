@@ -26,7 +26,7 @@ class FindPermissionTask extends Task
      *
      * @return  Permission
      */
-    public function run($permissionNameOrId): Permission
+    public function run($permissionNameOrId)
     {
         $query = is_numeric($permissionNameOrId) ? ['id' => $permissionNameOrId] : ['name' => $permissionNameOrId];
 

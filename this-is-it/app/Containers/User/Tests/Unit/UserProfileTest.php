@@ -8,7 +8,6 @@ use App\Containers\User\Tests\TestCase;
 use App\Ship\Exceptions\NotFoundException;
 use App\Ship\Exceptions\UpdateResourceFailedException;
 use App\Ship\Transporters\DataTransporter;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -404,10 +403,24 @@ class UserProfileTest extends TestCase
 
         $action = \App::make(UpdateUserAction::class);
         $response = $action->run(new DataTransporter($data));
+    }
+
+    public function testUserUpdateNotFound() {
+        //Init tester = admin
+        $tester = factory(User::class)->create();
+        //Set level via set role
+        $tester->assignRole('admin');
+        $tester->syncPermissions('search-users','list-users', 'update-users', 'manage-roles');
 
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage("User Not Found.");
 
-        $response = $action->run(new DataTransporter($data2));
+        $data = [
+            'id' => '999',
+            'email' => 'toilaibaba_123@gmail.com',
+        ];
+
+        $action = \App::make(UpdateUserAction::class);
+        $response = $action->run(new DataTransporter($data));
     }
 }

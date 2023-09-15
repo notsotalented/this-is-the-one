@@ -26,7 +26,7 @@ class FindRoleTask extends Task
      *
      * @return  \App\Containers\Authorization\Models\Role
      */
-    public function run($roleNameOrId): Role
+    public function run($roleNameOrId)
     {
         $query = is_numeric($roleNameOrId) ? ['id' => $roleNameOrId] : ['name' => $roleNameOrId];
 
