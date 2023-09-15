@@ -2,8 +2,12 @@
 
 namespace App\Containers\User\Tests\Unit;
 
+use App\Containers\User\Actions\UpdateUserAction;
 use App\Containers\User\Models\User;
 use App\Containers\User\Tests\TestCase;
+use App\Ship\Exceptions\NotFoundException;
+use App\Ship\Exceptions\UpdateResourceFailedException;
+use App\Ship\Transporters\DataTransporter;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -292,6 +296,11 @@ class UserProfileTest extends TestCase
         ]);
     }
 
+    /**
+     * Test the behavior when no role is assigned to a user.
+     *
+     * @return void
+     */
     public function testNoRoleAssignToRole() {
         //Create a role
         $role_user = factory(Role::class)->create([
@@ -364,5 +373,41 @@ class UserProfileTest extends TestCase
             'name' => 'alibababababababonnam_123',
         ]);
         $this->assertTrue($tester2->hasRole('user'));
+    }
+
+    /**
+     * Test the User Update Exception.
+     *
+     * @return void
+     */
+    public function testUserUpdateExceptionEmpty() {
+        //Init tester = admin
+        $tester = factory(User::class)->create();
+        //Set level via set role
+        $tester->assignRole('admin');
+        $tester->syncPermissions('search-users','list-users', 'update-users', 'manage-roles');
+
+        //Init tester2
+        $tester2 = factory(User::class)->create();   
+
+        //Test exception UpdateResourceFailedException via $this
+        $data = [
+            'id' => $tester2->id,
+        ];
+        $data2 = [
+            'id' => '999',
+            'email' => 'toilaibaba_123@gmail.com',
+        ];
+
+        $this->expectException(UpdateResourceFailedException::class);
+        $this->expectExceptionMessage("Inputs are empty.");
+
+        $action = \App::make(UpdateUserAction::class);
+        $response = $action->run(new DataTransporter($data));
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage("User Not Found.");
+
+        $response = $action->run(new DataTransporter($data2));
     }
 }
