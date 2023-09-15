@@ -98,5 +98,4 @@ class Controller extends WebController
     {
         return view('authentication::dashboard');
     }
-
 }

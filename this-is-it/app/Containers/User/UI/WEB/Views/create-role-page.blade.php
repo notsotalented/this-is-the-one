@@ -73,30 +73,33 @@
                   <td>{{$item->level}}</td>
                   <td>
                     @if($item->id != 1)
-                      {{--<a href="{{ route('delete-role', ['id' => $item->id]) }}" type="button" class="btn btn-danger" role="button" aria-pressed="true">DEL</a>--}}
-                      {{-- Button trigger modal --}}
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}">
-                          DEL
-                        </button>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger " data-toggle="modal" data-target="#exampleModal{{ $item->id }}">
+                      DEL
+                    </button>
 
-                        {{-- Modal --}}
-                        <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-2" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <p class="modal-title" id="exampleModalLabel"><b>Final confirmation</b></p>
-                                <button type="button" class="btn btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                About to delete role: <span style="color: #f44336"><b>{{$item->display_name}}</b></span>
-                              </div>
-                              <div class="modal-footer">
-                                <a href="{{ route('delete-role', ['id' => $item->id]) }}" type="button" class="btn btn-danger">Delete</a>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abort</button>
-                              </div>
-                            </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ $item->id }}" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            About to delete role: <b style="color:royalblue">{{ $item->display_name }}</b> ({{ $item->name }})!
+                          </div>
+                          <div class="modal-footer">
+                            <a type="button" class="btn btn-danger" href="/delete-role/{{$item->id}}">Confirm</a>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                           </div>
                         </div>
+                      </div>
+                    </div>
+
+
                       @endif
                   </td>
                 </tr>
