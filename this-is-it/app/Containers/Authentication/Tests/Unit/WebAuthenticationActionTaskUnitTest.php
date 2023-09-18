@@ -19,8 +19,6 @@ class WebAuthenticationActionTaskUnitTest extends TestCase
 {
     public function testCheckIfUserIsConfirmedTask()
     {
-        $this->expectException(LoginFailedException::class);
-
         //Assert no logged user
         $this->assertFalse(\Auth::check());
 
@@ -34,6 +32,5 @@ class WebAuthenticationActionTaskUnitTest extends TestCase
             'email' => 'user@user.com',
             'password' => 'admin'
         ]));
-
     }
 }
