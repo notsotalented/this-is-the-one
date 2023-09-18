@@ -141,13 +141,12 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <a href="{{route('user-profile', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">VISIT</a>
+                                        <br><a href="{{route('user-profile', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">VISIT</a>
                                         @if(auth()->id() == $user->id)
                                         <a href="{{ route('user-profile', ['id' => $user->id]) }}" class="btn btn-outline-info" type="button">BACK TO PROFILE</a>
                                         @endif
                                     </div>
                                 </div>
-
                             </div>
                     </div>
                 </div>

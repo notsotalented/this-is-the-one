@@ -27,8 +27,6 @@ class WebLoginAction extends Action
 
         
         Apiato::call('Authentication@CheckIfUserIsConfirmedTask', [], [['setUser' => [$user]]]);
-        
-        //TO-DO
     
         return $user;
     }
