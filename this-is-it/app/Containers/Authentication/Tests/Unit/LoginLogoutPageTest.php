@@ -152,4 +152,28 @@ class LoginLogoutPageTest extends TestCase
 
         $response->assertRedirect('/');
     }
+
+    public function testLoginLogoutWebPage() {
+        $data = [
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+            'remember_me' => false
+        ];
+        $data_false = [
+            'email' => 'admin@admin.com',
+            'password' => 'admin123',
+        ];
+        
+        //Post Json data false
+        $response = $this->call('POST', 'login', $data_false);
+        $response->assertStatus(302);
+        $response->assertRedirect('login');
+        $response->assertSessionHas('status', 'Incorrect User Credentials');
+
+        //Post Json data
+        $response = $this->call('POST', 'login', $data);
+        $response->assertStatus(302);
+        $response->assertRedirect('');
+        $response->assertSessionHas('status', 'Login successfully');
+    }
 }

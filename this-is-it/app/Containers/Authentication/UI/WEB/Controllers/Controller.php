@@ -68,7 +68,7 @@ class Controller extends WebController
         } catch (Exception $e) {
             return redirect('login')->with('status', $e->getMessage());
         }
-        
+
                                 //Failed???                             //Success
         return is_array($result) ? redirect()->back()->with($result) : redirect('')->with('status', 'Login successfully');
     }

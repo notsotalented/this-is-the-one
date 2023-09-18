@@ -3,6 +3,7 @@
 namespace App\Containers\Authorization\Tests\Unit;
 
 use App\Containers\Authentication\Actions\WebAdminLoginAction;
+use App\Containers\Authentication\Actions\WebLogoutAction;
 use App\Containers\Authorization\Actions\CreatePermissionAction;
 use App\Containers\Authorization\Actions\FindPermissionAction;
 use App\Containers\Authorization\Actions\FindRoleAction;
@@ -14,6 +15,7 @@ use App\Containers\Authorization\Tests\TestCase;
 use App\Containers\User\Models\User;
 use App\Ship\Exceptions\DeleteResourceFailedException;
 use App\Ship\Transporters\DataTransporter;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
@@ -128,16 +130,16 @@ class AuthorizationActionUnitTest extends TestCase
         $this->assertDatabaseHas('permissions', $data);
     }
 
-    public function testAdminLogin() {
-        $data = [
-            'email' => 'admin@admin.com',
-            'password' => 'admin',
-            'remember_me' => false
-        ];
+    public function testTraitGetUser() {
+        $this->assertNull(Auth()->getUser());
 
-        $action = \App::make(WebAdminLoginAction::class);
-        $response = $action->run(new DataTransporter($data));
-
-        
+        \Auth::login($this->admin);
+        //Assert role's level
+        $this->assertEquals(\Auth::getUser()->getRoleLevel(), 999);
+        //Assert name
+        $this->assertEquals(\Auth::getUser()->name, 'Super Admin');
+        //Assert model = model
+        $this->assertEquals(Auth::getUser(), Auth::user());
     }
+
 }
