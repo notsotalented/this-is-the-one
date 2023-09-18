@@ -2,6 +2,7 @@
 
 namespace App\Containers\Authorization\Tests\Unit;
 
+use App\Containers\Authentication\Actions\WebAdminLoginAction;
 use App\Containers\Authorization\Actions\CreatePermissionAction;
 use App\Containers\Authorization\Actions\FindPermissionAction;
 use App\Containers\Authorization\Actions\FindRoleAction;
@@ -127,7 +128,16 @@ class AuthorizationActionUnitTest extends TestCase
         $this->assertDatabaseHas('permissions', $data);
     }
 
-    public function testCreateResourceFailed() {
+    public function testAdminLogin() {
+        $data = [
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+            'remember_me' => false
+        ];
+
+        $action = \App::make(WebAdminLoginAction::class);
+        $response = $action->run(new DataTransporter($data));
+
         
     }
 }
