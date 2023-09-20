@@ -35,7 +35,7 @@
                         {{-- Profile picture image--}}
 
                         @if($user->social_avatar)
-                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; max-height:20vh; overflow: hidden" src="{{ asset('uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
+                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
                         @endif 
                         {{-- Profile picture help block--}}
                         
@@ -146,6 +146,9 @@
                             @else
                                 @can('update-users')
                                     <a href="{{route('update-page', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">UPDATE</a>
+                                @endcan
+                                @can('delete-users')
+                                    <a href="{{route('delete-page', ['id' => $user->id])}}" class="btn btn-outline-danger" type="button" style="float:right">TERMINATE</a>
                                 @endcan
                             @endif
                         </div>

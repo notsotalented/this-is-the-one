@@ -19,6 +19,7 @@ use App\Containers\User\UI\WEB\Requests\UserProfileAccessRequest;
 use App\Containers\User\UI\WEB\Requests\UserProfilePictureRequest;
 use App\Containers\User\UI\WEB\Requests\UsersProfileAccessRequest;
 use App\Ship\Transporters\DataTransporter;
+use Auth;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -162,10 +163,18 @@ class Controller extends WebController
 
     public function deleteUserWEB(DeleteUserRequestWEB $request, $id)
     {
+        dd(back());
 
         Apiato::call('User@DeleteUserAction', [new DataTransporter($request->merge(['id' => $id]))]);
 
-        return redirect(route('list-page'))->with('status', 'Delete user successfully!');
+
+        if(Auth::user()->id == $id) {
+            Apiato::call('Authentication@WebLogoutAction');
+
+            return redirect(route('welcome@welcome-page'))->with('status', 'Self-terminate successfully!');
+        }
+
+        return redirect(route('User@->with('status', 'Delete user successfully!'));
     }
 
     public function showUserProfile(UserProfileAccessRequest $request, $id) {

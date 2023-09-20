@@ -74,7 +74,7 @@
             <button type="button" class="btn btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="width: 25vh; overflow: hidden">
                 <span>
                     @if(auth()->user()->social_avatar)
-                        <img class="img-account-profile rounded-circle mb-lg-0" style="max-width: 4vh; max-height: 4vh; overflow: auto" src="{{ asset('uploads/photos/'.auth()->user()->social_avatar) }}" alt="{{auth()->user()->name}} profile picture">
+                        <img class="img-account-profile rounded-circle mb-lg-0" style="max-width: 4vh; max-height: 4vh; overflow: auto; border: 1px solid gray" src="{{ asset('uploads/photos/'.auth()->user()->social_avatar) }}" alt="{{auth()->user()->name}} profile picture">
                     @else
                         <i class="fa-regular fa-user"></i>
                     @endif 
@@ -82,8 +82,7 @@
                 <span>
               </button>
             <ul class="dropdown-menu dropdown-menu-lg-end">
-                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">User Profile <i class="fa-regular fa-address-card"></i></a></li>
-                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">User Profile <i class="fa-regular fa-address-card"></i></a></li> 
                 <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">User's Products <i class="fa fa-cubes fa-pulse"></i></a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href = {{ route('test-page') }}> Test ground <i class="fa-solid fa-vials"></i></a></li>
