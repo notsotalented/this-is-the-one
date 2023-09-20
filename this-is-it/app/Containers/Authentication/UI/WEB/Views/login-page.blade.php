@@ -46,9 +46,8 @@
             <div style="width: 55vw">
               <input type="checkbox" name="remember" value="true">
               <label for="remember"> Remember me (not yet) </label>
-              <span style="float: right" class="psw">(Not yet) Forgot <a style="color: red;text-decoration-line: none;" id="forget" href="/forget-password" disbled>password?</a></span>
+              <span style="float: right" class="psw">(Not yet) Forgot <a style="color: red; text-decoration-line: none;" data-toggle="modal" data-target="#forgotModal" href="password/forgot">password?</a></span>
             </div>
-
             <button class="btn btn-success btn-block" type="submit">Login</button>
 
           </div>
@@ -57,6 +56,28 @@
     </div>
 
     </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </body>
 

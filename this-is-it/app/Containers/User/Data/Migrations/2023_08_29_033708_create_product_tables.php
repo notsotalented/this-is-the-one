@@ -18,8 +18,8 @@ class CreateProductTables extends Migration
             $table->string('description');
             $table->integer('price');
             $table->integer('quantity');
-            $table->integer('owner');
-            $table->tinyInteger('confirmed');
+            $table->integer('ownership');
+            $table->string('image');
 
             $table->timestamps();
 

@@ -114,7 +114,6 @@
 
 @endsection
 
-
 <script>
   new DataTable('#products_table', {
       order: [[3, 'desc']],
