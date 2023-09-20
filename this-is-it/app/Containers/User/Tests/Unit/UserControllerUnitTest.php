@@ -302,18 +302,17 @@ class UserControllerUnitTest extends TestCase
         $this->actingAs($this->guest)->postJson('create-role-page', $data_role5)->assertStatus(403);
         //Authorized add level 5
         $response = $this->actingAs($this->client)->postJson('create-role-page', $data_role5);
-        $response->assertStatus(302);
-        $response->assertSessionHas('status', 'Role created successfully!');
-        $response->assertRedirect('/create-role-page');
+        $response->assertStatus(200);
+
+        $response->assertSee('Role ' . $data_role5['display_name'] . ' created successfully!');
         $this->assertDatabaseHas('roles', $data_role5);
         //Not authorized add level 10
         $this->actingAs($this->client)->postJson('create-role-page', $data_role10)->assertStatus(403);
         $this->assertDatabaseMissing('roles', $data_role10);
         //Authorized add level 10
         $response = $this->actingAs($this->admin)->postJson('create-role-page', $data_role10);
-        $response->assertStatus(302);
-        $response->assertSessionHas('status', 'Role created successfully!');
-        $response->assertRedirect('/create-role-page');
+        $response->assertStatus(200);
+        $response->assertSee('Role ' . $data_role10['display_name'] . ' created successfully!');
         $this->assertDatabaseHas('roles', $data_role10);
         //Duplicated
         $this->actingAs($this->admin)->postJson('create-role-page', $data_role5)->assertStatus(422);
@@ -323,8 +322,8 @@ class UserControllerUnitTest extends TestCase
         $this->actingAs($this->client)->get('delete-role/' . $target_id_10)->assertStatus(403);
         $this->assertDatabaseHas('roles', ['id' => $target_id_10]);
         //Delete authorized
-        $response = $this->actingAs($this->admin)->get('delete-role/' . $target_id_10)->assertStatus(302);
-        $response->assertRedirect('/create-role-page');
+        $response = $this->actingAs($this->admin)->get('delete-role/' . $target_id_10)->assertStatus(200);
+        $response->assertSee('Role ' . $data_role10['display_name'] . ' deleted!');
         $this->assertDatabaseMissing('roles', ['id' => $target_id_10]);
 
         $this->actingAs($this->admin)->postJson('create-role-page', $data_role0);
@@ -332,8 +331,8 @@ class UserControllerUnitTest extends TestCase
         $this->assertDatabaseHas('roles', ['id' => $target_id_0]);
         $this->guest->givePermissionTo('manage-roles');
         //Delete without role
-        $response = $this->actingAs($this->guest)->get('delete-role/' . $target_id_0)->assertStatus(302);
-        $response->assertRedirect('/create-role-page');
+        $response = $this->actingAs($this->guest)->get('delete-role/' . $target_id_0)->assertStatus(200);
+        $response->assertSee('Role ' . $data_role0['display_name'] . ' deleted!');
         $this->assertDatabaseMissing('roles', ['id' => $target_id_0]);
     }
 

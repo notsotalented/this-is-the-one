@@ -2,8 +2,10 @@
 
 namespace App\Containers\Product\UI\WEB\Controllers;
 
+use App\Containers\Product\UI\WEB\Requests\GetAllProductsRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
+use App\Ship\Transporters\DataTransporter;
 
 /**
  * Class Controller
@@ -12,5 +14,11 @@ use Apiato\Core\Foundation\Facades\Apiato;
  */
 class Controller extends WebController
 {
+    public function getAllProducts(GetAllProductsRequest $request) {
+        $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
+        return view('product::product-page', [
+            'products' => $products
+        ]);
+    }
 }

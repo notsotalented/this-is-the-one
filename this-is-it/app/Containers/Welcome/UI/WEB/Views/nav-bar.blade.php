@@ -18,6 +18,8 @@
                     @can('list-users')
                         <li><a id="go-to-user" class="dropdown-item" href="{{route('users-profile')}}">Users</a></li>
                     @endcan
+
+                    <li><a id="go-to-products" class="dropdown-item" href="{{route('web_product_get_all_products')}}">Products</a></li>
                     
                     </div>
                 </ul>
@@ -44,7 +46,7 @@
             @endcan
 
         </ul>
-        {{--@can('search-users')--}}
+        @can('search-users')
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
 
@@ -65,7 +67,7 @@
             <b>Search <i class="fa-solid fa-magnifying-glass fa-2xs"></i></b>
         </button>
 
-        {{--@endcan--}}
+        @endcan
 
         @if(auth()->check())
         <div class="btn-group mb-2 mb-lg-0 ml-1" style="margin-left: 1%">
@@ -81,6 +83,8 @@
               </button>
             <ul class="dropdown-menu dropdown-menu-lg-end">
                 <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">User Profile <i class="fa-regular fa-address-card"></i></a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">User's Products <i class="fa fa-cubes fa-pulse"></i></a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href = {{ route('test-page') }}> Test ground <i class="fa-solid fa-vials"></i></a></li>
                 <li><hr class="dropdown-divider"></li>

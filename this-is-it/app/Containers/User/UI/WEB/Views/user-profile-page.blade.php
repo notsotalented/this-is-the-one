@@ -141,6 +141,8 @@
                             {{-- EDIT--}}
                             @if(auth()->user()->id == $user->id)
                                 <a href="{{route('update-page', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">UPDATE</a>
+                                <a href="{{route('web_product_get_all_products')}}" class="btn btn-outline-info" type="button">PRODUCTS</a>
+                                <a href="{{route('delete-page', ['id' => $user->id])}}" class="btn btn-outline-danger" type="button" style="float:right">SELF TERMINATE</a>
                             @else
                                 @can('update-users')
                                     <a href="{{route('update-page', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">UPDATE</a>

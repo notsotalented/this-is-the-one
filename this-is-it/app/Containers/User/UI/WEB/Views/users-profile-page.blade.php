@@ -29,14 +29,12 @@
 
 @include('welcome::nav-bar')
 
-<div class="container-fluid" style="margin-top: 5vh">
+<div class="container-fluid" style="margin-top: 0vh">
     <label for="level"><b>{{$users->links()}}</b></label>
-
-        <div class="input-group mb-3" style="max-width: 12vw">
+        <div class="input-group mb-3" style="max-width: 15vw">
             <span class="input-group-text" style="width: 8vw">Per Page</span>
-            <input type="number" class="form-control" name="per_page" style="width: 4vw" placeholder="1" min="1" max="100" value="@if(isset($_GET['paginate'])){{$_GET['paginate']}}@else{{'10'}}@endif" onchange="load_page(this.value)">
+            <input type="number" class="form-control" name="per_page" style="width: 7vw" placeholder="1" min="1" max="100" value="@if(isset($_GET['paginate'])){{$_GET['paginate']}}@else{{'10'}}@endif" onchange="load_page(this.value)">
         </div>
-
 </div>
 
 <div class="accordion accordion-flush" id="accordionExample" style="margin-top:5vh">
@@ -142,9 +140,6 @@
 
                                     <div class="col-md-6">
                                         <br><a href="{{route('user-profile', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">VISIT</a>
-                                        @if(auth()->id() == $user->id)
-                                        <a href="{{ route('user-profile', ['id' => $user->id]) }}" class="btn btn-outline-info" type="button">BACK TO PROFILE</a>
-                                        @endif
                                     </div>
                                 </div>
                             </div>

@@ -19,6 +19,7 @@ use App\Containers\User\UI\WEB\Requests\UserProfileAccessRequest;
 use App\Containers\User\UI\WEB\Requests\UserProfilePictureRequest;
 use App\Containers\User\UI\WEB\Requests\UsersProfileAccessRequest;
 use App\Ship\Transporters\DataTransporter;
+use Spatie\Permission\Models\Role;
 
 /**
  * Class Controller
@@ -204,17 +205,27 @@ class Controller extends WebController
     }
 
     public function createNewRole(CreateRoleRequestWEB $request) {
-        
         $create = Apiato::call('Authorization@CreateRoleAction', [new DataTransporter($request)]);
 
-        return redirect(route('create-role'))->with(['status' => 'Role created successfully!']);
+        $roles = Apiato::call('Authorization@GetAllRolesAction');
+
+        return view('user::create-role-page', [
+            'roles' => $roles->all(),
+            'status' => 'Role ' . $create->display_name . ' created successfully!',
+        ]);
     }
 
     public function deleteRole(DeleteRoleRequestWEB $request) {
+        $role_name = Role::find($request->id)->display_name;
 
         $delete_role = Apiato::call('Authorization@DeleteRoleAction', [new DataTransporter($request)]);
 
-        return redirect(route('create-role'))->with('status','Role deleted successfully!');
+        $roles = Apiato::call('Authorization@GetAllRolesAction');
+
+        return view('user::create-role-page', [
+            'roles' => $roles->all(),
+            'status' => 'Role ' . $role_name . ' deleted!',
+        ]);
     }
 
     public function profilePictureUpload(UserProfilePictureRequest $request, $id) {  
