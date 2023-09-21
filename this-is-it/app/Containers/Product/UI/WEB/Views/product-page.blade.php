@@ -26,13 +26,51 @@
 
     <div class="container-fluid" style="margin-top: 0vh">
         <label for="level"><b>{{$products->links()}}</b></label>
-            <div class="input-group mb-3" style="max-width: 16vw">
-                <span class="input-group-text" style="width: 8vw">Per Page</span>
-                <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1" max="100" value="@if(isset($_GET['paginate'])){{$_GET['paginate']}}@else{{'10'}}@endif" onchange="load_page(this.value)">
-            </div>
+        <div class="input-group mb-3" style="max-width: 16vw">
+            <span class="input-group-text" style="width: 8vw">Per Page</span>
+            <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1" max="100" value="@if(isset($_GET['paginate'])){{$_GET['paginate']}}@else{{'10'}}@endif" onchange="load_page(this.value)">
+        </div>
+        @if(Request()->userId == Auth::user()->id)
+        <div class="input-group mb-3" style="max-width: 16vw">
+          <a href="{{route('web_product_show_add_form', ['userId' => Auth::user()->id])}}" class="btn btn-primary" type="button">Add Product</a>
+        </div>
+        @endif
+
+
     </div>
 
-    {{ 'WAZZAP' }}
+    <div class="card-group">
+        <div class="card">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Last updated 3 mins ago</small>
+          </div>
+        </div>
+    </div>
     
 </body>
 

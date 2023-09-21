@@ -251,7 +251,7 @@ class UserControllerUnitTest extends TestCase
         $this->assertDatabaseHas('users', ['id' => $target->id]);
         $response = $this->actingAs($this->admin)->postJson($url, $data);
         $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/home');
         $this->assertSoftDeleted('users', ['id' => $target->id]);
 
         $response = $this->actingAs($this->admin)->postJson($url, $falseData);
@@ -261,7 +261,7 @@ class UserControllerUnitTest extends TestCase
 
         $response = $this->actingAs($this->guest)->postJson('users/' . $target_2->id . '/delete', ['id' => $this->client->id]);
         $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/home');
         $this->assertSoftDeleted('users', ['id' => $target_2->id]);
     }
 

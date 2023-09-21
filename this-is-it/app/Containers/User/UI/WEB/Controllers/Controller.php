@@ -163,18 +163,16 @@ class Controller extends WebController
 
     public function deleteUserWEB(DeleteUserRequestWEB $request, $id)
     {
-        dd(back());
-
         Apiato::call('User@DeleteUserAction', [new DataTransporter($request->merge(['id' => $id]))]);
 
 
         if(Auth::user()->id == $id) {
             Apiato::call('Authentication@WebLogoutAction');
 
-            return redirect(route('welcome@welcome-page'))->with('status', 'Self-terminate successfully!');
+            return redirect(route('home'))->with('status', 'Self-terminate successfully!');
         }
 
-        return redirect(route('User@->with('status', 'Delete user successfully!'));
+        return redirect(route('home'))->with('status', 'Delete user successfully!');
     }
 
     public function showUserProfile(UserProfileAccessRequest $request, $id) {
