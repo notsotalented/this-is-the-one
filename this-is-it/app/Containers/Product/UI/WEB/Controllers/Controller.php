@@ -41,8 +41,13 @@ class Controller extends WebController
     }
 
     public function addProductToUser(AddProductRequest $request) {
-        dd($request);
+        $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
         
-        return null;
+        $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all())]);
+
+        return view('product::product-add-page', [
+            'products' => $products,
+            'status' => 'Wazz',
+        ])->with('status', 'Success');
     }
 }

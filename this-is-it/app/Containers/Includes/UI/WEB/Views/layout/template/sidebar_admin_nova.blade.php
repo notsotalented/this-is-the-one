@@ -125,7 +125,7 @@
                                     @endif
                                 </span>
                                 <span class="text"
-                                    style="wdith: 80%; display: inline-block; @if(strpos(request()->fullUrl(), $child['url']) !== false) {{ 'font-weight: bold; font-style: italic' }} @endif">
+                                    style="width: 80%; display: inline-block; @if(strpos(request()->fullUrl(), $child['url']) !== false) {{ 'font-weight: bold; font-style: italic' }} @endif">
                                     {{ $child['label'] ?? '' }}
                                 </span>
                             </div>

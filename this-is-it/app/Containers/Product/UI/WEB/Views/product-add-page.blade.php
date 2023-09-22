@@ -35,9 +35,34 @@
 
         document.getElementById("cost").value = cost;
       }
+
+      $(function() {
+        // Multiple images preview in browser
+        var imagesPreview = function(input, placeToInsertImagePreview) {
+
+            if (input.files) {
+                var filesAmount = input.files.length;
+
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(event) {
+                        $($.parseHTML('<img>')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                    }
+
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+
+        };
+
+        $('#gallery-photo-add').on('change', function() {
+            imagesPreview(this, 'div.gallery');
+        });
+      });
     </script>
 
-    <form method="POST" action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}">
+    <form method="POST" action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" oninput="">
       <div class="container" style="margin-top: 5vh">
 
         <div class="row">
@@ -46,46 +71,40 @@
             <div class="card mb-4 mb-xl-0">
                 <div class="card-header"><h5>Product Picture(s)<h5></div>
                 <div class="card-body text-center">
-                  {{-- Product picture image--}}
-
-                  {{-- Product picture help block--}}
-                  
-                  {{-- Product picture upload button--}}
-                  <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload new image</button>
+                  <p>View Port</p>
+                  <div class="container-fluid" style="overflow: auto; max-height: 40vh; max-width: 40vh">
+                      <div class="gallery">
+                      </div>
+                  </div>
+                </div>
+                <div class="card-footer text-center">
+                  <input type="file" id="gallery-photo-add" accept="image/*" name="image[]" class="form-control" multiple required">
                 </div>
             </div>
 
             <div class="card mb-4 mb-xl-0" style="margin-top: 5vh">
-              <div class="card-header"><h5>Quantity<h5></div>
-              <div class="card-body text-center">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" style="width: 6vw">In Stock</span>
-                    <input id="quantity" type="number" class="form-control" aria-label="quantity" aria-describedby="quantity" placeholder="[0:100]" value="{{ old('quantity') }}" min="0" max="100" required>
-                </div>
-              </div>
-            </div>
+                <div class="card-header"><h5>Price<h5></div>
+                <div class="card-body text-center">
+                  <div class="container-fluid">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 6vw">Cost</span>
+                        <input id="cost_base" name="cost_base" type="number" class="form-control" aria-label="cost-base" aria-describedby="cost-base" placeholder="0" value="{{ old('cost-base') }}" onchange="update_cost()">
+                        <span class="input-group-text" style="width: 5vw">VNĐ</span>
+                    </div>
 
-            <div class="card mb-4 mb-xl-0" style="margin-top: 5vh">
-              <div class="card-header"><h5>Price<h5></div>
-              <div class="card-body text-center">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" style="width: 6vw">Cost</span>
-                    <input id="cost_base" type="number" class="form-control" aria-label="cost-base" aria-describedby="cost-base" placeholder="0" value="{{ old('cost-base') }}" onchange="update_cost()">
-                    <span class="input-group-text" style="width: 5vw">VNĐ</span>
-                </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" style="width: 6vw">Labour</span>
+                      <input id="cost_labour" name="cost_labour" type="number" class="form-control" aria-label="cost-labour" aria-describedby="cost-labour" placeholder="0" value="{{ old('cost-labour') }}" onchange="update_cost()">
+                      <span class="input-group-text" style="width: 5vw">VNĐ</span>
+                    </div>
 
-                <div class="input-group mb-3">
-                  <span class="input-group-text" style="width: 6vw">Labour</span>
-                  <input id="cost_labour" type="number" class="form-control" aria-label="cost-labour" aria-describedby="cost-labour" placeholder="0" value="{{ old('cost-labour') }}" onchange="update_cost()">
-                  <span class="input-group-text" style="width: 5vw">VNĐ</span>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" style="width: 6vw">Total</span>
+                      <input id="cost" name="price" type="number" class="form-control" aria-label="cost" aria-describedby="cost" placeholder="0" value="{{ old('price') }}" readonly>
+                      <span class="input-group-text" style="width: 5vw">VNĐ</span>
+                    </div>
+                  </div>
                 </div>
-
-                <div class="input-group mb-3">
-                  <span class="input-group-text" style="width: 6vw">Total</span>
-                  <input id="cost" name="cost" type="number" class="form-control" aria-label="cost" aria-describedby="cost" placeholder="0" readonly>
-                  <span class="input-group-text" style="width: 5vw">VNĐ</span>
-                </div>
-              </div>
             </div>
           </div>
             
@@ -98,36 +117,50 @@
                     {{-- Form Group (Name)--}}
                     <div class="input-group mb-3">
                       <span class="input-group-text" style="width: 6vw">Name</span>
-                      <input id="name" name="name" type="text" class="form-control" aria-label="cost-labour" aria-describedby="cost-labour" placeholder="Text [5:255]" value="{{ old('name') }}" required>
+                      <input id="name" name="name" type="text" class="form-control" aria-label="cost-labour" aria-describedby="cost-labour" placeholder="Text [5:255]" value="{{ old('name') }}" required minlength="5" maxlength="255">
                     </div>
                     {{-- Form Group (Description) --}}
                     <div class="input-group mb-3">
                       <span class="input-group-text" style="width: 10vw">Description</span>
-                      <textarea class="form-control" aria-label="With textarea" id="description" name="description" rows="3" placeholder="Text [5:255]">{{ old('description') }}</textarea>
+                      <textarea class="form-control" aria-label="With textarea" id="description" name="description" rows="3" placeholder="Text [5:255]" required minlength="5" maxlength="255">{{ old('description') }}</textarea>
                     </div>
                     {{-- Form Group (Brand) --}}
+                    @php
+                      $brands = [
+                        'Tamiya ARC',
+                        'HobbyBoss ARC',
+                        'Tamiya LQR',
+                        'HobbyBoss LQR',
+                        '私は黒狐です。',
+                      ];
+                    @endphp
+
                     <div class="input-group mb-3">
                       <div class="btn-group" role="group" aria-label="Toolbar with button groups" data-toggle="buttons">
                         <span class="input-group-text" style="width: 6vw">Brand</span>
                         <div id="role_table" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                          <input type="radio" class="btn-check" name="brand" id="brand_1" value="Tamiya ARC" required>
-                          <label class="btn btn-outline-dark" for="brand_1">Tamiya ARC</label>
-                          <input type="radio" class="btn-check" name="brand" id="brand_2" value="HobbyBoss ARC" required>
-                          <label class="btn btn-outline-dark" for="brand_2">HobbyBoss ARC</label>
-                          <input type="radio" class="btn-check" name="brand" id="brand_3" value="Tamiya LQR" >
-                          <label class="btn btn-outline-dark" for="brand_3">Tamiya LQR</label>
-                          <input type="radio" class="btn-check" name="brand" id="brand_4" value="HobbyBoss LQR">
-                          <label class="btn btn-outline-dark" for="brand_4">HobbyBoss LQR</label>
+                          @foreach ($brands ?? [] as $brand)
+                            <input type="radio" class="btn-check" name="brand" id="brand_{{ $loop->iteration }}" value="{{ $brand }}" required>
+                            <label class="btn btn-outline-dark" for="brand_{{ $loop->iteration }}">{{ $brand }}</label>
+                          @endforeach
                         </div>
                       </div>
                     </div>
+                    {{-- Form Group (Quantity) --}}
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" style="width: 6vw">In Stock</span>
+                      <input id="quantity" name="quantity" type="number" class="form-control" aria-label="quantity" aria-describedby="quantity" placeholder="[0:100]" value="{{ old('quantity') }}" min="0" max="100" required>
+                    </div>
+                </div>
+                  
+                <div class="card-footer">
+                  <button class="btn btn-primary" type="submit">Add Product</button>
+                  <a href="{{ route('web_product_get_all_products', ['id' => Auth()->user()->id]) }}" class="btn btn-outline-warning" type="button" style="white-space: nowrap; float: right">Back To My Product</a>
+                  <a href="{{ route('user-profile', ['id' => Auth()->user()->id]) }}" class="btn btn-outline-danger" type="button" style="white-space: nowrap; float: right">Back To Profile</a>
                 </div>
             </div>
 
             @csrf
-
-            <button class="btn btn-primary" type="submit">Add Product</button>
-            <a href="{{ route('user-profile', ['id' => Auth()->user()->id]) }}" class="btn btn-danger" type="button" style="white-space: nowrap; float: right">Back To Profile</a>
 
           </div>
 
@@ -135,31 +168,6 @@
 
     </form>
 
-  {{-- Modal Product Pictures --}}
-  <div class="modal fade" id="uploadModal" tabindex="1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                    <p class="modal-title" id="uploadModalLabel"><b>Upload photo</b></p>
-                    <button type="button" class="btn btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{{route('profile-picture-upload', ['id' => request('userId')])}}" enctype="multipart/form-data">
-                    <label for="photo" class="form-label">Default file input example</label>
-                    <input class="form-control" type="file" id="photo" name="photo" accept="image/*">
-
-                    {{--HIDDEN INPUT--}}
-                    @csrf
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" type="submit" style="white-space: nowrap"><b>Upload <i class="fa-regular fa-image fa-2xs"></i></b></button>
-                </form>
-                </form>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abort</button>
-            </div>
-        </div>
-    </div>
-  </div>
 
 </body>
 

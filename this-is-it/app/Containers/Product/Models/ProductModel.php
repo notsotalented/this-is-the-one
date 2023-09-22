@@ -3,9 +3,15 @@
 namespace App\Containers\Product\Models;
 
 use App\Ship\Parents\Models\Model;
+use Apiato\Core\Traits\HashIdTrait;
+use Apiato\Core\Traits\HasResourceKeyTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class ProductModel extends Model
 {
+    use HashIdTrait;
+    use HasResourceKeyTrait;
     protected $table = 'products';
     protected $primary_key = 'id';
     protected $fillable = [
@@ -34,9 +40,4 @@ class ProductModel extends Model
         'created_at',
         'updated_at',
     ];
-
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'productmodels';
 }

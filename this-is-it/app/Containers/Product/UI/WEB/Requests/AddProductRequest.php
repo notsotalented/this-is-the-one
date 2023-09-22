@@ -54,10 +54,12 @@ class AddProductRequest extends Request
         return [
             'userId' => 'required',
             'name' => 'required|min:5|max:255',
-            'description' => 'max:255',
-            'quantity' => 'integer',
-            'image*' => '',
-            'price' => '',
+            'brand' => 'required',
+            'description' => 'required|max:255',
+            'quantity' => 'required|integer',
+            'image' => 'required',
+            'image*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required|integer',
             // '{user-input}' => 'required|max:255',
         ];
     }
