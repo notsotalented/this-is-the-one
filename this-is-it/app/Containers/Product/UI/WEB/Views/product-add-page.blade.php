@@ -155,8 +155,11 @@
                   
                 <div class="card-footer">
                   <button class="btn btn-primary" type="submit">Add Product</button>
-                  <a href="{{ route('web_product_get_all_products', ['id' => Auth()->user()->id]) }}" class="btn btn-outline-warning" type="button" style="white-space: nowrap; float: right">Back To My Product</a>
-                  <a href="{{ route('user-profile', ['id' => Auth()->user()->id]) }}" class="btn btn-outline-danger" type="button" style="white-space: nowrap; float: right">Back To Profile</a>
+
+                  <div class="btn-group" role="group" aria-label="Toolbar with back to buttons" style="float: right;">
+                    <a href="{{ route('user-profile', ['id' => Auth()->user()->id]) }}" class="btn btn-outline-danger" type="button" style="white-space: nowrap; float: right; margin-left: 0.5vw">My Profile</a>
+                    <a href="{{ route('web_product_get_all_products', ['id' => Auth()->user()->id]) }}" class="btn btn-outline-info" type="button" style="white-space: nowrap; float: right">My Product</a>
+                  </div>
                 </div>
             </div>
 

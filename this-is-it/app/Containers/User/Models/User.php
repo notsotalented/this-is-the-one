@@ -86,7 +86,7 @@ class User extends UserModel implements ChargeableInterface
     }
 
     public function ownProducts() {
-        return $this->hasMany(Product::class, 'owner_id', 'id');
+        return $this->hasMany(Product::class, 'ownership', 'id');
     }
 
 }

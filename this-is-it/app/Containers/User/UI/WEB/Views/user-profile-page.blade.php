@@ -168,8 +168,8 @@
                     </div>
                     <div class="modal-body">
                         <form method="POST" action="{{route('profile-picture-upload', ['id' => $user->id])}}" enctype="multipart/form-data">
-                            <label for="photo" class="form-label">Default file input example</label>
-                            <input class="form-control" type="file" id="photo" name="photo" accept="image/*">
+                            <label for="photo" class="form-label">Accept filetypes: </label>
+                            <input class="form-control" type="file" id="photo" name="photo" accept="image/*" required>
     
                             {{--HIDDEN INPUT--}}
                             @csrf

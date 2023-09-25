@@ -2,6 +2,8 @@
 
 namespace App\Containers\User\UI\WEB\Controllers;
 
+use App\Ship\Exceptions\InternalErrorException;
+use App\Ship\Exceptions\NotFoundException;
 use App\Ship\Parents\Controllers\WebController;
 
 use Apiato\Core\Foundation\Facades\Apiato;
@@ -20,6 +22,8 @@ use App\Containers\User\UI\WEB\Requests\UserProfilePictureRequest;
 use App\Containers\User\UI\WEB\Requests\UsersProfileAccessRequest;
 use App\Ship\Transporters\DataTransporter;
 use Auth;
+use Illuminate\Support\Collection;
+use Image;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -244,19 +248,32 @@ class Controller extends WebController
         $time_info = time();
 
         if($request->hasFile('photo')) {
-            $file = $request->file('photo');
+            $file = $request->file('photo');           
+
             $extension = $file->getClientOriginalExtension();
 
             $filename = $time_info . '.' .$extension;
             $file->move('uploads/photos/', $filename);
 
             $user->social_avatar = $filename;
+
         }
+        else {
+            return back()->with('status', 'Image not found!');
+        }
+
         $user->save();
+
+        //Resize if needed
+        if($request->hasFile('photo')) {
+            //dd(Image::make(public_path(). '/uploads/photos/' . $filename));
+            $image = Image::make(public_path(). '/uploads/photos/' . $filename)
+                            ->resize(200, 200)
+                            ->save();
+        }
 
         return redirect(route('user-profile', ['id' => $request->id]))->with([
             'status' => 'Uploaded profile picture successfully. File: ' . $filename,
-            'time' => $time_info
         ]);
     }
 }

@@ -20,29 +20,71 @@
 
 <title>Products</title>
 
+@php
+  function convertTimeToAppropriateFormat($time) {
+    $suffix = ['sec(s)', 'min(s)', 'hour(s)', 'day(s)', 'week(s)', 'month(s)', 'year(s)', 'dummy'];
+    $multi = [60, 60, 24, 7, 4.34, 12, 1111];
+  
+    $i = 0;
+
+    while ($time >= $multi[$i] && $i <= 5) {
+      $time /= $multi[$i];
+      $i++;
+    }
+
+    return round($time, 0) . ' ' . $suffix[$i];
+  }
+@endphp
+
+
 </head>
 <body>
     @include('welcome::nav-bar')
 
     <div class="container-fluid" style="margin-top: 0vh">
-        <label for="level"><b>{{$products->links()}}</b></label>
-        <div class="input-group mb-3" style="max-width: 16vw">
-            <span class="input-group-text" style="width: 8vw">Per Page</span>
-            <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1" max="100" value="@if(isset($_GET['paginate'])){{$_GET['paginate']}}@else{{'10'}}@endif" onchange="load_page(this.value)">
-        </div>
+      {{-- Pagination --}}
+      <label for="level"><b>{{$products->links()}}</b></label>
+      <div class="input-group mb-3" style="max-width: 16vw">
+          <span class="input-group-text" style="width: 8vw">Per Page</span>
+          <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1" max="100" value="@if(isset($_GET['paginate'])){{$_GET['paginate']}}@else{{'10'}}@endif" onchange="load_page(this.value)">
+      </div>
+      
+      {{-- Add product to user button --}}
+      @isset(Request()->userId)
         @if(Request()->userId == Auth::user()->id)
         <div class="input-group mb-3" style="max-width: 16vw">
           <a href="{{route('web_product_show_add_form', ['userId' => Auth::user()->id])}}" class="btn btn-primary" type="button">Add Product</a>
         </div>
         @endif
+      @endisset
     </div>
 
+    {{-- Item showcase WIP --}}
     <div class="container-fluid">
-      @foreach ($products as $product)
-        
-      @endforeach
+      <div class="card-deck">
+        <div class="row">
+          @foreach ($products as $product)
+            <div class="col-sm-3">
+              <div class="card mb-4 w-23 h-28 border-secondary" style="max-width: 23vw; max-height: 28vw">
+                <img class="card-img-top border border-bottom" src="http://apiato.test/uploads/photos/1695365046.png" alt="{{ $product->image }}" style="max-width: 23vw; max-height: 28vh; padding:1vw;">
+                <div class="card-body">
+                  <h5 class="card-title">{{$product->name}}</h5>
+                  <p class="card-text">{{ $product->description }}</p>
+                </div>
+                <div class="card-footer">
+                  <small class="text-muted">Last updated: {{ convertTimeToAppropriateFormat(time()-strtotime($product->updated_at)) }} ago</small>
+                  <br>
+                  <small class="text-muted">Owner: @can('search-users')<a href="{{ route('user-profile', ['id' => $product->getOwner->id]) }}">@endcan{{ $product->getOwner->name }}@can('search-users')</a>@endcan</small>
+                </div>
+              </div>
+            </div>
+
+
+
+          @endforeach
+        </div>
+      </div>
     </div>
-    
 </body>
 
 <script>

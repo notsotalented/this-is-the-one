@@ -8,6 +8,7 @@ use App\Containers\Product\UI\WEB\Requests\ShowAllPersonalProductsRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
+use Image;
 
 /**
  * Class Controller
@@ -27,27 +28,33 @@ class Controller extends WebController
     public function showAllPersonalProducts(ShowAllPersonalProductsRequest $request) {
         $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
+        $selected = [];
+        foreach ($products as $product => $value) {
+            if(\Auth::user()->id != $value->ownership) {
+                $selected[] = $value;
+                $products->forget($product);
+            };
+        }
+
         return view('product::product-page', [
             'products' => $products,
-        ])->with('status', 'Wazz');
+        ]);
     }
 
     public function addProductsPage(ShowAllPersonalProductsRequest $request) {       
         $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
+        $image = Image::make('uploads/photos/1695613759.png')->resize(100,100);
+        $image->save('uploads/photos/1695613759.png');
+
         return view('product::product-add-page', [
             'products' => $products,
-        ])->with('status', 'Wazz');
+        ]);
     }
 
     public function addProductToUser(AddProductRequest $request) {
-        $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
-        
         $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all())]);
 
-        return view('product::product-add-page', [
-            'products' => $products,
-            'status' => 'Wazz',
-        ])->with('status', 'Success');
+        return redirect()->route('web_product_get_all_products')->with('status', 'Product: ' . $result->name . ' added successfully!');
     }
 }

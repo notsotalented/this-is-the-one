@@ -8,13 +8,11 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle @if(!auth()->check()){{'disabled'}}@endif" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Go-to <i class="fa-solid fa-rocket"></i>
                 </a>
                 <ul class="dropdown-menu">
                     <div class="container-fluid">
-
-                    
                     @can('list-users')
                         <li><a id="go-to-user" class="dropdown-item" href="{{route('users-profile')}}">Users</a></li>
                     @endcan
@@ -100,7 +98,7 @@
 
 <div class="container-fluid" style="padding: 0vw">
     {{--MESSAGE CENTER--}}
-    @if(session('status'))
+    @if(session ('status'))
     <div class="alert alert-@if(preg_match('/successfully/', session('status'))){{'success'}}@else{{'warning'}}@endif alert-dismissible fade show" role="alert">
         <i class="fa-solid fa-circle-info fa"></i> {{session('status')}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

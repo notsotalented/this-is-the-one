@@ -38,6 +38,6 @@ class Product extends Model
     protected $resourceKey = 'products';
 
     public function getOwner(): BelongsTo {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'ownership', 'id');
     }
 }
