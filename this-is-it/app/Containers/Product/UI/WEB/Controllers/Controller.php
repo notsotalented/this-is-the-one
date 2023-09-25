@@ -44,9 +44,6 @@ class Controller extends WebController
     public function addProductsPage(ShowAllPersonalProductsRequest $request) {       
         $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
-        $image = Image::make('uploads/photos/1695613759.png')->resize(100,100);
-        $image->save('uploads/photos/1695613759.png');
-
         return view('product::product-add-page', [
             'products' => $products,
         ]);

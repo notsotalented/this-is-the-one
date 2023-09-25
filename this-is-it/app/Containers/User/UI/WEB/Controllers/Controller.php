@@ -248,32 +248,46 @@ class Controller extends WebController
         $time_info = time();
 
         if($request->hasFile('photo')) {
+            //Remove old avatar
+            if($user->social_avatar) {
+                $file = public_path() . '/uploads/photos/' . $user->social_avatar;
+                if(file_exists($file)) {
+                    unlink($file);
+                }
+            }
+
             $file = $request->file('photo');           
 
             $extension = $file->getClientOriginalExtension();
 
             $filename = $time_info . '.' .$extension;
-            $file->move('uploads/photos/', $filename);
+            //$file->move('uploads/photos/', $filename);
+
+            //$image = Image::make($file)->resize(300, 300);
+            //$image->save('uploads/photos/' . $filename);
+
+            $canvas = Image::canvas(245, 245);
+
+            $image  = Image::make($file)->resize(250, 250, function($constraint)
+            {
+                $constraint->aspectRatio();
+            });
+
+            $canvas->insert($image, 'center');
+            $canvas->save('uploads/photos/' . $filename);
 
             $user->social_avatar = $filename;
-
         }
         else {
             return back()->with('status', 'Image not found!');
         }
 
         $user->save();
-
-        //Resize if needed
-        if($request->hasFile('photo')) {
-            //dd(Image::make(public_path(). '/uploads/photos/' . $filename));
-            $image = Image::make(public_path(). '/uploads/photos/' . $filename)
-                            ->resize(200, 200)
-                            ->save();
-        }
+        
 
         return redirect(route('user-profile', ['id' => $request->id]))->with([
             'status' => 'Uploaded profile picture successfully. File: ' . $filename,
+            'time' => $time_info
         ]);
     }
 }
