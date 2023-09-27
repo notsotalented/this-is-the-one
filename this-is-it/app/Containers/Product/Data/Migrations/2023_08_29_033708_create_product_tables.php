@@ -18,8 +18,8 @@ class CreateProductTables extends Migration
             $table->string('description');
             $table->integer('price');
             $table->integer('quantity');
-            $table->integer('ownership')->unsigned();
-            $table->foreign('ownership')->references('id')->on('users')->cascadeOnDelete();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->string('brand');
 
             $table->timestamps();
@@ -32,10 +32,6 @@ class CreateProductTables extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropForeign('products_users_id_foreign');
-        });
-
-        //Schema::dropIfExists('products');
+        Schema::dropIfExists('products');
     }
 }

@@ -52,6 +52,8 @@ class Controller extends WebController
 
     public function addProductToUser(AddProductRequest $request) {
         //Image processing
+        $canvasCollection = new Collection;
+
         if ($request->hasFile('image')) {            
             
             $photos = new Collection;
@@ -68,7 +70,11 @@ class Controller extends WebController
                 });
 
                 $canvas->insert($image, 'center');
-                $canvas->save('uploads/product_images/' . $filename);
+                //$canvas->save('uploads/product_images/' . $filename);
+                $canvasCollection->push([
+                    'filename' => $filename,
+                    'image' => $canvas
+                ]);
 
                 $photos->push($filename);
             }
@@ -76,8 +82,14 @@ class Controller extends WebController
         else {
             return back()->with('status', 'Images not found!');
         }
-
+        
         $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all()), $photos]);
+        if($result) {
+            foreach ($canvasCollection as $key => $input) {
+                $canvas = $input['image'];
+                $canvas->save('uploads/product_images/' . $input['filename']);
+            }
+        }
 
         return redirect()->route('web_product_get_all_products')->with('status', 'Product: ' . $result->name . ' added successfully!');
     }

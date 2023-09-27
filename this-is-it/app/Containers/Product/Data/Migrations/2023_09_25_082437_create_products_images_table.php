@@ -14,11 +14,10 @@ class CreateProductsImagesTable extends Migration
     Schema::create('product_images', function (Blueprint $table) {
 
             $table->increments('id');
+            $table->string('name');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
-            $table->string('name');
             $table->timestamps();
-
         });
     }
 
@@ -27,6 +26,6 @@ class CreateProductsImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products_image');
+        Schema::dropIfExists('product_images');
     }
 }

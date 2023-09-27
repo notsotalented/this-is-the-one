@@ -15,7 +15,7 @@ class ProductModel extends Model
     protected $table = 'products';
     protected $primary_key = 'id';
     protected $fillable = [
-        'ownership',
+        'user_id',
         'name',
         'description',
         'quantity',

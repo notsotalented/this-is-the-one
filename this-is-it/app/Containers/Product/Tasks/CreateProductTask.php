@@ -18,12 +18,13 @@ class CreateProductTask extends Task
         $this->repository = $repository;
     }
 
-    public function run(string $ownership, string $name, string $description, string $quantity, string $price, string $brand): Product
-    {
+    public function run(string $userId, string $name, string $description, string $quantity, string $price, string $brand): Product
+    {   
         try {
+
             // create new product
             $product = $this->repository->create([
-                'ownership'  => $ownership,
+                'user_id'    => $userId,
                 'name'       => $name,
                 'description'=> $description,
                 'quantity'   => $quantity,

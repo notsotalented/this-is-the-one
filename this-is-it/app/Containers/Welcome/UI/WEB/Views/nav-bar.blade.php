@@ -80,8 +80,8 @@
                 <span>
               </button>
             <ul class="dropdown-menu dropdown-menu-lg-end">
-                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">User Profile <i class="fa-regular fa-address-card"></i></a></li> 
-                <li><a class="dropdown-item" href="{{ route('web_product_show_all_personal', ['userId' => auth()->id()])}}">User's Products <i class="fa fa-cubes fa-pulse"></i></a></li>
+                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">My Profile <i class="fa-regular fa-address-card"></i></a></li> 
+                <li><a class="dropdown-item" href="{{ route('web_product_show_all_personal', ['userId' => auth()->id()])}}">My Products <i class="fa fa-cubes fa-pulse"></i></a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href = {{ route('test-page') }}> Test ground <i class="fa-solid fa-vials"></i></a></li>
                 <li><hr class="dropdown-divider"></li>

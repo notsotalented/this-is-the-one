@@ -10,7 +10,7 @@ class Product extends Model
 {
     protected $table = 'products';
     protected $fillable = [
-        'ownership',
+        'user_id',
         'name',
         'description',
         'price',
@@ -37,7 +37,7 @@ class Product extends Model
     protected $resourceKey = 'products';
 
     public function getOwner(): BelongsTo {
-        return $this->belongsTo(User::class, 'ownership', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
     
     public function getImages() {
