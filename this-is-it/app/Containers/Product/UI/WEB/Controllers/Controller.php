@@ -8,6 +8,7 @@ use App\Containers\Product\UI\WEB\Requests\ShowAllPersonalProductsRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
+use Illuminate\Support\Collection;
 use Image;
 
 /**
@@ -50,7 +51,33 @@ class Controller extends WebController
     }
 
     public function addProductToUser(AddProductRequest $request) {
-        $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all())]);
+        //Image processing
+        if ($request->hasFile('image')) {            
+            
+            $photos = new Collection;
+            foreach ($request->image as $key => $image) {
+                if($key >= 4) break;
+
+                $file = $image;
+                $extension = $file->getClientOriginalExtension();
+                $filename =  Auth()->user()->id . '_' . time() . '_' . $key . '.' . $extension;
+
+                $canvas = Image::canvas(500, 500);
+                $image  = Image::make($file)->resize(500, 500, function($constraint) {
+                    $constraint->aspectRatio();
+                });
+
+                $canvas->insert($image, 'center');
+                $canvas->save('uploads/product_images/' . $filename);
+
+                $photos->push($filename);
+            }
+        }
+        else {
+            return back()->with('status', 'Images not found!');
+        }
+
+        $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all()), $photos]);
 
         return redirect()->route('web_product_get_all_products')->with('status', 'Product: ' . $result->name . ' added successfully!');
     }

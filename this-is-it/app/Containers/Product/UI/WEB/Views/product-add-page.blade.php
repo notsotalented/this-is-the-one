@@ -62,7 +62,7 @@
       });
     </script>
 
-    <form method="POST" action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" oninput="">
+    <form method="POST" action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" enctype="multipart/form-data" oninput="">
       <div class="container" style="margin-top: 5vh">
 
         <div class="row">
@@ -78,7 +78,7 @@
                   </div>
                 </div>
                 <div class="card-footer text-center">
-                  <input type="file" id="gallery-photo-add" accept="image/*" name="image[]" class="form-control" multiple required">
+                  <input type="file" id="gallery-photo-add" accept="image/*" name="image[]" class="form-control" multiple required value="{{ old('image') }}">
                 </div>
             </div>
 

@@ -93,6 +93,16 @@
     ],
     "test-coverage": [
       "@php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-html reports/"
+    ],
+    "refresh-database": [
+      "@php artisan migrate:refresh",
+      "@php artisan db:seed",
+      "@php artisan apiato:permissions:toRole admin"
+    ],
+    "fresh-database": [
+      "@php artisan migrate:fresh",
+      "@php artisan db:seed",
+      "@php artisan apiato:permissions:toRole admin"
     ]
   },
   "config": {

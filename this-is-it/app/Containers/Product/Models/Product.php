@@ -15,7 +15,6 @@ class Product extends Model
         'description',
         'price',
         'quantity',
-        'image',
         'brand',
     ];
 
@@ -39,5 +38,9 @@ class Product extends Model
 
     public function getOwner(): BelongsTo {
         return $this->belongsTo(User::class, 'ownership', 'id');
+    }
+    
+    public function getImages() {
+        return $this->hasMany(ProductImages::class, 'product_id', 'id');
     }
 }

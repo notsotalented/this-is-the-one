@@ -18,7 +18,7 @@ class CreateProductTask extends Task
         $this->repository = $repository;
     }
 
-    public function run(string $ownership, string $name, string $description, string $quantity, string $image, string $price, string $brand): Product
+    public function run(string $ownership, string $name, string $description, string $quantity, string $price, string $brand): Product
     {
         try {
             // create new product
@@ -27,7 +27,6 @@ class CreateProductTask extends Task
                 'name'       => $name,
                 'description'=> $description,
                 'quantity'   => $quantity,
-                'image'      => $image,
                 'price'      => $price,
                 'brand'      => $brand,
             ]);

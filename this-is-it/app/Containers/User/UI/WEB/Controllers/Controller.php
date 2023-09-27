@@ -261,10 +261,6 @@ class Controller extends WebController
             $extension = $file->getClientOriginalExtension();
 
             $filename = $time_info . '.' .$extension;
-            //$file->move('uploads/photos/', $filename);
-
-            //$image = Image::make($file)->resize(300, 300);
-            //$image->save('uploads/photos/' . $filename);
 
             $canvas = Image::canvas(245, 245);
 

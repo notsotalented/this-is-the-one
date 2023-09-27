@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+
+class CreateProductTables extends Migration
+{
+
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
+        Schema::create('products', function (Blueprint $table) {
+
+            $table->increments('id');
+            $table->string('name');
+            $table->string('description');
+            $table->integer('price');
+            $table->integer('quantity');
+            $table->integer('ownership')->unsigned();
+            $table->foreign('ownership')->references('id')->on('users')->cascadeOnDelete();
+            $table->string('brand');
+
+            $table->timestamps();
+
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropForeign('products_users_id_foreign');
+        });
+
+        //Schema::dropIfExists('products');
+    }
+}
