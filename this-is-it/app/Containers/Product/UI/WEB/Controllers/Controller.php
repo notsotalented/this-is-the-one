@@ -46,7 +46,8 @@ class Controller extends WebController
       $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
       return view('product::product-page',[
-          'products' => $products->where('id', $id),
+          'products' => $products,
+          'id' => $id,
       ]);
   }
 
@@ -85,7 +86,6 @@ class Controller extends WebController
                 });
 
                 $canvas->insert($image, 'center');
-                //$canvas->save('uploads/product_images/' . $filename);
                 $canvasCollection->push([
                     'filename' => $filename,
                     'image' => $canvas
