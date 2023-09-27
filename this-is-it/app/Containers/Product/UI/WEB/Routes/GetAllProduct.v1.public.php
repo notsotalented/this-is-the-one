@@ -10,3 +10,13 @@ $router->get('products', [
     ],
     */
 ]);
+
+$router->get('products/{id}', [
+    'as' => 'web_product_get_specific_product',
+    'uses' => 'Controller@showSpecificProduct',
+    /* No guard here
+    'middleware' => [
+      'auth:web',
+    ]
+    */
+]);

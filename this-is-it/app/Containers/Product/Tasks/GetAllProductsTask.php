@@ -3,6 +3,7 @@
 namespace App\Containers\Product\Tasks;
 
 use App\Containers\Product\Data\Repositories\ProductRepository;
+use App\Ship\Criterias\Eloquent\OrderByCreationDateAscendingCriteria;
 use App\Ship\Criterias\Eloquent\OrderByCreationDateDescendingCriteria;
 use App\Ship\Parents\Tasks\Task;
 
@@ -22,6 +23,6 @@ class GetAllProductsTask extends Task
     }
 
     public function ordered() {
-        $this->repository->pushCriteria(new OrderByCreationDateDescendingCriteria());
+        $this->repository->pushCriteria(new OrderByCreationDateAscendingCriteria());
     }
 }

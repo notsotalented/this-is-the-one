@@ -9,7 +9,7 @@ $router->get('users/{userId}/products', [
   ],
 ]);
 
-/*
+
 $router->get('users/{userId}/products/{id}', [
   'as' => 'web_product_show_specific_personal',
   'uses' => 'Controller@showSpecificPersonalProduct',
@@ -17,4 +17,3 @@ $router->get('users/{userId}/products/{id}', [
     'auth:web',
   ],
 ]);
-*/

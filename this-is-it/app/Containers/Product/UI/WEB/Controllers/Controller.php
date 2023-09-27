@@ -31,7 +31,7 @@ class Controller extends WebController
 
         $selected = [];
         foreach ($products as $product => $value) {
-            if(\Auth::user()->id != $value->ownership) {
+            if(\Auth::user()->id != $value->user_id) {
                 $selected[] = $value;
                 $products->forget($product);
             };
@@ -42,7 +42,22 @@ class Controller extends WebController
         ]);
     }
 
-    public function addProductsPage(ShowAllPersonalProductsRequest $request) {       
+    public function showSpecificProduct(ShowAllPersonalProductsRequest $request, $id) {
+      $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
+
+      return view('product::product-page',[
+          'products' => $products->where('id', $id),
+      ]);
+  }
+
+    public function showSpecificPersonalProduct(ShowAllPersonalProductsRequest $request, $id) {
+
+        return view('product::product-page', [
+            'product' => Apiato::call('Product@GetPersonalProductAction', [$id]),
+        ]);
+    }
+
+    public function addProductsPage(ShowAllPersonalProductsRequest $request) {
         $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
         return view('product::product-add-page', [
@@ -54,8 +69,8 @@ class Controller extends WebController
         //Image processing
         $canvasCollection = new Collection;
 
-        if ($request->hasFile('image')) {            
-            
+        if ($request->hasFile('image')) {
+
             $photos = new Collection;
             foreach ($request->image as $key => $image) {
                 if($key >= 4) break;
@@ -82,7 +97,7 @@ class Controller extends WebController
         else {
             return back()->with('status', 'Images not found!');
         }
-        
+
         $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all()), $photos]);
         if($result) {
             foreach ($canvasCollection as $key => $input) {
