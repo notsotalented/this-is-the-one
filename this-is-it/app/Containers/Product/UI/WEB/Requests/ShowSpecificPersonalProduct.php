@@ -5,9 +5,9 @@ namespace App\Containers\Product\UI\WEB\Requests;
 use App\Ship\Parents\Requests\Request;
 
 /**
- * Class ShowSpecificPeronalProduct.
+ * Class ShowSpecificPersonalProduct.
  */
-class ShowSpecificPeronalProduct extends Request
+class ShowSpecificPersonalProduct extends Request
 {
 
     /**
