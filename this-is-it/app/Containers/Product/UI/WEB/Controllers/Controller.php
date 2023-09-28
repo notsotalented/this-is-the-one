@@ -57,7 +57,14 @@ class Controller extends WebController
 
   public function showSpecificPersonalProduct(ShowAllPersonalProductsRequest $request)
   {
-    $product = Apiato::call('Product@FindProductByIdAction', [new DataTransporter($request->id)]);
+
+    //$product = Apiato::call('Product@FindProductByIdAction', [$request->all()]);
+
+    try {
+      $product = Apiato::call('Product@FindProductByIdAction', [$request->id]);
+    } catch (\Exception $e) {
+      return back()->withErrors('Cannot find product with id ' . $request->id);
+    }
 
     return view('product::product-page', [
       'products' => $product

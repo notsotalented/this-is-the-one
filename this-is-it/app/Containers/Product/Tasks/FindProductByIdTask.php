@@ -7,7 +7,6 @@ use App\Ship\Parents\Tasks\Task;
 
 class FindProductByIdTask extends Task
 {
-
     protected $repository;
 
     public function __construct(ProductRepository $repository)
