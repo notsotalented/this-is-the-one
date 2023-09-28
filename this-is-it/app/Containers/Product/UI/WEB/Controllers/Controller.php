@@ -73,8 +73,12 @@ class Controller extends WebController
         if ($request->hasFile('image')) {
 
             $photos = new Collection;
+
+            if (count($request->image) >= 5) {
+                return back()->withErrors('You only can add up to 5 images!');
+            }
+
             foreach ($request->image as $key => $image) {
-                if($key >= 4) break;
 
                 $file = $image;
                 $extension = $file->getClientOriginalExtension();
@@ -95,7 +99,7 @@ class Controller extends WebController
             }
         }
         else {
-            return back()->with('status', 'Images not found!');
+            return back()->withErrors('Images not found!');
         }
 
         $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all()), $photos]);

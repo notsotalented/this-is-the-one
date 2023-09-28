@@ -18,7 +18,7 @@
                     @endcan
 
                     <li><a id="go-to-products" class="dropdown-item" href="{{route('web_product_get_all_products')}}">Products</a></li>
-                    
+
                     </div>
                 </ul>
             </li>
@@ -48,16 +48,16 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
 
-            
+
                 <div class="input-group me-auto mb-2 mb-lg-0 ml-1">
                     <span class="input-group-text bg-info" id="search_barr"><i class="fa-solid fa-binoculars fa-sm" style="color: white"></i></span>
                     <input data-bs-toggle="dropdown" data-bs-target="alibabon" type="text" id="search_bar" name="search_bar" class="form-control me-0" placeholder="Search anything" aria-label="search" aria-describedby="search_box" style="width: 22vw" autocomplete="off">
-                
+
                     <ul id="alibabon" class="dropdown-menu dropdown-menu-lg-end" style="overflow:auto; max-height: 50vh;">
                         <div class="container-fluid" id="alibaba"></div>
                     </ul>
                 </div>
-  
+
             </li>
         </ul>
         {{-- Button trigger modal --}}
@@ -75,12 +75,12 @@
                         <img class="img-account-profile rounded-circle mb-lg-0" style="max-width: 4vh; max-height: 4vh; overflow: auto; border: 1px solid gray" src="{{ asset('uploads/photos/'.auth()->user()->social_avatar) }}" alt="{{auth()->user()->name}} profile picture">
                     @else
                         <i class="fa-regular fa-user"></i>
-                    @endif 
+                    @endif
                     {{ auth()->user()->name }}
                 <span>
               </button>
             <ul class="dropdown-menu dropdown-menu-lg-end">
-                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">My Profile <i class="fa-regular fa-address-card"></i></a></li> 
+                <li><a class="dropdown-item" href="{{ route('user-profile', ['id' => auth()->id()])}}">My Profile <i class="fa-regular fa-address-card"></i></a></li>
                 <li><a class="dropdown-item" href="{{ route('web_product_show_all_personal', ['userId' => auth()->id()])}}">My Products <i class="fa fa-cubes fa-pulse"></i></a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href = {{ route('test-page') }}> Test ground <i class="fa-solid fa-vials"></i></a></li>
@@ -99,14 +99,14 @@
 <div class="container-fluid" style="padding: 0vw">
     {{--MESSAGE CENTER--}}
     @if(session ('status'))
-    <div class="alert alert-@if(preg_match('/successfully/', session('status'))){{'success'}}@else{{'warning'}}@endif alert-dismissible fade show" role="alert">
+    <div id="status_display" class="alert alert-@if(preg_match('/successfully/', session('status'))){{'success'}}@else{{'warning'}}@endif alert-dismissible fade show" role="alert">
         <i class="fa-solid fa-circle-info fa"></i> {{session('status')}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   @endif
 
   @if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div id="error_display" class="alert alert-danger alert-dismissible fade show" role="alert">
         @foreach ($errors->all() as $error)
           <li class="list-group-item"><i class="fa-solid fa-triangle-exclamation fa"></i> {{$error}} </li>
         @endforeach
@@ -204,7 +204,7 @@
                 add = false;
                 search_what = search_what + ';';
             }
-           search_what = search_what + 'email:' + email; 
+           search_what = search_what + 'email:' + email;
         }
         if (orderBy) {
             if(search_what != '') {
@@ -237,7 +237,7 @@
         for (var i = 0; i < links_list.length; i++) {
             if(links_list[i].href == searchParams && links_list[i].className != "navbar-brand") {
                 links_list[i].classList.add("active");
-                
+
                 if(links_list[i].classList.contains("btn")) {
                 links_list[i].classList.add("disabled");
                 }
@@ -260,7 +260,7 @@
                 },
                 success:function(data){
                     //func search()
-                    
+
                     $('#alibaba').html(data);
                     $('#alibaba').css('display', 'block');
                     $("#alibaba").focusout(function () {
@@ -269,7 +269,7 @@
                     $("#search_bar").focusin(function () {
                         $('#alibaba').css('display', 'block');
                     });
-                    
+
 
 
                     //func search_this()

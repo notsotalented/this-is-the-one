@@ -24,7 +24,7 @@
 <body>
     @include('welcome::nav-bar')
 
-        
+
     <script type="text/javascript">
       function update_cost() {
         var cost_base = document.getElementById("cost_base").value;
@@ -36,18 +36,31 @@
         document.getElementById("cost").value = cost;
       }
 
+      function checkNumFiles(input) {
+
+        var maxFiles = 5; // Set the desired maximum number of files
+
+        if (input.files && input.files.length > maxFiles) {
+            // Display an error message or take appropriate action
+            alert("You can only select a maximum of " + maxFiles + " files.");
+            // Clear the selected files
+            input.value = "";
+        }
+      }
+
       $(function() {
         // Multiple images preview in browser
         var imagesPreview = function(input, placeToInsertImagePreview) {
 
             if (input.files) {
                 var filesAmount = input.files.length;
+                var label = 0;
 
                 for (i = 0; i < filesAmount; i++) {
                     var reader = new FileReader();
 
                     reader.onload = function(event) {
-                        $($.parseHTML('<img>')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                        $($.parseHTML('<img>')).attr({'src':event.target.result, 'style':'max-width: 16vw; min-width: 16vw; border: 2px solid black; margin-bottom: 5px;', 'alt':'ChosenPicture'+label++,}).appendTo(placeToInsertImagePreview);
                     }
 
                     reader.readAsDataURL(input.files[i]);
@@ -62,56 +75,31 @@
       });
     </script>
 
-    <form method="POST" action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" enctype="multipart/form-data" oninput="">
-      <div class="container" style="margin-top: 5vh">
+    <form method="POST" action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" enctype="multipart/form-data">
+      <div class="container" style="margin-top: 5vh;">
 
         <div class="row">
           <div class="col-xl-4">
             {{-- Product picture card--}}
-            <div class="card mb-4 mb-xl-0">
+            <div class="card mb-4 mb-xl-0" style=" max-height: 80vh;">
                 <div class="card-header"><h5>Product Picture(s)<h5></div>
                 <div class="card-body text-center">
                   <p>View Port</p>
-                  <div class="container-fluid" style="overflow: auto; max-height: 40vh; max-width: 40vh">
+                  <div class="container-fluid" style="overflow: auto; max-height: 50vh; max-width: 40vh">
                       <div class="gallery">
                       </div>
                   </div>
                 </div>
                 <div class="card-footer text-center">
-                  <input type="file" id="gallery-photo-add" accept="image/*" name="image[]" class="form-control" multiple required value="{{ old('image') }}">
-                </div>
-            </div>
-
-            <div class="card mb-4 mb-xl-0" style="margin-top: 5vh">
-                <div class="card-header"><h5>Price<h5></div>
-                <div class="card-body text-center">
-                  <div class="container-fluid">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" style="width: 6vw">Cost</span>
-                        <input id="cost_base" name="cost_base" type="number" class="form-control" aria-label="cost-base" aria-describedby="cost-base" placeholder="0" value="{{ old('cost-base') }}" onchange="update_cost()">
-                        <span class="input-group-text" style="width: 5vw">VNĐ</span>
-                    </div>
-
-                    <div class="input-group mb-3">
-                      <span class="input-group-text" style="width: 6vw">Labour</span>
-                      <input id="cost_labour" name="cost_labour" type="number" class="form-control" aria-label="cost-labour" aria-describedby="cost-labour" placeholder="0" value="{{ old('cost-labour') }}" onchange="update_cost()">
-                      <span class="input-group-text" style="width: 5vw">VNĐ</span>
-                    </div>
-
-                    <div class="input-group mb-3">
-                      <span class="input-group-text" style="width: 6vw">Total</span>
-                      <input id="cost" name="price" type="number" class="form-control" aria-label="cost" aria-describedby="cost" placeholder="0" value="{{ old('price') }}" readonly>
-                      <span class="input-group-text" style="width: 5vw">VNĐ</span>
-                    </div>
-                  </div>
+                  <input type="file" id="gallery-photo-add" accept="image/*" name="image[]" class="form-control" multiple required value="{{ old('image[]') }}" oninput="checkNumFiles(this)">
                 </div>
             </div>
           </div>
-            
+
 
           <div class="col-xl-8">
             {{-- Account details card--}}
-            <div class="card mb-4">
+            <div class="card mb-4 mb-xl-0" style="max-height: 80vh; overflow:auto">
                 <div class="card-header"><h5>Product Information</h5></div>
                 <div class="card-body">
                     {{-- Form Group (Name)--}}
@@ -146,13 +134,26 @@
                         </div>
                       </div>
                     </div>
-                    {{-- Form Group (Quantity) --}}
-                    <div class="input-group mb-3">
-                      <span class="input-group-text" style="width: 6vw">In Stock</span>
-                      <input id="quantity" name="quantity" type="number" class="form-control" aria-label="quantity" aria-describedby="quantity" placeholder="[0:100]" value="{{ old('quantity') }}" min="0" max="100" required>
+                    {{-- New Column --}}
+                    <div class="row gx-3 mb-3">
+                      {{-- Form Group (Quantity) --}}
+                      <div class="col-md-6">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" style="width: 6vw">In Stock</span>
+                          <input id="quantity" name="quantity" type="number" class="form-control" aria-label="quantity" aria-describedby="quantity" placeholder="[0:100]" value="{{ old('quantity') }}" min="0" max="100" required>
+                        </div>
+                      </div>
+
+                      {{-- Form Group (Price) --}}
+                      <div class="col-md-6">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" style="width: 6vw">Price</span>
+                          <input id="cost" name="cost" type="number" class="form-control" aria-label="cost" aria-describedby="cost" placeholder="0" value="{{ old('cost') }}" required>
+                        </div>
+                      </div>
                     </div>
                 </div>
-                  
+
                 <div class="card-footer">
                   <button class="btn btn-primary" type="submit">Add Product</button>
 
