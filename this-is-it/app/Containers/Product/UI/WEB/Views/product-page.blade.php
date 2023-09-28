@@ -35,9 +35,8 @@
     return round($time, 0) . ' ' . $suffix[$i];
   }
 @endphp
-
-
 </head>
+
 <body>
     @include('welcome::nav-bar')
 

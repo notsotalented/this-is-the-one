@@ -60,6 +60,8 @@ class AddProductRequest extends Request
             'image' => 'required',
             'image*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|integer',
+            'deleted' => '',
+            'deleted*' => '',
         ];
     }
 
