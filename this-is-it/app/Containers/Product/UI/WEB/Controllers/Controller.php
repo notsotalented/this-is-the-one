@@ -45,21 +45,22 @@ class Controller extends WebController
     ]);
   }
 
-  public function showSpecificProduct(ShowAllPersonalProductsRequest $request, $id)
+  public function showSpecificProduct(ShowAllPersonalProductsRequest $request)
   {
     $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
     return view('product::product-page', [
       'products' => $products,
-      'id' => $id,
+      'id' => $request->id,
     ]);
   }
 
-  public function showSpecificPersonalProduct(ShowAllPersonalProductsRequest $request, $id)
+  public function showSpecificPersonalProduct(ShowAllPersonalProductsRequest $request)
   {
+    $product = Apiato::call('Product@FindProductByIdAction', [new DataTransporter($request->id)]);
 
     return view('product::product-page', [
-      'product' => Apiato::call('Product@GetPersonalProductAction', [$id]),
+      'products' => $product
     ]);
   }
 
@@ -87,10 +88,10 @@ class Controller extends WebController
 
       //Handle the deleted[]
       $deletedString = $request->deleted[0];
+      $requestImages = $request->image;
+
       if ($deletedString) {
         $deletedImages = preg_split("/\,/", $deletedString);
-
-        $requestImages = $request->image;
 
         foreach ($requestImages as $key => $image) {
           if ($deletedImages) {

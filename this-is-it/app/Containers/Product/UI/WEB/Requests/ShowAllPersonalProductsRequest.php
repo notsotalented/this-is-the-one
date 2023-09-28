@@ -43,7 +43,8 @@ class ShowAllPersonalProductsRequest extends Request
      * @var  array
      */
     protected $urlParameters = [
-        // 'id',
+         'id',
+         'userId',
     ];
 
     /**
