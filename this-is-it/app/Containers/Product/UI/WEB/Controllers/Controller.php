@@ -47,27 +47,27 @@ class Controller extends WebController
 
   public function showSpecificProduct(ShowAllPersonalProductsRequest $request)
   {
-    $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
+    try {
+      $product = Apiato::call('Product@FindProductByIdAction', [$request->id]);
+    } catch (\Exception $e) {
+      return back()->withErrors($e->getMessage());
+    }
 
-    return view('product::product-page', [
-      'products' => $products,
-      'id' => $request->id,
+    return view('product::product-individual-page', [
+      'product' => $product
     ]);
   }
 
   public function showSpecificPersonalProduct(ShowAllPersonalProductsRequest $request)
   {
-
-    //$product = Apiato::call('Product@FindProductByIdAction', [$request->all()]);
-
     try {
       $product = Apiato::call('Product@FindProductByIdAction', [$request->id]);
     } catch (\Exception $e) {
-      return back()->withErrors('Cannot find product with id ' . $request->id);
+      return back()->withErrors($e->getMessage());
     }
 
-    return view('product::product-page', [
-      'products' => $product
+    return view('product::product-individual-page', [
+      'product' => $product
     ]);
   }
 

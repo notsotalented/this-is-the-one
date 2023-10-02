@@ -19,12 +19,14 @@ use Exception;
 
 class FindProductByIdAction extends Action
 {
-  public function run($data)
+  public function run($data): Product
   {
     try {
-      $product = Product::find($data['id']);
+      $product = Apiato::call('Product@FindProductByIdTask', [$data]);
     } catch (Exception $e) {
-      return false;
+      throw new NotFoundException('Product not found!');
     }
+
+    return $product;
   }
 }
