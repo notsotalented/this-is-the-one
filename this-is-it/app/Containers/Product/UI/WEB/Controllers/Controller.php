@@ -5,6 +5,7 @@ namespace App\Containers\Product\UI\WEB\Controllers;
 use App\Containers\Product\UI\WEB\Requests\AddProductRequest;
 use App\Containers\Product\UI\WEB\Requests\GetAllProductsRequest;
 use App\Containers\Product\UI\WEB\Requests\ShowAllPersonalProductsRequest;
+use App\Containers\Product\UI\WEB\Requests\ShowSpecificProductRequest;
 use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
@@ -45,7 +46,7 @@ class Controller extends WebController
     ]);
   }
 
-  public function showSpecificProduct(ShowAllPersonalProductsRequest $request)
+  public function showSpecificProduct(ShowSpecificProductRequest $request)
   {
     try {
       $product = Apiato::call('Product@FindProductByIdAction', [$request->id]);

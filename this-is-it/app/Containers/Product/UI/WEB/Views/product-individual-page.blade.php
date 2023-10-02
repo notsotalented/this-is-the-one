@@ -33,8 +33,8 @@
     @include('welcome::nav-bar')
 
 
-    <form id="your-form-id" method="POST"
-        action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" enctype="multipart/form-data">
+    {{-- <form id="your-form-id" method="POST"
+        action="{{ route('web_product_add_to_user', ['userId' => Auth::user()->id]) }}" enctype="multipart/form-data"> --}}
         <div class="container" style="margin-top: 5vh;">
 
             <div class="row">
@@ -169,6 +169,8 @@
                         </div>
 
                         <div class="card-footer">
+
+                            @if(Auth::check())
                             <button class="btn btn-primary" type="submit">Add Product</button>
 
                             <div class="btn-group" role="group" aria-label="Toolbar with back to buttons"
@@ -180,6 +182,8 @@
                                     class="btn btn-outline-info" type="button"
                                     style="white-space: nowrap; float: right">My Product</a>
                             </div>
+
+                            @endif
                         </div>
                     </div>
 
