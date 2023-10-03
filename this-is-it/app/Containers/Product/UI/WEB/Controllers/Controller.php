@@ -10,6 +10,7 @@ use App\Ship\Parents\Controllers\WebController;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Image;
 
 /**
@@ -91,7 +92,7 @@ class Controller extends WebController
       $photos = new Collection;
 
       if (count($request->image) > 5) {
-        return back()->withErrors('You only can add up to 5 images!');
+        return back()->withErrors(['errors' => ['You only can add up to 5 images!']]);
       }
 
       //Handle the deleted[]
@@ -113,7 +114,7 @@ class Controller extends WebController
     }
 
     if (count($requestImages) == 0 || !$request->image)
-      return back()->withErrors('You must add at least one image!');
+      return back()->withErrors(['errors' => ['You must add at least one image!']]);
 
     foreach ($request->image as $key => $image) {
 
@@ -126,7 +127,7 @@ class Controller extends WebController
         $constraint->aspectRatio();
       });
 
-      $canvas->insert($image, 'center');
+      $canvas->insert($image, 'center')->encode('png', 100);
       $canvasCollection->push([
         'filename' => $filename,
         'image' => $canvas
@@ -139,7 +140,8 @@ class Controller extends WebController
     if ($result) {
       foreach ($canvasCollection as $key => $input) {
         $canvas = $input['image'];
-        $canvas->save('uploads/product_images/' . $input['filename']);
+        //$canvas->save('uploads/product_images/' . $input['filename']);
+        Storage::disk('public')->put('uploads/product_images/' . $filename, $canvas);
       }
     }
 

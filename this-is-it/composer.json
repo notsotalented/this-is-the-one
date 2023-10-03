@@ -106,6 +106,13 @@
     ],
     "test" : [
       "@php -d xdebug.mode=debug artisan test -vvv"
+    ],
+    "cache-clean" : [
+      "@php artisan cache:clear",
+      "@php artisan view:clear",
+      "@php artisan route:clear",
+      "@php artisan config:clear",
+      "@php artisan apiato:permissions:toRole admin"
     ]
   },
   "config": {

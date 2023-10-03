@@ -6,6 +6,7 @@ use App\Containers\Authorization\Traits\AuthorizationTrait;
 use App\Containers\Payment\Contracts\ChargeableInterface;
 use App\Containers\Payment\Models\PaymentAccount;
 use App\Containers\Payment\Traits\ChargeableTrait;
+use App\Containers\Product\Models\Product;
 use App\Ship\Parents\Models\UserModel;
 use Illuminate\Notifications\Notifiable;
 

@@ -20,3 +20,7 @@ $factory->state(App\Containers\User\Models\User::class, 'client', function (Fake
         'is_client' => true,
     ];
 });
+
+$factory->afterCreating(App\Containers\User\Models\User::class, function ($user, $faker) {
+  $user->ownProducts()->save(factory(App\Containers\Product\Models\Product::class)->make());
+});

@@ -99,7 +99,7 @@
                                     @foreach ($product->getImages as $key => $photo)
                                         <div
                                             class="carousel-item @if ($key == 0) {{ 'active' }} @endif">
-                                            <img src="/uploads/product_images/{{ $photo->name }}"
+                                            <img src="storage/uploads/product_images/{{ $photo->name }}"
                                                 class="card-img-top border border-bottom" alt="{{ $photo->name }}"
                                                 style="max-width: 23vw; max-height: 23vw; padding:1vw;">
                                         </div>

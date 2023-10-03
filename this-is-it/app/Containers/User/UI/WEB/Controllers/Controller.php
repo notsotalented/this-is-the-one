@@ -271,7 +271,6 @@ class Controller extends WebController
             //$canvas->save('uploads/photos/' . $filename);
 
 
-
             Storage::disk('public')->put('uploads/photos/' . $filename, $canvas);
 
             $user->social_avatar = $filename;
