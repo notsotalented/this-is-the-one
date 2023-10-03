@@ -43,13 +43,13 @@ class Controller extends WebController
     }
 
     public function showRegisterPage()
-    {   
+    {
         //Show Register Page
         return view('user::register-page');
     }
 
     public function showRegisterPowerPage()
-    {   
+    {
         //Show Register Page
         $roles = Apiato::call('Authorization@GetAllRolesAction');
 
@@ -74,17 +74,17 @@ class Controller extends WebController
     public function registerPowerCheck(RegisterPowerUserRequestWEB $request)
     {
         $user = Apiato::call('User@RegisterUserAction', [new DataTransporter($request)]);
-        
+
         //Update the request with id
         $request->merge(['user_id' => $user->id]);
 
         $assign = Apiato::call('Authorization@AssignUserToRoleAction', [new DataTransporter($request)]);
-        
+
         return redirect(route('home'))->with('status', 'Register power user successfully!');
     }
 
     public function showUpdatePageWithInfo(UpdateUserAccessRequest $request, $id)
-    {   
+    {
         //Get User Information
         $user = Apiato::call('User@FindUserByIdAction', [new DataTransporter($request->merge(['id' => $id]))]);
 
@@ -101,7 +101,7 @@ class Controller extends WebController
     }
 
     public function showDeletePage(DeleteUserRequestWEB $request, $id)
-    {   
+    {
         $user = Apiato::call('User@FindUserByIdAction', [new DataTransporter($request->merge(['id' => $id]))]);
 
         //Show Delete Page
@@ -112,7 +112,7 @@ class Controller extends WebController
     }
 
     public function showRolePage(RolePageAccessRequest $request, $action = null)
-    {   
+    {
         $roles = Apiato::call('Authorization@GetAllRolesAction');
         $permissions = Apiato::call('Authorization@GetAllPermissionsAction');
 
@@ -122,7 +122,7 @@ class Controller extends WebController
             'action' => $action ? $action : 'attach',
         ]);
     }
-    
+
     public function changePermissionToRoleWEB(AttachPermissionToRoleRequestWEB $request, $action = null)
     {
         if($action == "attach") {
@@ -239,8 +239,8 @@ class Controller extends WebController
         ]);
     }
 
-    public function profilePictureUpload(UserProfilePictureRequest $request, $id) {  
-        
+    public function profilePictureUpload(UserProfilePictureRequest $request, $id) {
+
         $user = Apiato::call('User@FindUserByIdAction', [new DataTransporter($request->merge(['id' => $id]))]);
 
         if(!$user) return redirect(route('users-profile'))->with('error', 'Invalid User\' id');
@@ -256,7 +256,7 @@ class Controller extends WebController
                 }
             }
 
-            $file = $request->file('photo');           
+            $file = $request->file('photo');
 
             $extension = $file->getClientOriginalExtension();
 
@@ -273,13 +273,15 @@ class Controller extends WebController
             $canvas->save('uploads/photos/' . $filename);
 
             $user->social_avatar = $filename;
+
+            //dd($user->social_avatar);
         }
         else {
             return back()->with('status', 'Image not found!');
         }
 
         $user->save();
-        
+
 
         return redirect(route('user-profile', ['id' => $request->id]))->with([
             'status' => 'Uploaded profile picture successfully. File: ' . $filename,

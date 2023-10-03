@@ -28,6 +28,7 @@
     <title>Products</title>
 
     @php
+      if(!function_exists('convertTimeToAppropriateFormat')) {
         function convertTimeToAppropriateFormat($time)
         {
             $suffix = ['sec(s)', 'min(s)', 'hour(s)', 'day(s)', 'week(s)', 'month(s)', 'year(s)', 'dummy'];
@@ -42,6 +43,7 @@
 
             return round($time, 0) . ' ' . $suffix[$i];
         }
+      }
     @endphp
 </head>
 

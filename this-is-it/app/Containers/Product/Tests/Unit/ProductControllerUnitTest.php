@@ -21,7 +21,8 @@ class ProductControllerUnitTest extends TestCase
 
   protected $user;
 
-  public function setUp(): void {
+  public function setUp(): void
+  {
     parent::setUp();
 
     //Attach permission to admin role
@@ -45,11 +46,9 @@ class ProductControllerUnitTest extends TestCase
    */
   public function testGetAllProducts()
   {
-
-
     //Assert 200 admin access endpoint
     $response = $this->actingAs($this->admin)->get('users/1' . $this->public_endpoint);
     $response->assertStatus(200);
-    dd($response->getContent());
+    $response = $this->actingAs($this->user)->get($this->public_endpoint)->assertStatus(200);
   }
 }

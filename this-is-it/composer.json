@@ -103,6 +103,9 @@
       "@php artisan migrate:fresh",
       "@php artisan db:seed",
       "@php artisan apiato:permissions:toRole admin"
+    ],
+    "test" : [
+      "@php -d xdebug.mode=debug artisan test --filter ProductControllerUnitTest -vvv"
     ]
   },
   "config": {
