@@ -140,8 +140,7 @@ class Controller extends WebController
     if ($result) {
       foreach ($canvasCollection as $key => $input) {
         $canvas = $input['image'];
-        //$canvas->save('uploads/product_images/' . $input['filename']);
-        Storage::disk('public')->put('uploads/product_images/' . $filename, $canvas);
+        Storage::disk('public')->put('uploads/product_images/' . $input['filename'], $canvas);
       }
     }
 
