@@ -23,6 +23,7 @@ use App\Containers\User\UI\WEB\Requests\UsersProfileAccessRequest;
 use App\Ship\Transporters\DataTransporter;
 use Auth;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Image;
 use Spatie\Permission\Models\Role;
 
@@ -248,36 +249,32 @@ class Controller extends WebController
         $time_info = time();
 
         if($request->hasFile('photo')) {
-            //Remove old avatar
+            //Remove old data
             if($user->social_avatar) {
-                $file = public_path() . '/uploads/photos/' . $user->social_avatar;
-                if(file_exists($file)) {
-                    unlink($file);
-                }
+                Storage::delete('public/uploads/photos/' . $user->social_avatar);
             }
 
             $file = $request->file('photo');
 
             $extension = $file->getClientOriginalExtension();
 
-            $filename = $time_info . '.' .$extension;
+            $filename = $user->id . '-' . $time_info . '.' .$extension;
 
             $canvas = Image::canvas(245, 245);
 
-            $image  = Image::make($file)->resize(250, 250, function($constraint)
+            $image  = Image::make($file)->resize(245, 245, function($constraint)
             {
                 $constraint->aspectRatio();
             });
 
-            $canvas->insert($image, 'center');
-            $canvas->save('uploads/photos/' . $filename);
+            $canvas->insert($image, 'center')->encode('png', 100);
+            //$canvas->save('uploads/photos/' . $filename);
+
+
+
+            Storage::disk('public')->put('uploads/photos/' . $filename, $canvas);
 
             $user->social_avatar = $filename;
-
-            //dd($user->social_avatar);
-        }
-        else {
-            return back()->with('status', 'Image not found!');
         }
 
         $user->save();

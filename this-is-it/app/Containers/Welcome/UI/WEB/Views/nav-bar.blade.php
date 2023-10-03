@@ -93,7 +93,7 @@
                             @if (auth()->user()->social_avatar)
                                 <img class="img-account-profile rounded-circle mb-lg-0"
                                     style="max-width: 4vh; max-height: 4vh; overflow: auto; border: 1px solid gray"
-                                    src="{{ asset('uploads/photos/' . auth()->user()->social_avatar) }}"
+                                    src="{{ asset('/storage/uploads/photos/' . auth()->user()->social_avatar) }}"
                                     alt="{{ auth()->user()->name }} profile picture">
                             @else
                                 <i class="fa-regular fa-user"></i>

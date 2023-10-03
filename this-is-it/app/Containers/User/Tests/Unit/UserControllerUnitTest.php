@@ -367,25 +367,29 @@ class UserControllerUnitTest extends TestCase
 
     $response->assertStatus(302);
     $response->assertRedirect('users/' . $this->admin->id);
-    $response->assertSessionHas('status', 'Uploaded profile picture successfully. File: ' . $response->getSession()->all()['time'] . '.jpg');
+    $response->assertSessionHas('status', 'Uploaded profile picture successfully. File: ' . $this->admin->id . '-' . $response->getSession()->all()['time'] . '.jpg');
     //Assert first file exist
-    $first_file = 'uploads/photos/' . $response->getSession()->all()['time'] . '.jpg';
-    $this->assertTrue(\File::exists($first_file));
+    $first_file = User::find($this->admin->id)->social_avatar;
+    Storage::assertExists('public/uploads/photos/' . User::find($this->admin->id)->social_avatar);
 
     //Create and upload second file
     $file = UploadedFile::fake()->image('avatars_123.jpg');
 
-    $response = $this->actingAs($this->admin)->json('POST', 'users/' . $this->admin->id . '/upload', [
+    //Simulate different time
+    sleep(1);
+    $response_2 = $this->actingAs($this->admin)->json('POST', 'users/' . $this->admin->id . '/upload', [
       'photo' => $file,
     ]);
 
-    $response->assertStatus(302);
-    $response->assertRedirect('users/' . $this->admin->id);
-    $response->assertSessionHas('status', 'Uploaded profile picture successfully. File: ' . $response->getSession()->all()['time'] . '.jpg');
+    $response_2->assertStatus(302);
+    $response_2->assertRedirect('users/' . $this->admin->id);
+    $response_2->assertSessionHas('status', 'Uploaded profile picture successfully. File: ' . $this->admin->id . '-' . $response_2->getSession()->all()['time'] . '.jpg');
+
     //Assert second file exist
-    $second_file = 'uploads/photos/' . $response->getSession()->all()['time'] . '.jpg';
-    $this->assertTrue(\File::exists($second_file));
+    $second_file = $this->admin->social_avatar;
+    Storage::assertExists('public/uploads/photos/' . User::find($this->admin->id)->social_avatar);
+
     //Assert first file not exist
-    $this->assertFalse(\File::exists($first_file));
+    Storage::assertMissing('public/uploads/photos/' . $first_file);
   }
 }

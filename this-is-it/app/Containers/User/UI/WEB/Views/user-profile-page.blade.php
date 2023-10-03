@@ -35,10 +35,10 @@
                         {{-- Profile picture image--}}
 
                         @if($user->social_avatar)
-                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
-                        @endif 
+                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('storage/uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
+                        @endif
                         {{-- Profile picture help block--}}
-                        
+
                         {{-- Profile picture upload button--}}
                         @if(auth()->id() == $user->id)
                             <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload new image</button>
@@ -170,10 +170,10 @@
                         <form method="POST" action="{{route('profile-picture-upload', ['id' => $user->id])}}" enctype="multipart/form-data">
                             <label for="photo" class="form-label">Accept filetypes: </label>
                             <input class="form-control" type="file" id="photo" name="photo" accept="image/*" required>
-    
+
                             {{--HIDDEN INPUT--}}
                             @csrf
-    
+
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="submit" style="white-space: nowrap"><b>Upload <i class="fa-regular fa-image fa-2xs"></i></b></button>
