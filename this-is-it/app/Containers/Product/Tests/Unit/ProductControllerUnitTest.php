@@ -131,6 +131,11 @@ class ProductControllerUnitTest extends TestCase
 
     //Access add page with mismatch user and owner and assert 403
     $response = $this->actingAs($this->admin)->get('users/2' . $this->public_endpoint . '/add')->assertStatus(403);
+  }
 
+  public function testAddProductToUser() {
+    $this->assertTrue(true);
+
+    dd(Product::all());
   }
 }

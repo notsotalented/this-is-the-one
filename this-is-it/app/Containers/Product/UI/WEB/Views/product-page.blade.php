@@ -137,7 +137,7 @@
 
 
                             </div>
-                            <div class="card-footer">
+                            <div class="card-footer" style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap">
                                 <small class="text-muted">Last updated:
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($product->updated_at)) }}
                                     ago</small>

@@ -16,6 +16,7 @@ class ProductRepository extends Repository
     protected $fieldSearchable = [
         'id' => '=',
         'name' => 'like',
+        'brand' => '=',
     ];
 
 }
