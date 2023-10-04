@@ -49,7 +49,7 @@
     </h2>
 
     <div id="flush-collapse{{$user->id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{$user->id}}" data-bs-parent="#accordionExample">
-    
+
         <div class="accordion-body">
 
         <div class="container" style="margin-top: 5vh">
@@ -62,10 +62,10 @@
                         {{-- Profile picture image--}}
 
                         @if($user->social_avatar)
-                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
-                        @endif 
+                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('/storage/uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
+                        @endif
                         {{-- Profile picture help block--}}
-                        
+
                         {{-- Profile picture upload button--}}
                         </div>
                     </div>
@@ -153,7 +153,7 @@
 
 @endforeach
 
-</div>  
+</div>
 </body>
 
 <script>

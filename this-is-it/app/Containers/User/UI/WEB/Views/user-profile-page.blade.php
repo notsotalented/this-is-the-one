@@ -35,7 +35,7 @@
                         {{-- Profile picture image--}}
 
                         @if($user->social_avatar)
-                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('storage/uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
+                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; max-height:20vh; overflow: hidden; border: 1px solid gray" src="{{ asset('/storage/uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
                         @endif
                         {{-- Profile picture help block--}}
 

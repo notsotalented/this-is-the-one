@@ -57,7 +57,7 @@
             <span class="input-group-text" style="width: 8vw">Per Page</span>
             <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1"
                 max="100"
-                value="@if (isset($_GET['paginate'])) {{ $_GET['paginate'] }}@else{{ '10' }} @endif"
+                value="@if(isset($_GET['paginate'])){{ $_GET['paginate'] }}@else{{ '10' }}@endif"
                 onchange="load_page(this.value)">
         </div>
 
@@ -99,7 +99,7 @@
                                     @foreach ($product->getImages as $key => $photo)
                                         <div
                                             class="carousel-item @if ($key == 0) {{ 'active' }} @endif">
-                                            <img src="storage/uploads/product_images/{{ $photo->name }}"
+                                            <img src="/storage/uploads/product_images/{{ $photo->name }}"
                                                 class="card-img-top border border-bottom" alt="{{ $photo->name }}"
                                                 style="max-width: 23vw; max-height: 23vw; padding:1vw;">
                                         </div>
