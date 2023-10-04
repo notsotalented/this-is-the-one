@@ -3,7 +3,7 @@
 /** @var Route $router */
 $router->get('users/{userId}/products', [
   'as' => 'web_product_show_all_personal',
-  'uses'  => 'Controller@showAllPersonalProducts',
+  'uses' => 'Controller@showAllPersonalProducts',
   'middleware' => [
     'auth:web',
   ],

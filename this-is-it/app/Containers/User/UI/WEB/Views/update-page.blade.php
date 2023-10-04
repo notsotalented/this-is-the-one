@@ -40,10 +40,10 @@
                         {{-- Profile picture image--}}
 
                         @if($user->social_avatar)
-                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; overflow: auto" src="{{ asset('uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
-                        @endif 
+                        <img class="img-account-profile rounded-circle mb-2" style="max-width: 20vh; max-height:20vh; overflow: auto" src="{{ asset('/storage/uploads/photos/'.$user->social_avatar) }}" alt="{{$user->name}} profile picture">
+                        @endif
                         {{-- Profile picture help block--}}
-                        
+
                         {{-- Profile picture upload button--}}
                         @if(auth()->id() == $user->id)
                             <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload new image</button>
@@ -174,7 +174,7 @@
 
   </div>
 
-  
+
         {{-- Modal --}}
         <div class="modal fade" id="uploadModal" tabindex="1" aria-labelledby="uploadModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -187,7 +187,7 @@
                         <form method="POST" action="{{route('profile-picture-upload', ['id' => $user->id])}}" enctype="multipart/form-data">
                             <label for="photo" class="form-label">Default file input example</label>
                             <input class="form-control" type="file" id="photo" name="photo" accept="image/*">
-    
+
                             {{--HIDDEN INPUT--}}
                             @csrf
                     </div>

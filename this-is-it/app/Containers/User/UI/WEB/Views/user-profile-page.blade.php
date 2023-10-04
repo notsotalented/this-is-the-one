@@ -147,6 +147,7 @@
                                 @can('update-users')
                                     <a href="{{route('update-page', ['id' => $user->id])}}" class="btn btn-outline-info" type="button">UPDATE</a>
                                 @endcan
+                                <a href="{{route('web_product_show_all_personal', ['userId' => $user->id])}}" class="btn btn-outline-info" type="button">THEIR PRODUCTS</a>
                                 @can('delete-users')
                                     <a href="{{route('delete-page', ['id' => $user->id])}}" class="btn btn-outline-danger" type="button" style="float:right">TERMINATE</a>
                                 @endcan

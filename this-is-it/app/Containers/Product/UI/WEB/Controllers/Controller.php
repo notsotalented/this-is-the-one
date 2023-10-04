@@ -4,6 +4,7 @@ namespace App\Containers\Product\UI\WEB\Controllers;
 
 use App\Containers\Product\UI\WEB\Requests\AddProductRequest;
 use App\Containers\Product\UI\WEB\Requests\GetAllProductsRequest;
+use App\Containers\Product\UI\WEB\Requests\ProductAddPageAccessRequest;
 use App\Containers\Product\UI\WEB\Requests\ShowAllPersonalProductsRequest;
 use App\Containers\Product\UI\WEB\Requests\ShowSpecificProductRequest;
 use App\Ship\Parents\Controllers\WebController;
@@ -35,7 +36,7 @@ class Controller extends WebController
 
     $selected = [];
     foreach ($products as $product => $value) {
-      if (\Auth::user()->id != $value->user_id) {
+      if ($request->userId != $value->user_id) {
         $selected[] = $value;
         $products->forget($product);
       }
@@ -60,20 +61,30 @@ class Controller extends WebController
     ]);
   }
 
+  /**
+   * Show a specific personal product.
+   *
+   * @param ShowAllPersonalProductsRequest $request the request object
+   * @throws \Exception if an error occurs
+   * @return \Illuminate\View\View | \Illuminate\Http\RedirectResponse the redirect response
+   */
   public function showSpecificPersonalProduct(ShowAllPersonalProductsRequest $request)
   {
     try {
+      $user = Apiato::call('User@FindUserByIdAction', [new DataTransporter(['id' => $request->userId])]);
       $product = Apiato::call('Product@FindProductByIdAction', [$request->id]);
     } catch (\Exception $e) {
       return back()->withErrors($e->getMessage());
     }
 
-    return view('product::product-individual-page', [
-      'product' => $product
-    ]);
+    if ($user->id != $product->user_id) {
+      return back()->withErrors(['errors' => ['Product not found!']]);
+    }
+
+    return view('product::product-individual-page', compact('product'));
   }
 
-  public function addProductsPage(ShowAllPersonalProductsRequest $request)
+  public function addProductsPage(ProductAddPageAccessRequest $request)
   {
     $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
 
@@ -82,23 +93,33 @@ class Controller extends WebController
     ]);
   }
 
+  /**
+   * Adds a product to a user.
+   *
+   * @param AddProductRequest $request The request object containing the product details.
+   * @return \Illuminate\Http\RedirectResponse The redirect response after adding the product.
+   */
   public function addProductToUser(AddProductRequest $request)
   {
-    //Image processing
+    // Initialize the canvas collection
     $canvasCollection = new Collection;
 
+    // Check if the request contains an image file
     if ($request->hasFile('image')) {
 
+      // Initialize the photos collection
       $photos = new Collection;
 
+      // Check if the number of images exceeds the limit
       if (count($request->image) > 5) {
-        return back()->withErrors(['errors' => ['You only can add up to 5 images!']]);
+        return back()->withErrors(['errors' => ['You can only add up to 5 images!']]);
       }
 
-      //Handle the deleted[]
+      // Handle the deleted[] parameter
       $deletedString = $request->deleted[0];
       $requestImages = $request->image;
 
+      // Remove deleted images from the request images
       if ($deletedString) {
         $deletedImages = preg_split("/\,/", $deletedString);
 
@@ -113,30 +134,42 @@ class Controller extends WebController
       }
     }
 
-    if (count($requestImages) == 0 || !$request->image)
+    // Check if no images are present in the request
+    if (count($requestImages) == 0 || !$request->image) {
       return back()->withErrors(['errors' => ['You must add at least one image!']]);
+    }
 
+    // Process each image in the request
     foreach ($request->image as $key => $image) {
 
+      // Get the file details
       $file = $image;
       $extension = $file->getClientOriginalExtension();
       $filename = Auth()->user()->id . '_' . time() . '_' . $key . '.' . $extension;
 
+      // Create a canvas and resize the image
       $canvas = Image::canvas(500, 500);
       $image = Image::make($file)->resize(500, 500, function ($constraint) {
         $constraint->aspectRatio();
       });
 
+      // Insert the image into the canvas and encode it
       $canvas->insert($image, 'center')->encode('png', 100);
+
+      // Add the filename and canvas to the canvas collection
       $canvasCollection->push([
         'filename' => $filename,
         'image' => $canvas
       ]);
 
+      // Add the filename to the photos collection
       $photos->push($filename);
     }
 
+    // Call the AddProductToUserAction and pass the data transporter and photos
     $result = Apiato::call('Product@AddProductToUserAction', [new DataTransporter($request->all()), $photos]);
+
+    // If the product is added successfully, store the images
     if ($result) {
       foreach ($canvasCollection as $key => $input) {
         $canvas = $input['image'];
@@ -144,6 +177,7 @@ class Controller extends WebController
       }
     }
 
+    // Redirect to the all products page with a success message
     return redirect()->route('web_product_get_all_products')->with('status', 'Product: ' . $result->name . ' added successfully!');
   }
 }

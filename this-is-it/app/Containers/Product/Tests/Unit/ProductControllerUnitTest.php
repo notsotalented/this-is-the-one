@@ -54,6 +54,9 @@ class ProductControllerUnitTest extends TestCase
     $response = $this->actingAs($this->user)->get($this->public_endpoint)->assertStatus(200);
   }
 
+  /**
+   * A test case for the `testGetSpecificProduct` method.
+   */
   public function testGetSpecificProduct() {
 
     //Assert 200 admin get product id 1
@@ -70,7 +73,64 @@ class ProductControllerUnitTest extends TestCase
 
   }
 
-  public function testGetPersonalProduct() {
-    $this->assertTrue(true);
+  public function testGetAllPersonalProduct() {
+    //Get access to personal product without login and assert 401
+    $response = $this->get('users/1' . $this->public_endpoint)->assertStatus(401);
+
+    //Get access to personal product with login and assert 200
+    $response = $this->actingAs($this->user)->get('users/1' . $this->public_endpoint)->assertStatus(200);
+    //See no product since user 1 doesn't have any products
+    $response->assertDontSee(Product::find(1)->name);
+
+    //Get access to personal product with login and assert 200
+    $response = $this->actingAs($this->admin)->get('users/2' . $this->public_endpoint)->assertStatus(200);
+    //See product id 1 since user 2 has product
+    $response->assertSee(Product::find(1)->name);
+  }
+
+
+  /**
+   * Test the functionality of the "testGetSpecificPersonalProduct" function.
+   *
+   * This function performs a series of tests to verify the behavior of the
+   * "testGetSpecificPersonalProduct" function. It tests the ability to access
+   * personal products with and without logging in, and asserts the expected
+   * status codes and error messages.
+   *
+   * @throws \Exception if an error occurs during the test
+   */
+  public function testGetSpecificPersonalProduct() {
+    //Get access to personal product without login and assert 401
+    $response = $this->get('users/1' . $this->public_endpoint . '/1')->assertStatus(401);
+
+    //Get access to personal product with login and assert 302 since user 1 doesn't have product 1
+    $response = $this->actingAs($this->user)->get('users/1' . $this->public_endpoint . '/1')->assertStatus(302);
+    //Assert message
+    $this->assertEquals(session('errors')->getBag('default')->first(),'Product not found!');
+
+    //Get access to personal product (ID = 99) with login and assert 302
+    $response = $this->actingAs($this->user)->get('users/1' . $this->public_endpoint . '/99')->assertStatus(302);
+    //Assert message
+    $this->assertEquals(session('errors')->getBag('default')->first(),'Product not found!');
+
+    //Get access to personal product with user 99 with login and assert 302
+    $response = $this->actingAs($this->user)->get('users/99' . $this->public_endpoint . '/1')->assertStatus(302);
+    //Assert message
+    $this->assertEquals(session('errors')->getBag('default')->first(),'The requested Resource was not found.');
+
+    //Get access to personal product with user 2 to product 1 with login and assert 200
+    $response = $this->actingAs($this->user)->get('users/2' . $this->public_endpoint . '/1')->assertStatus(200);
+    //See product id 1 since user 2 has product
+    $response->assertSee(Product::find(1)->name);
+  }
+
+  public function testAccessAddProductPage() {
+    //Access add page of user 2 with user 2 and assert 200
+    $response = $this->actingAs($this->user)->get('users/2' . $this->public_endpoint . '/add')->assertStatus(200);
+    $response->assertSee('Add Product');
+
+    //Access add page with mismatch user and owner and assert 403
+    $response = $this->actingAs($this->admin)->get('users/2' . $this->public_endpoint . '/add')->assertStatus(403);
+
   }
 }

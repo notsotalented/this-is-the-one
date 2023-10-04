@@ -166,19 +166,39 @@
                     </div>
 
                     <div class="card-footer">
-
                         @if (Auth::check())
-                            <button class="btn btn-primary" type="submit">Add Product</button>
+                            @if (Auth::user()->id == $product->user_id)
+                                <button class="btn btn-primary" type="submit">Add Product</button>
+                            @endif
 
                             <div class="btn-group" role="group" aria-label="Toolbar with back to buttons"
                                 style="float: right;">
-                                <a href="{{ route('user-profile', ['id' => Auth()->user()->id]) }}"
+                                <a href="
+                              @if (Auth::user()->id == $product->user_id) {{ route('user-profile', ['id' => Auth()->user()->id]) }}
+                              @else{{ route('user-profile', ['id' => $product->user_id]) }} @endif
+                              "
                                     class="btn btn-outline-danger" type="button"
-                                    style="white-space: nowrap; float: right; margin-left: 0.5vw">My Profile</a>
-                                <a href="{{ route('web_product_get_all_products', ['id' => Auth()->user()->id]) }}"
+                                    style="white-space: nowrap; float: right; margin-left: 0.5vw">
+                                    @if (Auth::user()->id == $product->user_id)
+                                        {{ 'My' }}@else{{ 'To' }}
+                                    @endif Profile
+                                </a>
+                                <a href="
+                                        @if (Auth::user()->id == $product->user_id) {{ route('web_product_show_all_personal', ['userId' => Auth::user()->id]) }}
+                                        @else
+                                        {{ route('web_product_show_all_personal', ['userId' => $product->user_id]) }} @endif"
                                     class="btn btn-outline-info" type="button"
-                                    style="white-space: nowrap; float: right">My Product</a>
+                                    style="white-space: nowrap; float: right">
+                                    @if (Auth::user()->id == $product->user_id)
+                                        {{ 'My' }}@else{{ 'Their' }}
+                                    @endif Product
+                                </a>
                             </div>
+                        @else
+                            <a href="{{ route('web_product_show_all_personal', ['userId' => $product->user_id]) }}"
+                                class="btn btn-outline-info" type="button"
+                                style="white-space: nowrap; float: right">Their Product</a>
+
                         @endif
                     </div>
                 </div>
