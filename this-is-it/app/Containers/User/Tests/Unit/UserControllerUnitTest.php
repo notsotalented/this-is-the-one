@@ -63,42 +63,77 @@ class UserControllerUnitTest extends TestCase
     $this->guest = factory(User::class)->create();
   }
 
-  public function testSayWelcome()
-  {
-    $this->actingAs($this->admin)->get('/user')->assertSee('Welcome Anonymous User :)');
-  }
+/**
+ * Test the "sayWelcome" method.
+ *
+ * @return void
+ */
+public function testSayWelcome()
+{
+    // Set the authenticated user as the admin
+    $this->actingAs($this->admin);
 
-  public function testShowRegisterPage()
-  {
-    $this->actingAs($this->admin)->get('/register')->assertSee('Register');
+    // Send a GET request to the '/user' endpoint
+    $response = $this->get('/user');
+
+    // Assert that the response contains the welcome message
+    $response->assertSee('Welcome Anonymous User :)');
+}
+
+/**
+ * Test the show register page functionality.
+ *
+ * @return void
+ */
+public function testShowRegisterPage()
+{
+    // Act as admin and get the register page
+    $response = $this->actingAs($this->admin)->get('/register');
+
+    // Assert that the page contains 'Register'
+    $response->assertSee('Register');
+
+    // Act as admin and get the register power page
     $power = $this->actingAs($this->admin)->get('/register-power');
+
+    // Assert that the page contains 'Register'
     $power->assertSee('Register');
 
+    // Get the expectation from the GetAllRolesAction class
     $expectation = \App::make(GetAllRolesAction::class)->run();
-    $power->assertSee($expectation);
-  }
 
-  public function testRegister()
-  {
+    // Assert that the register power page contains the expectation
+    $power->assertSee($expectation);
+}
+
+/**
+ * Test the registration functionality.
+ *
+ * @return void
+ */
+public function testRegister()
+{
+    // Set up the input data
     $input = [
-      'email' => 'test@gmail.com',
-      'password' => '123456',
-      'gender' => 'male',
-      'birth' => '1990-01-01',
-      'name' => 'test',
+        'email' => 'test@gmail.com',
+        'password' => '123456',
+        'gender' => 'male',
+        'birth' => '1990-01-01',
+        'name' => 'test',
     ];
 
-    //Success
+    // Success scenario
     $response = $this->postJson('/register', $input);
     $response->assertStatus(302);
     $response->assertSessionHas('status', 'Register successfully!');
     $response->assertRedirect('/home');
     $this->assertEquals($input['email'], User::where('email', $input['email'])->first()->email);
-    //Redeclare
+
+    // Redefine the input data to test duplicate email scenario
     $response = $this->postJson('/register', $input);
     $response->assertStatus(422);
     $response->assertSeeText('The email has already been taken');
-  }
+}
 
   /**
    * Test the register power check.

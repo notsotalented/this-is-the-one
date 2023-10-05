@@ -10,13 +10,12 @@ use App\Ship\Parents\Repositories\Repository;
 class ProductRepository extends Repository
 {
 
-    /**
-     * @var array
-     */
-    protected $fieldSearchable = [
-        'id' => '=',
-        'name' => 'like',
-        'brand' => '=',
-    ];
+  /**
+   * @var array
+   */
+  protected $fieldSearchable = [
+    'id' => '=',
+    'name' => 'like',
+  ];
 
 }

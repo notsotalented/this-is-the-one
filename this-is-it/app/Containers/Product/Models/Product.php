@@ -8,39 +8,41 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
-    protected $table = 'products';
-    protected $fillable = [
-        'user_id',
-        'name',
-        'description',
-        'price',
-        'quantity',
-        'brand',
-    ];
+  protected $table = 'products';
+  protected $fillable = [
+    'user_id',
+    'name',
+    'description',
+    'price',
+    'quantity',
+    'brand',
+  ];
 
-    protected $hidden = [
+  protected $hidden = [
 
-    ];
+  ];
 
-    protected $casts = [
+  protected $casts = [
 
-    ];
+  ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+  protected $dates = [
+    'created_at',
+    'updated_at',
+  ];
 
-    /**
-     * A resource key to be used by the the JSON API Serializer responses.
-     */
-    protected $resourceKey = 'products';
+  /**
+   * A resource key to be used by the the JSON API Serializer responses.
+   */
+  protected $resourceKey = 'products';
 
-    public function getOwner(): BelongsTo {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-    
-    public function getImages() {
-        return $this->hasMany(ProductImages::class, 'product_id', 'id');
-    }
+  public function getOwner(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'user_id', 'id');
+  }
+
+  public function getImages()
+  {
+    return $this->hasMany(ProductImages::class, 'product_id', 'id');
+  }
 }

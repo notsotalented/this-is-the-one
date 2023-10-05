@@ -135,7 +135,5 @@ class ProductControllerUnitTest extends TestCase
 
   public function testAddProductToUser() {
     $this->assertTrue(true);
-
-    dd(Product::all());
   }
 }

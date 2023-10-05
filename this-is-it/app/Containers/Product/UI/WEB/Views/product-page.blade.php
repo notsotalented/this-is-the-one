@@ -28,22 +28,22 @@
     <title>Products</title>
 
     @php
-      if(!function_exists('convertTimeToAppropriateFormat')) {
-        function convertTimeToAppropriateFormat($time)
-        {
-            $suffix = ['sec(s)', 'min(s)', 'hour(s)', 'day(s)', 'week(s)', 'month(s)', 'year(s)', 'dummy'];
-            $multi = [60, 60, 24, 7, 4.34, 12, 1111];
+        if (!function_exists('convertTimeToAppropriateFormat')) {
+            function convertTimeToAppropriateFormat($time)
+            {
+                $suffix = ['sec(s)', 'min(s)', 'hour(s)', 'day(s)', 'week(s)', 'month(s)', 'year(s)', 'dummy'];
+                $multi = [60, 60, 24, 7, 4.34, 12, 1111];
 
-            $i = 0;
+                $i = 0;
 
-            while ($time >= $multi[$i] && $i <= 5) {
-                $time /= $multi[$i];
-                $i++;
+                while ($time >= $multi[$i] && $i <= 5) {
+                    $time /= $multi[$i];
+                    $i++;
+                }
+
+                return round($time, 0) . ' ' . $suffix[$i];
             }
-
-            return round($time, 0) . ' ' . $suffix[$i];
         }
-      }
     @endphp
 </head>
 
@@ -57,7 +57,7 @@
             <span class="input-group-text" style="width: 8vw">Per Page</span>
             <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1"
                 max="100"
-                value="@if(isset($_GET['paginate'])){{ $_GET['paginate'] }}@else{{ '10' }}@endif"
+                value="@if (isset($_GET['paginate'])) {{ $_GET['paginate'] }}@else{{ '10' }} @endif"
                 onchange="load_page(this.value)">
         </div>
 
@@ -127,7 +127,7 @@
                                 <h5 class="card-title">{{ $product->name }}</h5>
                                 <p class="card-text">{{ $product->description }}</p>
 
-                                @if (Auth::check() && (Auth::user()->id == $product->getOwner->id))
+                                @if (Auth::check() && Auth::user()->id == $product->getOwner->id)
                                     <a href="{{ route('web_product_show_specific_personal', ['userId' => Auth::user()->id, 'id' => $product->id]) }}"
                                         class="stretched-link"></a>
                                 @else
@@ -137,7 +137,8 @@
 
 
                             </div>
-                            <div class="card-footer" style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap">
+                            <div class="card-footer"
+                                style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap">
                                 <small class="text-muted">Last updated:
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($product->updated_at)) }}
                                     ago</small>
