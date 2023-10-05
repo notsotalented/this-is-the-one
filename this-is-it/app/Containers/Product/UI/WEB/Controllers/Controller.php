@@ -147,14 +147,7 @@ class Controller extends WebController
       $extension = $file->getClientOriginalExtension();
       $filename = Auth()->user()->id . '_' . time() . '_' . $key . '.' . $extension;
 
-      // Create a canvas and resize the image
-      $canvas = Image::canvas(500, 500);
-      $image = Image::make($file)->resize(500, 500, function ($constraint) {
-        $constraint->aspectRatio();
-      });
-
-      // Insert the image into the canvas and encode it
-      $canvas->insert($image, 'center')->encode('png', 100);
+      $canvas = Apiato::call('Product@ImageProcessingTask', [$file]);
 
       // Add the filename and canvas to the canvas collection
       $canvasCollection->push([

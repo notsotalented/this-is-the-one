@@ -123,11 +123,11 @@
                                 @endif
                             </div>
 
-                            <div class="card-body" style="overflow: auto; position: relative">
+                            <div class="card-body" style="position: relative; max-height: 20vh; overflow: auto">
                                 <h5 class="card-title">{{ $product->name }}</h5>
                                 <p class="card-text">{{ $product->description }}</p>
 
-                                @if (Auth::check() && Auth::user()->id == $product->getOwner->id)
+                                @if (Auth::check() && $product->getOwner && Auth::user()->id == $product->getOwner->id)
                                     <a href="{{ route('web_product_show_specific_personal', ['userId' => Auth::user()->id, 'id' => $product->id]) }}"
                                         class="stretched-link"></a>
                                 @else
@@ -144,10 +144,12 @@
                                     ago</small>
                                 <br>
                                 <small class="text-muted">Owner: @can('search-users')
+                                        @if($product->getOwner)
                                         <a class="link-underline link-underline-opacity-0"
                                             href="{{ route('user-profile', ['id' => $product->getOwner->id]) }}">
                                             @endcan{{ $product->getOwner->name }}@can('search-users')
                                         </a>
+                                        @endisset
                                     @endcan
                                 </small>
                             </div>

@@ -1,6 +1,6 @@
-<nav class="navbar sticky-top navbar-expand-lg bg-light" style="height: 60px">
+<nav class="navbar sticky-top navbar-expand-lg bg-light" style="min-height: 60px">
     <div class="container-fluid">
-        <a class="navbar-brand" href=" {{ route('home') }}"><b>HOME</b></a>
+        <a class="navbar-brand" href=" {{ route('home') }}"><b>HOME <i class="fa-solid fa-ship fa-xs"></i></b></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -11,7 +11,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        Go-to <i class="fa-solid fa-rocket"></i>
+                        Go-to <i class="fa-solid fa-rocket fa-bounce"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <div class="container-fluid">
@@ -31,7 +31,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Dashboard <i class="fa-solid fa-gear fa"></i>
+                            Dashboard <i class="fa-solid fa-gear fa-spin-pulse"></i>
                         </a>
                         <ul class="dropdown-menu">
                             <div class="container-fluid">
@@ -106,7 +106,7 @@
                                 Profile <i class="fa-regular fa-address-card"></i></a></li>
                         <li><a class="dropdown-item"
                                 href="{{ route('web_product_show_all_personal', ['userId' => auth()->id()]) }}">My
-                                Products <i class="fa fa-cubes fa-pulse"></i></a></li>
+                                Products <i class="fa fa-cubes fa-bounce"></i></a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

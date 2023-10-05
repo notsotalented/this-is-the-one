@@ -9,22 +9,23 @@ use App\Ship\Transporters\DataTransporter;
 
 class AddProductToUserAction extends Action
 {
-    public function run(DataTransporter $data, $photos): Product
-    {
-        $product = Apiato::call('Product@CreateProductTask', [
-            $data->userId,
-            $data->name,
-            $data->description,
-            $data->quantity,
-            $data->price,
-            $data->brand
-        ]);
+  public function run(DataTransporter $data, $photos): Product
+  {
 
-        Apiato::call('Product@UploadProductImagesTask', [
-            $product->id,
-            $photos,
-        ]);
+    $product = Apiato::call('Product@CreateProductTask', [
+      $data->userId,
+      $data->name,
+      $data->description,
+      $data->quantity,
+      $data->price,
+      $data->brand
+    ]);
 
-        return $product;
-    }
+    Apiato::call('Product@UploadProductImagesTask', [
+      $product->id,
+      $photos,
+    ]);
+
+    return $product;
+  }
 }

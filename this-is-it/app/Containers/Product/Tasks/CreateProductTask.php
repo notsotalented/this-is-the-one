@@ -11,31 +11,28 @@ use Exception;
 class CreateProductTask extends Task
 {
 
-    protected $repository;
+  protected $repository;
 
-    public function __construct(ProductRepository $repository)
-    {
-        $this->repository = $repository;
+  public function __construct(ProductRepository $repository)
+  {
+    $this->repository = $repository;
+  }
+
+  public function run(string $userId, string $name, string $description, string $quantity, string $price, string $brand): Product
+  {
+    try {
+      // create new product
+      $product = $this->repository->create([
+        'user_id' => $userId,
+        'name' => $name,
+        'description' => $description,
+        'quantity' => $quantity,
+        'price' => $price,
+        'brand' => $brand,
+      ]);
+    } catch (Exception $e) {
+      throw (new CreateResourceFailedException())->debug($e);
     }
-
-    public function run(string $userId, string $name, string $description, string $quantity, string $price, string $brand): Product
-    {   
-        try {
-
-            // create new product
-            $product = $this->repository->create([
-                'user_id'    => $userId,
-                'name'       => $name,
-                'description'=> $description,
-                'quantity'   => $quantity,
-                'price'      => $price,
-                'brand'      => $brand,
-            ]);
-
-        } catch (Exception $e) {
-            throw (new CreateResourceFailedException())->debug($e);
-        }
-
-        return $product;
-    }
+    return $product;
+  }
 }

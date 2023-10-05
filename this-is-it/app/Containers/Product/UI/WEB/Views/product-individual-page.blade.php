@@ -120,7 +120,7 @@
                         </div>
                         {{-- Form Group (Brand) --}}
                         @php
-                            $brands = ['Tamiya ARC', 'HobbyBoss ARC', 'Tamiya LQR', 'HobbyBoss LQR', '私は黒狐です。'];
+                            $brands = ['Tamiya ARC', 'HobbyBoss ARC', 'Tamiya LQR', 'HobbyBoss LQR', '私は黒狐です。', 'Sasebo', 'Kure', 'Mitsubishi'];
                         @endphp
 
                         <div class="input-group mb-3">

@@ -119,8 +119,8 @@ class Controller extends WebController
       }
 
       if ($product_by_id) {
-        if ($by_id->first() != NULL || $by_email != NULL) {
-          $result->push('<li class="dropdown-divider"></li>');
+        if ($by_id->first() != NULL || $by_email != NULL || $by_name->first() != NULL) {
+          //$result->push('<li class="dropdown-divider"></li>');
         }
         if ($product_by_id->first() != NULL) {
           $result->push('<a class="dropdown-item disabled">Product ID:</a></li>');
@@ -141,7 +141,7 @@ class Controller extends WebController
       }
 
       if ($product_by_name) {
-        if ($by_id->first() != NULL || $by_email != NULL) {
+        if ($by_id->first() != NULL || $by_email != NULL || $by_name->first() != NULL || $product_by_id->first() != NULL) {
           $result->push('<li class="dropdown-divider"></li>');
         }
         if ($product_by_name->first() != NULL) {
@@ -184,9 +184,6 @@ class Controller extends WebController
 
   public function showTest($id = NULL, $uri = NULL)
   {
-    //TEST GROUND
-    //TEST GROUND
-
     return view('welcome::test-page');
   }
 }
