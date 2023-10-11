@@ -25,35 +25,173 @@
     @endpush
 @endonce
 
-@section('javascript')
-    @php
-        $name = old('name', null);
-        $title_description = old('title_description', null);
-        $detail_description = old('detail_description', null);
-        $date_created = old('date_created', date('Y-m-d'));
-        if (old('is_publish', null) == true) {
+
+@php
+    $name = old('name', null);
+    $title_description = old('title_description', null);
+    $detail_description = old('detail_description', null);
+    $date_created = old('date_created', date('Y-m-d'));
+    if (old('is_publish', null) == true) {
+        $is_publish = 'checked';
+    } else {
+        $is_publish = '';
+    }
+    $id = 0;
+    $list_images = null;
+
+    if (isset($release)) {
+        $name = old('name', $release->name);
+        $title_description = old('title_description', $release->title_description);
+        $detail_description = old('detail_description', $release->detail_description);
+        $date_created = old('date_created', substr($release->created_at, 0, 10));
+        if (old('is_publish', $release->is_publish) == true) {
             $is_publish = 'checked';
         } else {
             $is_publish = '';
         }
-        $id = 0;
-        $list_images = null;
+        $id = $release->id;
+        $list_images = $release->images;
+    }
+@endphp
 
-        if ($release != null) {
-            $name = old('name', $release->name);
-            $title_description = old('title_description', $release->title_description);
-            $detail_description = old('detail_description', $release->detail_description);
-            $date_created = old('date_created', substr($release->created_at, 0, 10));
-            if (old('is_publish', $release->is_publish) == true) {
-                $is_publish = 'checked';
-            } else {
-                $is_publish = '';
-            }
-            $id = $release->id;
-            $list_images = $release->images;
-        }
-    @endphp
 
+@section('content')
+    <div class="col-12" id="manage-create-edit">
+        <div class="row">
+            <div class="col-6 create-form">
+                <div class="card card-custom">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            @if (isset($release))
+                                {{ __('Edit release') }}
+                            @else
+                                {{ __('Create new release') }}
+                            @endif
+                        </h3>
+                    </div>
+                    <form id="form-create-release" class="form" action="{{ route('web_releasevuejs_store') }}"
+                        method="POST" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        <div class="card-body" style="background: white">
+                            <div class="form-group">
+                                <span style="color:red">*</span><label>Release Name:</label>
+                                <input type="text" class="form-control form-control-solid" id="name" name="name"
+                                    placeholder="Enter release name" value="{{ $name }}" />
+                                <span class="form-text validate-name hidden"></span>
+                                @if ($errors->has('name'))
+                                    <span style="color:red">{{ $errors->first('name') }} </span>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <span style="color:red">*</span><label>Release Title:</label>
+                                <input type="text" class="form-control form-control-solid" id="title_description"
+                                    name="title_description" placeholder="Enter release title"
+                                    value="{{ $title_description }}" />
+                                <span class="form-text validate-title hidden"></span>
+                                @if ($errors->has('title_description'))
+                                    <span style="color:red">{{ $errors->first('title_description') }} </span>
+                                @endif
+                            </div>
+                            <textarea type="text" id="detail_description" name="detail_description" placeholder="Description" hidden></textarea>
+                            <div class="form-group">
+                                <div class="checkbox-list col-3 pl-0">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="is_publish" id="is_publish" {{ $is_publish }} />
+                                        <span></span>
+                                        Is Publish
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="list-input-hidden-upload">
+                                    <input type="file" id="file_upload" class="hidden"
+                                        accept=".jpeg, .png, .jpg, .gif, .svg, .webp" multiple>
+                                </div>
+                                <button class="btn btn-secondary btn-add-image" type="button">
+                                    <i class="fa fa-plus" style="margin-right: 4px"> </i> Add images</button>
+                            </div>
+                            <div class="list-images">
+                                @if (isset($list_images) && !empty($list_images))
+                                    @foreach ($list_images as $key => $img)
+                                        <div class="box-image">
+                                            <input type="hidden" name="images_old[]" value="{{ $img }}"
+                                                id="{{ $key }}">
+                                            <div class="image-input image-input-outline" id="image_{{ $key }}">
+                                                <div class="image-input-wrapper"
+                                                    style="background-image: url('{{ asset($img) }}')"></div>
+
+                                                <label
+                                                    class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                                                    data-action="change">
+                                                    <i class="fa fa-pen icon-sm text-muted"></i>
+                                                    <input type="file" id="_{{ $key }}"
+                                                        accept=".jpeg, .png, .jpg, .gif, .svg, .webp" />
+                                                </label>
+
+                                                <span
+                                                    class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                                                    data-action="cancel" data-toggle="tooltip" title="Cancel avatar">
+                                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                                </span>
+
+                                                <span
+                                                    class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                                                    data-action="remove">
+                                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            @if (isset($release))
+                                <input type="hidden" name="id" id="id" value="{{ $id }}" />
+                                <input type="button" class="btn btn-primary mr-2" id="btn-confirm-save" value="Update">
+                            @else
+                                <input type="button" class="btn btn-primary mr-2" id="btn-confirm-save" value="Save">
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-6 description-form">
+                <div class="card card-custom">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span style="color:red">*</span>Description:
+                        </h2>
+                        <div class="card-toolbar cursor-pointer icon-zoom">
+                            <i class="la la-expand icon-lg zoom-in" data-toggle="tooltip" title="Zoom in"></i>
+                            <i class="la la-compress icon-lg zoom-out hidden" data-toggle="tooltip" title="Zoom out"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="editor" style="height: 318px"></div>
+                        <span class="form-text validate-description hidden">Please enter description</span>
+                        @if ($errors->has('detail_description'))
+                            <span style="color:red">{{ $errors->first('detail_description') }} </span>
+                        @endif
+                    </div>
+                    <div class="card-footer">
+                        @if (session('success'))
+                            <h3 style="color:blue">Success!!</h3>
+                            {!! session('success') !!}
+                        @else
+                            @if (!isset($release))
+                                <h4>No Release(s) created recently!</h4>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+
+@section('javascript')
     <script>
         var quill = new Quill('#editor', {
             theme: 'snow',
@@ -119,6 +257,14 @@
                     console.error('Error handling file upload:', error);
                 }
             };
+        });
+
+        quill.on('text-change', function(delta, oldDelta, source) {
+            if (source == 'user') {
+                if (quill.getLength() > 0) {
+                    $(".validate-description").addClass('hidden');
+                }
+            }
         });
 
         function convertBlobToDataURL(blob) {
@@ -216,10 +362,8 @@
                 $(".validate-description").removeClass('hidden');
                 return;
             } else {
-                // change img tag to this format: <img src="image_0" data-id="0">
                 var img = $(".ql-editor").find('img');
                 img.each(function(index) {
-                    // if src != /storage/... => change to image_...
                     if ($(this).attr('src').indexOf('/storage/') == -1) {
                         $(this).attr('src', 'image_' + index);
                     }
@@ -227,16 +371,14 @@
             }
             $("#detail_description").val($(".ql-editor").html());
 
-            // if (img == null) {
             $('#file_upload').removeAttr('name');
-            // }
             if (is_publish) {
                 $('#is_publish').val(1);
             } else {
                 $('#is_publish').val(0);
             }
 
-            if ('{{ $release }}' != '') {
+            if ({{ isset($release) ? 'true' : 'false' }} == true) {
                 $('#form-create-release').attr('action', '{{ route('web_releasevuejs_update', $id) }}')
                 $('#form-create-release').append('<input type="hidden" name="_method" value="PUT">');
 
@@ -393,139 +535,4 @@
             @endif
         });
     </script>
-@endsection
-
-@section('content')
-    <div class="col-12" id="manage-create-edit">
-        <div class="row">
-            <div class="col-6 create-form">
-                <div class="card card-custom">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            @if ($release != null)
-                                {{ __('Edit release') }}
-                            @else
-                                {{ __('Create new release') }}
-                            @endif
-                        </h3>
-                    </div>
-                    <form id="form-create-release" class="form" action="{{ route('web_releasevuejs_store') }}"
-                        method="POST" enctype="multipart/form-data">
-                        {{ csrf_field() }}
-                        <div class="card-body" style="background: white">
-                            <div class="form-group">
-                                <span style="color:red">*</span><label>Release Name:</label>
-                                <input type="text" class="form-control form-control-solid" id="name" name="name"
-                                    placeholder="Enter release name" value="{{ $name }}" />
-                                <span class="form-text validate-name hidden"></span>
-                                @if ($errors->has('name'))
-                                    <span style="color:red">{{ $errors->first('name') }} </span>
-                                @endif
-                            </div>
-                            <div class="form-group">
-                                <span style="color:red">*</span><label>Release Title:</label>
-                                <input type="text" class="form-control form-control-solid" id="title_description"
-                                    name="title_description" placeholder="Enter release title"
-                                    value="{{ $title_description }}" />
-                                <span class="form-text validate-title hidden"></span>
-                                @if ($errors->has('title_description'))
-                                    <span style="color:red">{{ $errors->first('title_description') }} </span>
-                                @endif
-                            </div>
-                            <textarea type="text" id="detail_description" name="detail_description" placeholder="Description" hidden></textarea>
-                            <div class="form-group">
-                                <div class="checkbox-list col-3 pl-0">
-                                    <label class="checkbox">
-                                        <input type="checkbox" name="is_publish" id="is_publish" {{ $is_publish }} />
-                                        <span></span>
-                                        Is Publish
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="list-input-hidden-upload">
-                                    <input type="file" id="file_upload" class="hidden"
-                                        accept=".jpeg, .png, .jpg, .gif, .svg, .webp" multiple>
-                                </div>
-                                <button class="btn btn-secondary btn-add-image" type="button">
-                                    <i class="fa fa-plus" style="margin-right: 4px"> </i> Add images</button>
-                            </div>
-                            <div class="list-images">
-                                @if (isset($list_images) && !empty($list_images))
-                                    @foreach ($list_images as $key => $img)
-                                        <div class="box-image">
-                                            <input type="hidden" name="images_old[]" value="{{ $img }}"
-                                                id="{{ $key }}">
-                                            <div class="image-input image-input-outline" id="image_{{ $key }}">
-                                                <div class="image-input-wrapper"
-                                                    style="background-image: url('{{ asset($img) }}')"></div>
-
-                                                <label
-                                                    class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                                                    data-action="change">
-                                                    <i class="fa fa-pen icon-sm text-muted"></i>
-                                                    <input type="file" id="_{{ $key }}"
-                                                        accept=".jpeg, .png, .jpg, .gif, .svg, .webp" />
-                                                </label>
-
-                                                <span
-                                                    class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                                                    data-action="cancel" data-toggle="tooltip" title="Cancel avatar">
-                                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
-                                                </span>
-
-                                                <span
-                                                    class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
-                                                    data-action="remove">
-                                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            @if ($release != null)
-                                <input type="hidden" name="id" id="id" value="{{ $id }}" />
-                                <input type="button" class="btn btn-primary mr-2" id="btn-confirm-save" value="Update">
-                            @else
-                                <input type="button" class="btn btn-primary mr-2" id="btn-confirm-save" value="Save">
-                            @endif
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-6 description-form">
-                <div class="card card-custom">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <span style="color:red">*</span>Description:
-                        </h2>
-                        <div class="card-toolbar cursor-pointer icon-zoom">
-                            <i class="la la-expand icon-lg zoom-in" data-toggle="tooltip" title="Zoom in"></i>
-                            <i class="la la-compress icon-lg zoom-out hidden" data-toggle="tooltip" title="Zoom out"></i>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="editor" style="height: 318px"></div>
-                        <span class="form-text validate-description hidden">Please enter description</span>
-                        @if ($errors->has('detail_description'))
-                            <span style="color:red">{{ $errors->first('detail_description') }} </span>
-                        @endif
-                    </div>
-                    <div class="card-footer">
-                        @if (session('success'))
-                            <h3 style="color:blue">Success!!</h3>
-                            {!! session('success') !!}
-                        @else
-                            @if ($release == null)
-                                <h4>No Release(s) created recently!</h4>
-                            @endif
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection

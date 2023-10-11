@@ -3,28 +3,23 @@
 namespace App\Containers\ReleaseVueJS\Actions;
 
 use App\Containers\ReleaseVueJS\Models\ReleaseVueJS;
+use App\Containers\ReleaseVueJS\Tasks\CreateReleaseVueJSTask;
 use App\Ship\Parents\Actions\Action;
-use Apiato\Core\Foundation\Facades\Apiato;
 use App\Ship\Transporters\DataTransporter;
+use Illuminate\Support\Facades\App;
 
 class CreateReleaseVueJSAction extends Action
 {
     public function run(DataTransporter $data): ReleaseVueJS
     {
-        // $data = $request->sanitizeInput([
-        //     // add your request data here
-        // ]);
 
-        // $releasevuejs = Apiato::call('ReleaseVueJS@CreateReleaseVueJSTask', [$data]);
-
-        // return $releasevuejs; 
-        $release = Apiato::call('ReleaseVueJS@CreateReleaseVueJSTask', [
+        $release = App::make(CreateReleaseVueJSTask::class)->run(
             $data->name,
             $data->title_description,
             $data->detail_description,
             $data->is_publish ?? false,
             $data->images ?? null,
-        ]);
+        );
 
         return $release;
     }
