@@ -15,7 +15,8 @@
     {{-- FONTAWSOME --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
 
     {{-- JQUERY --}}
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
@@ -123,20 +124,40 @@
                                 @endif
                             </div>
 
-                            <div class="card-body" style="position: relative; max-height: 20vh; overflow: auto">
-                                <h5 class="card-title">{{ $product->name }}</h5>
+                            <ul class="list-group list-group-flush text-center" style="position: relative">
+                                <span><b>{{ $product->name }}</b>
+                                    @isset($product->getOwner->social_avatar)
+                                        <img class="img-fluid border border-secondary rounded-circle"
+                                            style="max-height: 4vh; width: auto; overflow: auto;"
+                                            src="{{ asset('/storage/uploads/photos/' . $product->getOwner->social_avatar) }}"
+                                            alt="{{ $product->getOwner->name }} profile picture">
+                                    @endisset
+                                </span>
+                            </ul>
+
+                            <div class="card-body" style="position: relative; height: 20vh; overflow: auto">
+
                                 <p class="card-text">{{ $product->description }}</p>
 
-                                @if (Auth::check() && $product->getOwner && Auth::user()->id == $product->getOwner->id)
+                                @if (Auth::check() && Auth::user()->id == $product->getOwner->id)
                                     <a href="{{ route('web_product_show_specific_personal', ['userId' => Auth::user()->id, 'id' => $product->id]) }}"
                                         class="stretched-link"></a>
                                 @else
                                     <a href="{{ route('web_product_get_specific_product', ['id' => $product->id]) }}"
                                         class="stretched-link"></a>
                                 @endif
-
-
                             </div>
+
+                            <ul class="list-group list-group-flush text-center" style="position: relative">
+                                <span>
+                                    <p style="float: left; margin-left: 1vw; margin-bottom: 0"><b>In stock:</b>
+                                        {{ $product->quantity }}</p>
+                                    <p style="float: right; margin-right: 1vw; margin-bottom: 0"><b>Price:</b> <i
+                                            class="fa-solid fa-coins fa-sm" style="color: #dfa134;"></i>
+                                        {{ $product->price }}</p>
+                                </span>
+                            </ul>
+
                             <div class="card-footer"
                                 style="overflow: hidden; text-overflow: ellipsis; white-space:nowrap">
                                 <small class="text-muted">Last updated:
@@ -144,12 +165,10 @@
                                     ago</small>
                                 <br>
                                 <small class="text-muted">Owner: @can('search-users')
-                                        @if($product->getOwner)
                                         <a class="link-underline link-underline-opacity-0"
                                             href="{{ route('user-profile', ['id' => $product->getOwner->id]) }}">
                                             @endcan{{ $product->getOwner->name }}@can('search-users')
                                         </a>
-                                        @endisset
                                     @endcan
                                 </small>
                             </div>

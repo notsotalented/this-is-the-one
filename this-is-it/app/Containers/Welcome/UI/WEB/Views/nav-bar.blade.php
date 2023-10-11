@@ -31,7 +31,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Dashboard <i class="fa-solid fa-gear fa-spin-pulse"></i>
+                            Dashboard <i class="fa-solid fa-gear fa-spin" style="--fa-animation-duration: 5s;"></i>
                         </a>
                         <ul class="dropdown-menu">
                             <div class="container-fluid">

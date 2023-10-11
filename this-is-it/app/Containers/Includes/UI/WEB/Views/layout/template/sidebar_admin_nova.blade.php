@@ -128,6 +128,7 @@
                                     style="width: 80%; display: inline-block; @if(strpos(request()->fullUrl(), $child['url']) !== false) {{ 'font-weight: bold; font-style: italic' }} @endif">
                                     {{ $child['label'] ?? '' }}
                                 </span>
+                                <i class="fa-solid fa-gear fa-spin-pulse"></i>
                             </div>
                         </a>
                     </div>

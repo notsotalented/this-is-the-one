@@ -77,7 +77,7 @@
                 <span class="text" style="width: 20%; display: inline-block">
 
                     @if(checkIfChild($child3))
-                    {!! '<fa class="fa fa-eye" aria-hidden="true"></fa>' !!}
+                    {!! '<fa class="fa fa-eye fa-bounce" aria-hidden="true"></fa>' !!}
                     @endif
 
                 </span>
@@ -101,9 +101,12 @@
                     style="width: 80%; display: inline-block; @if(checkIfChild($child4)) {{ 'font-weight: bold; font-style: italic' }} @endif">
                     {{ $child4 }}
                 </span>
+
             </div>
         </a>
     </div>
+
+    <i class="fa-solid fa-gear"></i>
 
     <img src="/storage/uploads/product_images/1_1696386346_1.png"
     class="card-img-top border border-bottom" alt="1_1696386346_1.png"

@@ -15,7 +15,8 @@
     {{-- FONTAWSOME --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
     {{-- JQUERY --}}
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
@@ -120,7 +121,7 @@
                         </div>
                         {{-- Form Group (Brand) --}}
                         @php
-                            $brands = ['Tamiya ARC', 'HobbyBoss ARC', 'Tamiya LQR', 'HobbyBoss LQR', '私は黒狐です。', 'Sasebo', 'Kure', 'Mitsubishi'];
+                            $brands = ['Tamiya ARC', 'HobbyBoss ARC', 'Tamiya LQR', 'HobbyBoss LQR', '私は黒狐です。', 'Sasebo', 'Kure', 'Mitsubishi', 'Fore River', 'Newport News', 'United', 'Bethlehem', 'WC & Son'];
                         @endphp
 
                         <div class="input-group mb-3">
@@ -149,17 +150,19 @@
                                     <span class="input-group-text" style="width: 6vw">In Stock</span>
                                     <input id="quantity" name="quantity" type="number" class="form-control"
                                         aria-label="quantity" aria-describedby="quantity" placeholder="[0:100]"
-                                        value="{{ old('quantity') }}" min="0" max="100" required>
+                                        value="{{ $product->quantity }}" min="0" max="100" readonly>
                                 </div>
                             </div>
 
                             {{-- Form Group (Price) --}}
                             <div class="col-md-6">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" style="width: 6vw">Price</span>
+                                    <span class="input-group-text" style="width: 6vw">Price<i
+                                            class="fa-solid fa-coins fa-sm fa-fade"
+                                            style="color: #dfa134; margin-left: 0.5vw"></i></span>
                                     <input id="price" name="price" type="number" class="form-control"
                                         aria-label="price" aria-describedby="price" placeholder="0"
-                                        value="{{ old('cost') }}" required>
+                                        value="{{ $product->price }}" readonly>
                                 </div>
                             </div>
                         </div>
