@@ -61,7 +61,6 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
 
-
                         <div class="input-group me-auto mb-2 mb-lg-0 ml-1">
                             <span class="input-group-text bg-info" id="search_barr"><i
                                     class="fa-solid fa-binoculars fa-sm" style="color: white"></i></span>
