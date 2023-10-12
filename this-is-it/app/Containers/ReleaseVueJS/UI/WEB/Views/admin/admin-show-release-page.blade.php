@@ -24,7 +24,7 @@
     @endpush
 @endonce
 
-@section('header_sub')
+{{-- @section('header_sub')
     <div class="subheader py-2 py-lg-4  subheader-solid " id="kt_subheader">
         <div class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
             <div class="d-flex align-items-center flex-wrap mr-1">
@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-@endsection
+@endsection --}}
 
 @section('content')
     <div class="col-12" id="manage_release">

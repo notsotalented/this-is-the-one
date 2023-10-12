@@ -77,7 +77,7 @@
                 <span class="text" style="width: 20%; display: inline-block">
 
                     @if(checkIfChild($child3))
-                    {!! '<fa class="fa fa-eye fa-bounce" aria-hidden="true"></fa>' !!}
+                    {!! '<fa class="fa fa-eye fa-bouncelaradock-workspace/this-is-it/app/Containers/ReleaseVueJS/UI/WEB/Views/client/test-page1.blade.php" aria-hidden="true"></fa>' !!}
                     @endif
 
                 </span>

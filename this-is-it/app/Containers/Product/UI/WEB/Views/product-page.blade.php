@@ -53,7 +53,7 @@
 
     <div class="container-fluid" style="margin-top: 0vh">
         {{-- Pagination --}}
-        <label for="level"><b>{{ $products->links() }}</b></label>
+        <label for="level"><b>{{ $products->appends(Request::all())->links() }}</b></label>
         <div class="input-group mb-3" style="max-width: 16vw">
             <span class="input-group-text" style="width: 8vw">Per Page</span>
             <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1"
