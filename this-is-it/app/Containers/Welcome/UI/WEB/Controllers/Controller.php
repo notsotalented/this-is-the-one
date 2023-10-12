@@ -76,7 +76,7 @@ class Controller extends WebController
 
       if ($by_name) {
         if ($by_id->first() != NULL) {
-          $result->push('<li class="dropdown-divider">Name</li>');
+          $result->push('<li class="dropdown-divider"></li>');
         }
         if ($by_name->first() != NULL) {
           $result->push('<a class="dropdown-item disabled">By Name:</a></li>');
@@ -98,7 +98,7 @@ class Controller extends WebController
 
       if ($by_email) {
         if ($by_name->first() != NULL) {
-          $result->push('<li class="dropdown-divider">Name</li>');
+          $result->push('<li class="dropdown-divider"></li>');
         }
         if ($by_email->first() != NULL) {
           $result->push('<a class="dropdown-item disabled">By Email:</a></li>');
@@ -120,7 +120,7 @@ class Controller extends WebController
 
       if ($product_by_id) {
         if ($by_id->first() != NULL || $by_email != NULL || $by_name->first() != NULL) {
-          //$result->push('<li class="dropdown-divider"></li>');
+          $result->push('<li class="dropdown-divider"></li>');
         }
         if ($product_by_id->first() != NULL) {
           $result->push('<a class="dropdown-item disabled">Product ID:</a></li>');
@@ -141,9 +141,8 @@ class Controller extends WebController
       }
 
       if ($product_by_name) {
-        if ($by_id->first() != NULL || $by_email != NULL || $by_name->first() != NULL || $product_by_id->first() != NULL) {
-
-          $result->push('2112<li class="dropdown-divider"></li>');
+        if ($product_by_id->first() != NULL && $product_by_name->first() != NULL) {
+          $result->push('<li class="dropdown-divider"></li>');
         }
         if ($product_by_name->first() != NULL) {
           $result->push('<a class="dropdown-item disabled">Product Name:</a></li>');

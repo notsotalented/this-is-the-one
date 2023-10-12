@@ -16,10 +16,10 @@ class GetAllUsersAction extends Action
     /**
      * @return mixed
      */
-    public function run()
+    public function run($paginate)
     {
         return Apiato::call('User@GetAllUsersTask',
-            [],
+            [$paginate],
             [
                 'addRequestCriteria',
                 'ordered',

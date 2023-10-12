@@ -201,7 +201,7 @@ class Controller extends WebController
 
     $roles = Apiato::call('Authorization@GetAllRolesAction');
 
-    $users = Apiato::call('User@GetAllUsersAction', [$request->paginate]);
+    $users = Apiato::call('User@GetAllUsersAction', [$request->paginate ?? 10]);
 
     return view('user::users-profile-page', [
       'roles' => $roles->all(),

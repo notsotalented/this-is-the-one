@@ -32,9 +32,9 @@ class GetAllUsersTask extends Task
         $this->repository = $repository;
     }
 
-    public function run()
+    public function run($paginate)
     {
-        return $this->repository->paginate();
+        return $this->repository->paginate($paginate);
     }
 
     public function clients()

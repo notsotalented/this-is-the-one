@@ -58,7 +58,7 @@
             <span class="input-group-text" style="width: 8vw">Per Page</span>
             <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="1" min="1"
                 max="100"
-                value="@if (isset($_GET['paginate'])) {{ $_GET['paginate'] }}@else{{ '10' }} @endif"
+                value="@if(isset($_GET['paginate'])){{ $_GET['paginate']}}@else{{ '8' }}@endif"
                 onchange="load_page(this.value)">
         </div>
 
@@ -79,7 +79,7 @@
             <div class="row">
                 @foreach ($products as $product)
                     <div class="col-sm-3">
-                        <div class="card mb-4 w-23 h-28 border-secondary" style="max-width: 23vw; min-height: 28vw;"
+                        <div class="card mb-4 w-23 h-28 border-secondary" style="max-width: 23vw; min-height: 28vw; border-width: 2px"
                             onmouseover="lightsUp(this)" onmouseout="lightsDown(this)">
 
                             <div id="carouselImages{{ str_replace(' ', '_', $product->name) }}"
@@ -189,15 +189,15 @@
     }
 
     function lightsUp(element) {
-        element.style.border = "solid 2px";
         element.classList.remove("border-secondary");
-        element.classList.add("border-primary");
+        element.classList.add("border-danger");
+        element.style.hover = "scale = 1.2";
     }
 
     function lightsDown(element) {
-        element.style.border = "solid 1px";
-        element.classList.remove("border-primary");
+        element.classList.remove("border-danger");
         element.classList.add("border-secondary");
+        element.style.hover = "scale = 1";
     }
 </script>
 

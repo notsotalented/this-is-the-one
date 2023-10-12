@@ -23,7 +23,7 @@ class Controller extends WebController
 {
   public function getAllProducts(GetAllProductsRequest $request)
   {
-    $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
+    $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate ?? 8]);
 
     return view('product::product-page', [
       'products' => $products,

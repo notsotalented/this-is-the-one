@@ -111,9 +111,12 @@
                         </li>
                         <li><a class="dropdown-item" href={{ route('test-page') }}> Test ground <i
                                     class="fa-solid fa-vials"></i></a></li>
+                        <li><a class="dropdown-item" href="/releasevuejs"> Release Vuejs <i
+                                    class="fa-solid fa-vials fa-spin"></i></a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+
                         <li><a class="dropdown-item bg-color-red" href="{{ route('logout') }}"
                                 style="color:red">Logout <i class="fa-solid fa-power-off"></i></a></li>
                     </ul>
