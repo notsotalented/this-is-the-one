@@ -8,10 +8,10 @@ use Apiato\Core\Foundation\Facades\Apiato;
 
 class GetAllProductsAction extends Action
 {
-    public function run($paginate)
+    public function run($paginate, $userId = null)
     {
         return Apiato::call('Product@GetAllProductsTask',
-                            [$paginate],
+                            [$paginate, $userId],
                             [
                                 'addRequestCriteria',
                                 'ordered'

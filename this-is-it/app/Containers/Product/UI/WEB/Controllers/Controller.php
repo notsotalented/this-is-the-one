@@ -32,16 +32,7 @@ class Controller extends WebController
 
   public function showAllPersonalProducts(ShowAllPersonalProductsRequest $request)
   {
-    $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate]);
-
-    $selected = [];
-    foreach ($products as $product => $value) {
-      if ($request->userId != $value->user_id) {
-        $selected[] = $value;
-        $products->forget($product);
-      }
-      ;
-    }
+    $products = Apiato::call('Product@GetAllProductsAction', [$request->paginate ?? 8, $request->userId]);
 
     return view('product::product-page', [
       'products' => $products,
