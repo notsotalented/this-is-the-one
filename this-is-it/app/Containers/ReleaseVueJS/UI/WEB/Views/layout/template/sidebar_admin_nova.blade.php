@@ -71,6 +71,10 @@
                     'label' => 'Create Release',
                     'url' => '/releasevuejs/new',
                 ],
+                [
+                    'label' => 'Cliént Release',
+                    'url' => '/releasevuejs/client',
+                ]
             ],
         ],
     ];

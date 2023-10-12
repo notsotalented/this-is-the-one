@@ -59,7 +59,7 @@
                                                     style="width: 75px;">
                                                     <option value="like">like</option>
                                                     <option
-                                                        value="=">=</option>
+                                                        value="="> = </option>
                                                     </select>
                                                 </div>
                                             </div>
