@@ -116,7 +116,7 @@
                                     <!--Pick one-->
                                     {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
 
-                                    <i class="fas fa-hourglass-end fa-sm" style="color: gray;"></i> {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." ago"}}
+                                    <i class="fas fa-hourglass-end fa-sm text-info"></i> {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." ago"}}
 
                                     {{-- {{ $release->created_at->format('H:i A') }} --}}
                                 </span>
