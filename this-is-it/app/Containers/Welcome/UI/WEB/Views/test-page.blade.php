@@ -78,6 +78,16 @@
     </script>
 @endsection
 
+@section('header_sub')
+    <div class="subheader py-2 py-lg-4  subheader-solid " id="kt_subheader">
+        <div class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+            <div class="d-flex align-items-center flex-wrap mr-1">
+                <h2>{{ __('Show Releases - Cliént') }}</h2>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('content')
     <!-- begin:timeline -->
 
@@ -104,14 +114,14 @@
                             <div class="timeline-label">
                                 <span class="text-info font-weight-bold">
                                     <!--Pick one-->
-                                    {{ $release->created_at->format('d-m-Y H:i:s') }}
-                                    <br>
-                                    {{"Đã ". convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." trôi qua"}}
-                                    <br>
-                                    {{ $release->created_at->format('H:i A') }}
+                                    {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
+
+                                    <i class="fas fa-hourglass-end fa-sm" style="color: gray;"></i> {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." ago"}}
+
+                                    {{-- {{ $release->created_at->format('H:i A') }} --}}
                                 </span>
-                                <br>
-                                <h3>{{ $release->name }}</h3>
+
+                                <b>{{ $release->name }}</b>
                             </div>
 
                             <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->

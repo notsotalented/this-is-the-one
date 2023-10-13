@@ -73,7 +73,7 @@
                 ],
                 [
                     'label' => 'Cliént Release',
-                    'url' => '/releasevuejs/client',
+                    'url' => '/test-page',
                 ]
             ],
         ],
