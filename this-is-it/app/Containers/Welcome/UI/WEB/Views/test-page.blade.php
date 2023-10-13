@@ -45,36 +45,18 @@
 
 @section('javascript')
     <script type="text/javascript">
-        function lightsUp(element) {
-          //Do something cool
 
+        function toggleDateDisplay(element) {
+          if((element.id).includes('difference')) {
+            toggleOn = (element.id).replace('difference', 'date');
+          }
+          else {
+            toggleOn = (element.id).replace('date', 'difference');
+          }
+          element.style.display = 'none';
+          document.getElementById(toggleOn).style.display = 'block';
         }
 
-        function lightsDown(element) {
-          //Do something uncool
-
-        }
-
-        function calculateTimeDifference(time) {
-
-          var inputTime = new Date(time).getTime();
-          var currentTime = new Date().getTime();
-          var timeDifferenceInSeconds = Math.floor((currentTime - inputTime) / 1000);
-
-          var seconds = timeDifferenceInSeconds % 60;
-          var minutes = Math.floor((timeDifferenceInSeconds / 60) % 60);
-          var hours = Math.floor((timeDifferenceInSeconds / 60 / 60) % 24);
-          var days = Math.floor(timeDifferenceInSeconds / 60 / 60 / 24);
-
-          var currentDate = new Date();
-          var year = currentDate.getFullYear();
-          var month = currentDate.getMonth() + 1;
-          var day = currentDate.getDate();
-
-          var formattedTimeDifference = hours + ":" + minutes + ":" + seconds + " " + day + ":" + month + ":" + year;
-
-          console.log(formattedTimeDifference);
-        }
     </script>
 @endsection
 
@@ -99,7 +81,7 @@
 
                     @foreach ($releases as $key => $release)
                         <div class="timeline-item timeline-item-@if($key % 2 == 0){{ 'left' }}@else{{ 'right' }}@endif""
-                        onmouseover="lightsUp(this)" onmouseout="lightsDown(this)">
+                        >
                             <!--Style Indicator badge, but can be Icon, Images, ... -->
                             <!--Color code event E.g: Red = Alert, Yellow = Warning, Blue = Information, ...-->
                             <div class="timeline-badge">
@@ -111,36 +93,76 @@
 
                             </div>
 
-                            <div class="timeline-label">
+                            <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}" style="display: block;" onclick="toggleDateDisplay(this)">
                                 <span class="text-info font-weight-bold">
                                     <!--Pick one-->
                                     {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
 
                                     <i class="fas fa-hourglass-end fa-sm text-info"></i> {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." ago"}}
-
                                     {{-- {{ $release->created_at->format('H:i A') }} --}}
                                 </span>
-
-                                <b>{{ $release->name }}</b>
                             </div>
 
-                            <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
-                            <div class="timeline-content max-h-30 overflow-auto">
-                                <span class="text-dark-75">
-                                    <h5> <i class="fas fa-coins fa-sm fa-spin" style="color: #dfa134;"></i> {{ $release->title_description }}</h5>
-                                </span>
-                                <br>
-                                <span class="text-dark-75 five-lines">
-                                    <!-- Need to unescape the HTML to display the text as is -->
-                                    {!! $release->detail_description !!}
-                                </span>
-                                <br>
+                            <div class="timeline-label" id="timeline-label_date_{{ $release->id }}" style="display: none;" onclick="toggleDateDisplay(this)">
+                              <span class="text-info font-weight-bold">
+                                  <!--Pick one-->
+                                  {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
 
-                                <span class="text-dark-75">
-                                    <!-- Route to specific release -->
-                                    <a href="{{ route('web_releasevuejs_show_detail_release', $release->id) }}"
-                                        class="text-hover-dark" style="float: right">To The Moon</a>
-                                </span>
+                                  <i class="flaticon2-calendar-9 fa-sm text-info"></i> {{ date('H:i A d/m/Y', strtotime($release->created_at)) }}
+                                  {{-- {{ $release->created_at->format('H:i A') }} --}}
+                              </span>
+                          </div>
+
+                            <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
+                            <div class="timeline-content max-h-30">
+                              <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
+                                <div class="card-header card-header-tabs-line">
+                                  <div class="card-title">
+                                    <h3 class="card-label font-weight-bold">{{ $release->name }}</h3>
+                                  </div>
+                                  <div class="card-toolbar">
+                                    <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#kt_tab_pane_1_3_{{ $release->id }}">
+                                            <span class="nav-icon"><i class="flaticon2-information"></i></span>
+                                            <span class="nav-text">Tóm tắt</span>
+                                        </a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#kt_tab_pane_2_3_{{ $release->id }}">
+                                            <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
+                                            <span class="nav-text">Chi tiết</span>
+                                        </a>
+                                      </li>
+                                      <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                            <span class="nav-icon"><i class="flaticon2-indent-dots"></i></span>
+                                            <span class="nav-text">Khác</span>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                                          <a class="dropdown-item" data-toggle="tab" href="#kt_tab_pane_3_3_{{ $release->id }}"><span class="nav-text"><i class="flaticon2-photograph mr-2"></i>Ảnh</span></a>
+                                          <a class="dropdown-item" href="{{ route('web_releasevuejs_show_detail_release', $release->id) }}"><span class="nav-text"><i class="flaticon2-notepad mr-2"></i>Tới suộc</span></a>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                                <div class="card-body">
+                                  <div class="tab-content five-lines">
+                                    <div class="tab-pane fade show active" id="kt_tab_pane_1_3_{{ $release->id }}" role="tabpanel" aria-labelledby="kt_tab_pane_1_3_{{ $release->id }}">
+                                      {{-- Tab Short description --}}
+                                      {{ $release->title_description }}
+                                    </div>
+                                    <div class="tab-pane fade card-scroll" id="kt_tab_pane_2_3_{{ $release->id }}" role="tabpanel" aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
+                                      {{-- Tab Detail description --}}
+                                      {!! $release->detail_description !!}
+                                    </div>
+                                    <div class="tab-pane fade" id="kt_tab_pane_3_3_{{ $release->id }}" role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}">
+                                      {{-- Tab ...? --}}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                         </div>
                     @endforeach
