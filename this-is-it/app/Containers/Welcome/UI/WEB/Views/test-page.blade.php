@@ -103,6 +103,7 @@
 
                             <div class="timeline-label">
                                 <span class="text-info font-weight-bold">
+                                    <!--Pick one-->
                                     {{ $release->created_at->format('d-m-Y H:i:s') }}
                                     <br>
                                     {{"Đã ". convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." trôi qua"}}
@@ -110,17 +111,13 @@
                                     {{ $release->created_at->format('H:i A') }}
                                 </span>
                                 <br>
-                                <b>{{ $release->name }}</b>
+                                <h3>{{ $release->name }}</h3>
                             </div>
-
-
-
 
                             <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
                             <div class="timeline-content max-h-30 overflow-auto">
-                                <span class="text-dark-75 font-weight-bold">
-                                    <i class="fas fa-coins fa-sm fa-spin" style="color: #dfa134;"></i>
-                                    {{ $release->title_description }}
+                                <span class="text-dark-75">
+                                    <h5> <i class="fas fa-coins fa-sm fa-spin" style="color: #dfa134;"></i> {{ $release->title_description }}</h5>
                                 </span>
                                 <br>
                                 <span class="text-dark-75 five-lines">
