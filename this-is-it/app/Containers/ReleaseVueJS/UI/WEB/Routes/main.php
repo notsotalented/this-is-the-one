@@ -37,4 +37,13 @@ Route::prefix('releasevuejs')->middleware(['auth:web'])->group(function () {
         'as'   => 'web_releasevuejs_update',
         'uses' => 'Controller@update'
     ]);
+
+    /*
+    * Đạo tặc
+    */
+    Route::get('/client', [
+        'as'   => 'web_releasevuejs_client_view',
+        'uses' => 'Controller@clientViewPage'
+    ]);
+
 });

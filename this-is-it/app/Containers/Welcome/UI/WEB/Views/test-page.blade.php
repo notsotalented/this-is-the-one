@@ -6,109 +6,141 @@
     <style>
         @include('includes::css.custom');
     </style>
+
+    <style>
+        .five-lines {
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 @endsection
 
-@php
-    $child = '/test-page?table=1';
+@section('php')
+    @php
+        $products = \App\Containers\Product\Models\Product::all();
 
-    $child2 = '/test-page/table/2';
+        //Depends on the order
+        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->get();
 
-    $child3 = '/test-page/table/3';
+        if (!function_exists('convertTimeToAppropriateFormat')) {
+            function convertTimeToAppropriateFormat($time)
+            {
+                $suffix = ['sec(s)', 'min(s)', 'hour(s)', 'day(s)', 'week(s)', 'month(s)', 'year(s)', 'dummy'];
+                $multi = [60, 60, 24, 7, 4.34, 12, 1111];
 
-    $child4 = '/test-page/table';
+                $i = 0;
 
-    function checkIfChild($child) {
-        $list =  explode('/', $child);
+                while ($time >= $multi[$i] && $i <= 5) {
+                    $time /= $multi[$i];
+                    $i++;
+                }
 
-        $list_url = explode('/', request()->url());
-        $list_url = array_slice($list_url, 3);
-
-        //print_r($list);
-        //print_r($list_url);
-
-        $diff = array_diff($list_url, $list);
-
-        if (!$diff) {
-            return true;
+                return round($time, 0) . ' ' . $suffix[$i];
+            }
         }
-        else {
-            return false;
-        }
-    }
+    @endphp
+@endsection
 
-@endphp
+@section('javascript')
+    <script type="text/javascript">
+        function lightsUp(element) {
+          //Do something cool
+
+        }
+
+        function lightsDown(element) {
+          //Do something uncool
+
+        }
+
+        function calculateTimeDifference(time) {
+
+          var inputTime = new Date(time).getTime();
+          var currentTime = new Date().getTime();
+          var timeDifferenceInSeconds = Math.floor((currentTime - inputTime) / 1000);
+
+          var seconds = timeDifferenceInSeconds % 60;
+          var minutes = Math.floor((timeDifferenceInSeconds / 60) % 60);
+          var hours = Math.floor((timeDifferenceInSeconds / 60 / 60) % 24);
+          var days = Math.floor(timeDifferenceInSeconds / 60 / 60 / 24);
+
+          var currentDate = new Date();
+          var year = currentDate.getFullYear();
+          var month = currentDate.getMonth() + 1;
+          var day = currentDate.getDate();
+
+          var formattedTimeDifference = hours + ":" + minutes + ":" + seconds + " " + day + ":" + month + ":" + year;
+
+          console.log(formattedTimeDifference);
+        }
+    </script>
+@endsection
 
 @section('content')
-    <div>
-        <a id="test" href="{{ $child }}" target="_self">
-            <div class="items-center" style="width: 100%">
-                <span class="text" style="width: 20%; display: inline-block">
+    <!-- begin:timeline -->
 
-                    @if(checkIfChild($child))
-                    {!! '<fa class="fa fa-eye" aria-hidden="true"></fa>' !!}
-                    @endif
+    <div class="example example-basic" style="background-color: ivory">
+        <div class="example-preview">
+            <div class="timeline timeline-4">
+                <div class="timeline-bar"></div>
+                <div class="timeline-items">
 
-                </span>
-                <span class="text"
-                    style="width: 80%; display: inline-block; @if(checkIfChild($child)) {{ 'font-weight: bold; font-style: italic' }} @endif">
-                    {{ $child }}
-                </span>
-            </div>
-        </a>
+                    @foreach ($releases as $key => $release)
+                        <div class="timeline-item timeline-item-@if($key % 2 == 0){{ 'left' }}@else{{ 'right' }}@endif""
+                        onmouseover="lightsUp(this)" onmouseout="lightsDown(this)">
+                            <!--Style Indicator badge, but can be Icon, Images, ... -->
+                            <!--Color code event E.g: Red = Alert, Yellow = Warning, Blue = Information, ...-->
+                            <div class="timeline-badge">
+                                @if ($release->id % 2 == 0)
+                                    <div class="bg-danger"></div>
+                                @else
+                                    <div class="bg-primary"></div>
+                                @endif
 
-        <a id="test" href="{{ $child2 }}" target="_self">
-            <div class="items-center" style="width: 100%">
-                <span class="text" style="width: 20%; display: inline-block">
+                            </div>
 
-                    @if(checkIfChild($child2))
-                    {!! '<fa class="fa fa-eye" aria-hidden="true"></fa>' !!}
-                    @endif
+                            <div class="timeline-label">
+                                <span class="text-info font-weight-bold">
+                                    {{ $release->created_at->format('d-m-Y H:i:s') }}
+                                    <br>
+                                    {{"Đã ". convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." trôi qua"}}
+                                    <br>
+                                    {{ $release->created_at->format('H:i A') }}
+                                </span>
+                                <br>
+                                <b>{{ $release->name }}</b>
+                            </div>
 
-                </span>
-                <span class="text"
-                    style="width: 80%; display: inline-block; @if(checkIfChild($child2)) {{ 'font-weight: bold; font-style: italic' }} @endif">
-                    {{ $child2 }}
-                </span>
-            </div>
-        </a>
 
-        <a id="test" href="{{ $child3 }}" target="_self">
-            <div class="items-center" style="width: 100%">
-                <span class="text" style="width: 20%; display: inline-block">
 
-                    @if(checkIfChild($child3))
-                    {!! '<fa class="fa fa-eye fa-bouncelaradock-workspace/this-is-it/app/Containers/ReleaseVueJS/UI/WEB/Views/client/test-page1.blade.php" aria-hidden="true"></fa>' !!}
-                    @endif
 
-                </span>
-                <span class="text"
-                    style="width: 80%; display: inline-block; @if(checkIfChild($child3)) {{ 'font-weight: bold; font-style: italic' }} @endif">
-                    {{ $child3 }}
-                </span>
-            </div>
-        </a>
+                            <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
+                            <div class="timeline-content max-h-30 overflow-auto">
+                                <span class="text-dark-75 font-weight-bold">
+                                    <i class="fas fa-coins fa-sm fa-spin" style="color: #dfa134;"></i>
+                                    {{ $release->title_description }}
+                                </span>
+                                <br>
+                                <span class="text-dark-75 five-lines">
+                                    <!-- Need to unescape the HTML to display the text as is -->
+                                    {!! $release->detail_description !!}
+                                </span>
+                                <br>
 
-        <a id="test" href="{{ $child4 }}" target="_self">
-            <div class="items-center" style="width: 100%">
-                <span class="text" style="width: 20%; display: inline-block">
-
-                    @if(checkIfChild($child4))
-                    {!! '<fa class="fa fa-eye" aria-hidden="true"></fa>' !!}
-                    @endif
-
-                </span>
-                <span class="text"
-                    style="width: 80%; display: inline-block; @if(checkIfChild($child4)) {{ 'font-weight: bold; font-style: italic' }} @endif">
-                    {{ $child4 }}
-                </span>
+                                <span class="text-dark-75">
+                                    <!-- Route to specific release -->
+                                    <a href="{{ route('web_releasevuejs_show_detail_release', $release->id) }}"
+                                        class="text-hover-dark" style="float: right">To The Moon</a>
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
 
             </div>
-        </a>
+        </div>
     </div>
-
-    <i class="fa-solid fa-gear"></i>
-
-    <img src="/storage/uploads/product_images/1_1696386346_1.png"
-    class="card-img-top border border-bottom" alt="1_1696386346_1.png"
-    style="max-width: 23vw; max-height: 23vw; padding:1vw;">
+    <!-- end:timeline -->
 @endsection

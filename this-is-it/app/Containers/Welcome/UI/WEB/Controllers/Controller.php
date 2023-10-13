@@ -184,6 +184,6 @@ class Controller extends WebController
 
   public function showTest($id = NULL, $uri = NULL)
   {
-    return view('welcome::test-page1');
+    return view('welcome::test-page');
   }
 }

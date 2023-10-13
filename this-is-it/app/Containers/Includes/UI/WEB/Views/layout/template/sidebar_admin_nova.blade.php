@@ -65,11 +65,11 @@
             'children' => [
                 [
                     'label' => 'Show Release',
-                    'url' => '/releases',
+                    'url' => '/releasevuejs',
                 ],
                 [
                     'label' => 'Create Release',
-                    'url' => '/releases/new',
+                    'url' => '/releasevuejs/new',
                 ],
             ],
         ],
