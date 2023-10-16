@@ -22,7 +22,7 @@
         $products = \App\Containers\Product\Models\Product::all();
 
         //Depends on the order
-        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(5);
+        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(10);
 
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -93,7 +93,7 @@
 
                             <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}"
                                 style="display: block;" onclick="toggleDateDisplay(this)">
-                                <span class="text-info label label-inline label-light-danger font-weight-bolder">
+                                <span class="text-info label label-inline label-light-@if($key % 2 == 0){{ 'success' }}@else{{ 'danger' }}@endif font-weight-bolder">
                                     <!--Pick one-->
 
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
@@ -103,7 +103,7 @@
 
                             <div class="timeline-label" id="timeline-label_date_{{ $release->id }}" style="display: none;"
                                 onclick="toggleDateDisplay(this)">
-                                <span class="text-info label label-inline label-light-danger font-weight-bolder">
+                                <span class="text-info label label-inline label-light-@if($key % 2 == 0){{ 'success' }}@else{{ 'danger' }}@endif font-weight-bolder">
                                     <!--Pick one-->
 
                                     <i class="flaticon2-calendar-9 fa-sm text-info mr-1"></i>
@@ -156,7 +156,7 @@
                                             <div class="tab-pane fade max-h-200px overflow-ellipsis" id="kt_tab_pane_2_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
                                                 {{-- Tab Detail description --}}
-                                                {!! $release->detail_description !!}
+                                                {!! str_replace('src="', 'class="h-30px w-auto" src="', $release->detail_description) !!}
                                             </div>
                                             <div class="tab-pane fade card-scroll max-h-250px" id="kt_tab_pane_3_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}">
