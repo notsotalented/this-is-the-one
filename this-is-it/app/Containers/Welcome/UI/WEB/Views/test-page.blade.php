@@ -22,7 +22,7 @@
         $products = \App\Containers\Product\Models\Product::all();
 
         //Depends on the order
-        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->get();
+        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(5);
 
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -51,8 +51,9 @@
             } else {
                 toggleOn = (element.id).replace('date', 'difference');
             }
-            element.style.display = 'none';
+
             document.getElementById(toggleOn).style.display = 'block';
+            element.style.display = 'none';
         }
     </script>
 @endsection
@@ -82,10 +83,10 @@
                             <!--Style Indicator badge, but can be Icon, Images, ... -->
                             <!--Color code event E.g: Red = Alert, Yellow = Warning, Blue = Information, ...-->
                             <div class="timeline-badge">
-                                @if ($release->id % 2 == 0)
-                                    <div class="bg-danger"></div>
+                                @if ($key % 2 == 0)
+                                    <div class="bg-success"></div>
                                 @else
-                                    <div class="bg-primary"></div>
+                                    <div class="bg-danger"></div>
                                 @endif
 
                             </div>
@@ -94,11 +95,9 @@
                                 style="display: block;" onclick="toggleDateDisplay(this)">
                                 <span class="text-info label label-inline label-light-danger font-weight-bolder">
                                     <!--Pick one-->
-                                    {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
 
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
-                                    {{-- {{ $release->created_at->format('H:i A') }} --}}
                                 </span>
                             </div>
 
@@ -106,11 +105,9 @@
                                 onclick="toggleDateDisplay(this)">
                                 <span class="text-info label label-inline label-light-danger font-weight-bolder">
                                     <!--Pick one-->
-                                    {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
 
                                     <i class="flaticon2-calendar-9 fa-sm text-info mr-1"></i>
                                     {{ date('H:i A d/m/Y', strtotime($release->created_at)) }}
-                                    {{-- {{ $release->created_at->format('H:i A') }} --}}
                                 </span>
                             </div>
 
@@ -119,9 +116,9 @@
                                 <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
                                     <div class="card-header card-header-tabs-line bg-secondary">
                                         <div class="card-title">
-                                            <h3 class="card-label">
+                                            <a class="card-label font-weight-bolder @if($key % 2 == 0){{ 'text-success' }}@else{{ 'text-danger' }}@endif" onclick="toggleDateDisplay(this)" href="/releasevuejs/{{ $release->id }}">
                                                 {{ $release->name }}
-                                            </h3>
+                                            </a>
                                         </div>
                                         <div class="card-toolbar">
                                             <ul class="nav nav-tabs nav-bold nav-tabs-line">
@@ -129,33 +126,22 @@
                                                     <a class="nav-link active" data-toggle="tab"
                                                         href="#kt_tab_pane_1_3_{{ $release->id }}">
                                                         <span class="nav-icon"><i class="flaticon2-information"></i></span>
-                                                        <span class="nav-text">Tóm tắt</span>
+                                                        <span class="nav-text">Tiêu đề</span>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab"
                                                         href="#kt_tab_pane_2_3_{{ $release->id }}">
                                                         <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
-                                                        <span class="nav-text">Chi tiết</span>
+                                                        <span class="nav-text">Tóm tắt</span>
                                                     </a>
                                                 </li>
-                                                <li class="nav-item dropdown">
-                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown"
-                                                        href="#" role="button" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <span class="nav-icon"><i class="flaticon2-indent-dots"></i></span>
-                                                        <span class="nav-text">Khác</span>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                                                        <a class="dropdown-item" data-toggle="tab"
-                                                            href="#kt_tab_pane_3_3_{{ $release->id }}"><span
-                                                                class="nav-text"><i
-                                                                    class="flaticon2-photograph mr-2"></i>Ảnh</span></a>
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('web_releasevuejs_show_detail_release', $release->id) }}"><span
-                                                                class="nav-text"><i class="flaticon2-notepad mr-2"></i>Tới
-                                                                suộc</span></a>
-                                                    </div>
+                                                <li class="nav-item">
+                                                  <a class="nav-link" data-toggle="tab"
+                                                      href="#kt_tab_pane_3_3_{{ $release->id }}">
+                                                      <span class="nav-icon"><i class="flaticon2-photograph mr-2"></i></span>
+                                                      <span class="nav-text">Ảnh</span>
+                                                  </a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -175,6 +161,47 @@
                                             <div class="tab-pane fade" id="kt_tab_pane_3_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}">
                                                 {{-- Tab ...? --}}
+                                                <div id="carouselImages_{{ $release->id }}"
+                                                  class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                                  <div class="carousel-indicators">
+
+                                                      @foreach ($release->images as $key => $photo)
+                                                          <button type="button" data-bs-target="#carouselImages_{{ $release->id }}"
+                                                              data-bs-slide-to="{{ $key }}"
+                                                              class="@if ($key == 0) {{ 'active' }} @endif"
+                                                              aria-current="@if ($key == 0) {{ 'true' }} @endif"
+                                                              aria-label="Slide {{ $key }}"></button>
+                                                      @endforeach
+
+                                                  </div>
+                                                  <div class="carousel-inner">
+
+                                                      @foreach ($release->images as $key => $photo)
+                                                          <div
+                                                              class="carousel-item @if ($key == 0) {{ 'active' }} @endif">
+                                                              <img src="/storage/images-release/{{ $photo }}"
+                                                                  class="card-img-top border border-bottom" alt="{{ $photo }}"
+                                                                  style="max-width: 23vw; max-height: 23vw; padding:1vw;">
+                                                          </div>
+                                                      @endforeach
+
+                                                  </div>
+
+                                                  @if (count($release->images) > 1)
+                                                      <button class="carousel-control-prev" type="button"
+                                                          data-bs-target="#carouselImages{{ str_replace(' ', '_', $release) }}"
+                                                          data-bs-slide="prev">
+                                                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                          <span class="visually-hidden">Previous</span>
+                                                      </button>
+                                                      <button class="carousel-control-next" type="button"
+                                                          data-bs-target="#carouselImages{{ str_replace(' ', '_', $release) }}"
+                                                          data-bs-slide="next">
+                                                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                          <span class="visually-hidden">Next</span>
+                                                      </button>
+                                                  @endif
+                                              </div>
                                             </div>
                                         </div>
                                     </div>
