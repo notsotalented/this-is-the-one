@@ -1,6 +1,9 @@
-@extends('includes::layout.app_admin_nova')
+@extends('releasevuejs::layout.layout_cloud')
 
-@section('title', 'Data Tables')
+@section('title')
+  {{ 'Clients see releases' }}
+  {!! '<i class="far fa-eye text-primary"></i> <i class="far fa-eye text-primary"></i>' !!}
+@endsection
 
 @section('css')
     <style>
@@ -156,10 +159,10 @@
                                             <div class="tab-pane fade max-h-200px overflow-ellipsis" id="kt_tab_pane_2_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
                                                 {{-- Tab Detail description --}}
-                                                {!! str_replace('src="', 'class="h-30px w-auto" src="', $release->detail_description) !!}
+                                                {!! str_replace('src="', 'class="h-50px w-auto" src="', $release->detail_description) !!}
                                             </div>
-                                            <div class="tab-pane fade card-scroll max-h-250px" id="kt_tab_pane_3_3_{{ $release->id }}"
-                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}">
+                                            <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
+                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 210px">
                                                 {{-- Tab ...? --}}
                                                 @foreach ($release->images as $key => $image)
                                                   <img class="img-fluid border border-secondary mb-2 max-h-100px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
