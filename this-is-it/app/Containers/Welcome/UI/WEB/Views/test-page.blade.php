@@ -163,7 +163,7 @@
                                             </div>
                                             <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 210px">
-                                                {{-- Tab ...? --}}
+                                                {{-- Tab images --}}
                                                 @foreach ($release->images as $key => $image)
                                                   <img class="img-fluid border border-secondary mb-2 max-h-100px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
                                                 @endforeach
