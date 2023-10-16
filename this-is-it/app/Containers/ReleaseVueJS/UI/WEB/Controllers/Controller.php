@@ -79,7 +79,7 @@ class Controller extends WebController
    */
   public function store(StoreReleaseVueJSRequest $request)
   {
-    $requestData = $request->only(['name', 'title_description', 'detail_description', 'is_publish', 'images']);
+    $requestData = $request->only(['name', 'title_description', 'detail_description', 'is_publish']);
 
     if ($request->hasFile('images_from_quill')) {
       $detail_description = $requestData['detail_description'];

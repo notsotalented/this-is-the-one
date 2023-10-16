@@ -112,7 +112,7 @@
                             </div>
 
                             <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
-                            <div class="timeline-content max-h-30">
+                            <div class="timeline-content">
                                 <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
                                     <div class="card-header card-header-tabs-line bg-secondary">
                                         <div class="card-title">
@@ -153,55 +153,17 @@
                                                 {{-- Tab Short description --}}
                                                 {{ $release->title_description }}
                                             </div>
-                                            <div class="tab-pane fade card-scroll" id="kt_tab_pane_2_3_{{ $release->id }}"
+                                            <div class="tab-pane fade max-h-200px overflow-ellipsis" id="kt_tab_pane_2_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
                                                 {{-- Tab Detail description --}}
                                                 {!! $release->detail_description !!}
                                             </div>
-                                            <div class="tab-pane fade" id="kt_tab_pane_3_3_{{ $release->id }}"
+                                            <div class="tab-pane fade card-scroll max-h-250px" id="kt_tab_pane_3_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}">
                                                 {{-- Tab ...? --}}
-                                                <div id="carouselImages_{{ $release->id }}"
-                                                  class="carousel carousel-dark slide" data-bs-ride="carousel">
-                                                  <div class="carousel-indicators">
-
-                                                      @foreach ($release->images as $key => $photo)
-                                                          <button type="button" data-bs-target="#carouselImages_{{ $release->id }}"
-                                                              data-bs-slide-to="{{ $key }}"
-                                                              class="@if ($key == 0) {{ 'active' }} @endif"
-                                                              aria-current="@if ($key == 0) {{ 'true' }} @endif"
-                                                              aria-label="Slide {{ $key }}"></button>
-                                                      @endforeach
-
-                                                  </div>
-                                                  <div class="carousel-inner">
-
-                                                      @foreach ($release->images as $key => $photo)
-                                                          <div
-                                                              class="carousel-item @if ($key == 0) {{ 'active' }} @endif">
-                                                              <img src="/storage/images-release/{{ $photo }}"
-                                                                  class="card-img-top border border-bottom" alt="{{ $photo }}"
-                                                                  style="max-width: 23vw; max-height: 23vw; padding:1vw;">
-                                                          </div>
-                                                      @endforeach
-
-                                                  </div>
-
-                                                  @if (count($release->images) > 1)
-                                                      <button class="carousel-control-prev" type="button"
-                                                          data-bs-target="#carouselImages{{ str_replace(' ', '_', $release) }}"
-                                                          data-bs-slide="prev">
-                                                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                          <span class="visually-hidden">Previous</span>
-                                                      </button>
-                                                      <button class="carousel-control-next" type="button"
-                                                          data-bs-target="#carouselImages{{ str_replace(' ', '_', $release) }}"
-                                                          data-bs-slide="next">
-                                                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                          <span class="visually-hidden">Next</span>
-                                                      </button>
-                                                  @endif
-                                              </div>
+                                                @foreach ($release->images as $key => $image)
+                                                  <img class="img-fluid border border-secondary mb-2 max-h-100px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
