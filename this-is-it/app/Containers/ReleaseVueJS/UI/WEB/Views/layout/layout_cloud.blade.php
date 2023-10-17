@@ -1055,12 +1055,19 @@
                             <li class="menu-item " aria-haspopup="true">
                               <a href="/releasevuejs" class="menu-link">
                                   <span class="menu-icon">
-                                    <i class="flaticon2-gear fa-spin text-warning" style="--fa-animation-duration: 3s;"></i>
+                                    <i class="flaticon2-gear fa-spin text-warning"></i>
                                   </span>
-
                                   <span class="menu-text">Release</span>
                               </a>
                           </li>
+                          <li class="menu-item " aria-haspopup="true">
+                            <a href="/" class="menu-link">
+                                <span class="menu-icon">
+                                  <i class="flaticon2-gear fa-spin text-info"></i>
+                                </span>
+                                <span class="menu-text">Homepage</span>
+                            </a>
+                        </li>
                         </ul>
                         <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
                             <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>

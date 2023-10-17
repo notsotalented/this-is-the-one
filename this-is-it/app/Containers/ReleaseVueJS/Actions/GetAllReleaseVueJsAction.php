@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\App;
 
 class GetAllReleaseVueJsAction extends Action
 {
-    public function run(DataTransporter $request)
+    public function run(DataTransporter $request = NULL)
     {
         $instance = App::make(GetAllReleaseVueJsTask::class);
         $instance->addRequestCriteria();

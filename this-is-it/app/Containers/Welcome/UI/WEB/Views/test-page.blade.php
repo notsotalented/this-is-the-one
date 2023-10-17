@@ -2,7 +2,7 @@
 
 @section('title')
     {{ 'Clients see releases' }}
-    {!! '<i class="far fa-eye text-primary"></i> <i class="far fa-eye text-primary"></i>' !!}
+    {!! '<i class="far fa-eye text-success"></i> <i class="far fa-eye text-warning"></i>' !!}
 @endsection
 
 @section('css')
@@ -64,6 +64,41 @@
             searchParams.set("paginate", per_page);
             window.location.search = searchParams.toString();
         }
+
+        var openEyes = document.getElementById('sub_title_h5').innerHTML;
+        var closedEyes =
+            'Clients see releases <i class="far fa-window-minimize text-success"></i> <i class="far fa-window-minimize text-warning"></i>';
+        //made blink a named function to improve readability a bit
+        var blink = function(isSecondBlink) {
+            //got rid of the ternary expressions since we're always doing
+            //open eyes -> close eyes -> delay -> open eyes
+
+            //close both eyes
+            document.getElementById('sub_title_h5').innerHTML = closedEyes;
+
+            //let's reopen those eyes after a brief delay to make a nice blink animation
+            //as it happens, humans take ~250ms to blink, so let's use a number close to there
+            setTimeout(function() {
+                document.getElementById('sub_title_h5').innerHTML = openEyes;
+            }, 200);
+
+            if (isSecondBlink) {
+                return;
+            } //prevents us from blinking 3+ times
+
+            //This provides a 40% chance of blinking twice, adjust as needed
+            var blinkAgain = Math.random() <= 0.3;
+
+            //if we need to blink again, go ahead and do it in 300ms
+            if (blinkAgain) {
+                setTimeout(function() {
+                    blink(true);
+                }, 300);
+            }
+        }
+
+        //go ahead and blink every 2 seconds
+        window.onload = setInterval(blink, 6000);
     </script>
 @endsection
 
@@ -221,6 +256,21 @@
                             <input type="number" class="form-control" placeholder="Email" min="1"
                                 value="{{ request()->paginate ?? '10' }}" />
                             <div class="input-group-append"><span class="input-group-text">result(s) per page</span></div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label text-right col-lg-3 col-sm-12">Sorted By</label>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <select class="form-control selectpicker">
+                                <option>Ascending</option>
+                                <option>Descending</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <select class="form-control selectpicker">
+                                <option>Ascending</option>
+                                <option>Descending</option>
+                            </select>
                         </div>
                     </div>
                 </div>
