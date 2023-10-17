@@ -1,8 +1,8 @@
 @extends('releasevuejs::layout.layout_cloud')
 
 @section('title')
-  {{ 'Clients see releases' }}
-  {!! '<i class="far fa-eye text-primary"></i> <i class="far fa-eye text-primary"></i>' !!}
+    {{ 'Clients see releases' }}
+    {!! '<i class="far fa-eye text-primary"></i> <i class="far fa-eye text-primary"></i>' !!}
 @endsection
 
 @section('css')
@@ -60,10 +60,10 @@
         }
 
         function load_page(per_page) {
-        var searchParams = new URLSearchParams(window.location.search);
-        searchParams.set("paginate", per_page);
-        window.location.search = searchParams.toString();
-    }
+            var searchParams = new URLSearchParams(window.location.search);
+            searchParams.set("paginate", per_page);
+            window.location.search = searchParams.toString();
+        }
     </script>
 @endsection
 
@@ -79,13 +79,13 @@
 
 @section('content')
     <!-- begin:timeline -->
-    <div class="container-fluid">
-      <button type="button" class="btn btn-icon btn-white pulse pulse-primary" data-toggle="modal" data-target="#dataSortModal">
-        <i class="flaticon2-dashboard text-primary"></i>
-        <span class="pulse-ring"></span>
-      </button>
-      <label for="level"><b>{{ $releases->appends(Request::all())->onEachSide(5)->links() }}</b></label>
-
+    <div class="container">
+        <button type="button" class="btn btn-circle btn-icon btn-light-primary btn-hover-primary pulse pulse-dark"
+            data-toggle="modal" data-target="#dataSortModal">
+            <i class="flaticon2-dashboard text-primary"></i>
+            <span class="pulse-ring"></span>
+        </button>
+        <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
     </div>
 
     <div class="example example-basic bg-white">
@@ -96,7 +96,7 @@
 
                     @foreach ($releases as $key => $release)
                         <div
-                            class="timeline-item timeline-item-@if ($key % 2 == 0){{ 'left' }}@else{{ 'right' }}@endif"">
+                            class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
                             <!--Style Indicator badge, but can be Icon, Images, ... -->
                             <!--Color code event E.g: Red = Alert, Yellow = Warning, Blue = Information, ...-->
                             <div class="timeline-badge">
@@ -108,17 +108,21 @@
                             </div>
 
                             <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}"
-                                style="display: flex; flex-direction: @if($key % 2 == 0){{ 'row-reverse' }}@else{{ 'row' }}@endif;" onclick="toggleDateDisplay(this)">
-                                <span class="text-info label label-inline label-light-@if($key % 2 == 0){{ 'success' }}@else{{ 'danger' }}@endif font-weight-bolder">
+                                style="display: flex; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;"
+                                onclick="toggleDateDisplay(this)">
+                                <span
+                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder">
                                     <!--Pick one-->
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
                                 </span>
                             </div>
 
-                            <div class="timeline-label" id="timeline-label_date_{{ $release->id }}" style="display: none; flex-direction: @if($key % 2 == 0){{ 'row-reverse' }}@else{{ 'row' }}@endif;"
+                            <div class="timeline-label" id="timeline-label_date_{{ $release->id }}"
+                                style="display: none; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;"
                                 onclick="toggleDateDisplay(this)">
-                                <span class="text-info label label-inline label-light-@if($key % 2 == 0){{ 'success' }}@else{{ 'danger' }}@endif font-weight-bolder">
+                                <span
+                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-  danger' }} @endif font-weight-bolder">
                                     <!--Pick one-->
 
                                     <i class="flaticon2-calendar-9 fa-sm text-info mr-1"></i>
@@ -131,12 +135,14 @@
                                 <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
                                     <div class="card-header card-header-tabs-line bg-secondary">
                                         <div class="card-title">
-                                            <a class="card-label font-weight-bolder @if($key % 2 == 0){{ 'text-success' }}@else{{ 'text-danger' }}@endif" onclick="toggleDateDisplay(this)" href="/releasevuejs/{{ $release->id }}">
+                                            <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
+                                                onclick="toggleDateDisplay(this)" href="/releasevuejs/{{ $release->id }}">
                                                 {{ $release->name }}
                                             </a>
                                         </div>
                                         <div class="card-toolbar">
                                             <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                                                {{-- Title_Description tab --}}
                                                 <li class="nav-item">
                                                     <a class="nav-link active" data-toggle="tab"
                                                         href="#kt_tab_pane_1_3_{{ $release->id }}">
@@ -144,6 +150,7 @@
                                                         <span class="nav-text">Tiêu đề</span>
                                                     </a>
                                                 </li>
+                                                {{-- Detail_Description tab --}}
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-toggle="tab"
                                                         href="#kt_tab_pane_2_3_{{ $release->id }}">
@@ -151,35 +158,38 @@
                                                         <span class="nav-text">Tóm tắt</span>
                                                     </a>
                                                 </li>
-                                                <li class="nav-item">
+                                                {{-- Images tab --}}
+                                                {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
                                                       href="#kt_tab_pane_3_3_{{ $release->id }}">
                                                       <span class="nav-icon"><i class="flaticon2-photograph mr-2"></i></span>
                                                       <span class="nav-text">Ảnh</span>
                                                   </a>
-                                                </li>
+                                                </li> --}}
                                             </ul>
                                         </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="tab-content five-lines">
+                                            {{-- Tab Short description --}}
                                             <div class="tab-pane fade show active" id="kt_tab_pane_1_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_1_3_{{ $release->id }}">
-                                                {{-- Tab Short description --}}
                                                 {{ $release->title_description }}
                                             </div>
-                                            <div class="tab-pane fade max-h-200px overflow-ellipsis" id="kt_tab_pane_2_3_{{ $release->id }}"
-                                                role="tabpanel" aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
-                                                {{-- Tab Detail description --}}
+                                            {{-- Tab Detail description --}}
+                                            <div class="tab-pane fade max-h-200px overflow-ellipsis"
+                                                id="kt_tab_pane_2_3_{{ $release->id }}" role="tabpanel"
+                                                aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
                                                 {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
                                             </div>
-                                            <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
+                                            {{-- Tab images --}}
+                                            {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 310px">
-                                                {{-- Tab images --}}
+
                                                 @foreach ($release->images as $key => $image)
                                                   <img class="img-fluid border border-secondary mb-2 max-h-150px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
                                                 @endforeach
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -193,29 +203,34 @@
     <!-- end:timeline -->
 
 
-<!-- Modal-->
-<div class="modal fade" id="dataSortModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="dataSortModal">Filters</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <i aria-hidden="true" class="ki ki-close"></i>
-              </button>
-          </div>
-          <div class="modal-body">
-            <div class="input-group mb-3" style="max-width: 16vw">
-              <span class="input-group-text" style="width: 8vw">Per Page</span>
-              <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="10" min="1"
-                  max="100"
-                  value="{{ $_GET['paginate'] ?? '10'}}">
-          </div>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Abort</button>
-              <button type="button" class="btn btn-primary font-weight-bold">Apply</button>
-          </div>
-      </div>
-  </div>
-</div>
+    <!-- Modal-->
+    <div class="modal fade" id="dataSortModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataSortModal1">Filters</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Show</span></div>
+                            <input type="number" class="form-control" placeholder="Email" min="1"
+                                value="{{ request()->paginate ?? '10' }}" />
+                            <div class="input-group-append"><span class="input-group-text">result(s) per page</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-primary font-weight-bold"
+                        data-dismiss="modal">Abort</button>
+                    <button type="button" class="btn btn-primary font-weight-bold" data-dismiss="modal"
+                        onclick="applyFilter()">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

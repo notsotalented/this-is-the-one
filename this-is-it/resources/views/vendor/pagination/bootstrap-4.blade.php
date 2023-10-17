@@ -1,31 +1,36 @@
 @if ($paginator->hasPages())
-    <nav>
-        <ul class="pagination">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="d-flex flex-wrap py-2 mr-3">
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
-                <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
-                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
-                </li>
+                <a href="{{ $paginator->url(1) }}"
+                    class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1 disabled"><i
+                        class="ki ki-bold-double-arrow-back icon-xs"></i></a>
+                <a href="{{ $paginator->previousPageUrl() }}"
+                    class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1 disabled"><i
+                        class="ki ki-bold-arrow-back icon-xs"></i></a>
             @else
-                <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="@lang('pagination.previous')">&lsaquo;</a>
-                </li>
+                <a href="{{ $paginator->url(1) }}" class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                        class="ki ki-bold-double-arrow-back icon-xs"></i></a>
+                <a href="{{ $paginator->previousPageUrl() }}" class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                        class="ki ki-bold-arrow-back icon-xs"></i></a>
             @endif
-
             {{-- Pagination Elements --}}
             @foreach ($elements as $element)
                 {{-- "Three Dots" Separator --}}
                 @if (is_string($element))
-                    <li class="page-item disabled" aria-disabled="true"><span class="page-link">{{ $element }}</span></li>
+                    <a href="#"
+                        class="btn btn-circle btn-icon btn-sm border-0 btn-light-primary mr-2 my-1 disabled">{{ $element }}</a>
                 @endif
-
                 {{-- Array Of Links --}}
                 @if (is_array($element))
                     @foreach ($element as $page => $url)
                         @if ($page == $paginator->currentPage())
-                            <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
+                            <a href="{{ $url }}"
+                                class="btn btn-circle btn-icon btn-sm border-0 btn-light-primary btn-hover-primary mr-2 my-1 active font-weight-bold">{{ $page }}</a>
                         @else
-                            <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                            <a href="{{ $url }}"
+                                class="btn btn-circle btn-icon btn-sm border-0 btn-light-primary mr-2 my-1">{{ $page }}</a>
                         @endif
                     @endforeach
                 @endif
@@ -33,14 +38,19 @@
 
             {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
-                <li class="page-item">
-                    <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="@lang('pagination.next')">&rsaquo;</a>
-                </li>
+                <a href="{{ $paginator->nextPageUrl() }}" class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                        class="ki ki-bold-arrow-next icon-xs"></i></a>
+                <a href="{{ $paginator->url($paginator->lastPage()) }}" class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1"><i
+                        class="ki ki-bold-double-arrow-next icon-xs"></i></a>
             @else
-                <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
-                    <span class="page-link" aria-hidden="true">&rsaquo;</span>
-                </li>
+                <a href="{{ $paginator->nextPageUrl() }}"
+                    class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1 disabled"><i
+                        class="ki ki-bold-arrow-next icon-xs"></i></a>
+                <a href="{{ $paginator->url($paginator->lastPage()) }}"
+                    class="btn btn-circle btn-icon btn-sm btn-light-primary mr-2 my-1 disabled"><i
+                        class="ki ki-bold-double-arrow-next icon-xs"></i></a>
             @endif
-        </ul>
-    </nav>
+            </ul>
+        </div>
+    </div>
 @endif

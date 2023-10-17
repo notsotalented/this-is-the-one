@@ -1102,7 +1102,7 @@
                             class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
                             <div class="d-flex align-items-center flex-wrap mr-1">
                                 <div class="d-flex align-items-baseline mr-5">
-                                    <h5 class="text-dark font-weight-bold my-2 mr-5">@yield('title')</h5>
+                                    <h5 id="sub_title_h5" class="text-dark font-weight-bold my-2 mr-5">@yield('title')</h5>
                                 </div>
                             </div>
                         </div>

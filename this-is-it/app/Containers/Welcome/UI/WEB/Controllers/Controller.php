@@ -5,11 +5,13 @@ namespace App\Containers\Welcome\UI\WEB\Controllers;
 use Apiato\Core\Foundation\Facades\Apiato;
 use App\Containers\Authorization\Models\Permission;
 use App\Ship\Parents\Controllers\WebController;
+use App\Ship\Transporters\DataTransporter;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Support\Facades\DB;
+use App\Containers\ReleaseVueJS\UI\WEB\Requests\GetAllReleaseVueJsRequest;
 
 /**
  * Class Controller
@@ -182,9 +184,11 @@ class Controller extends WebController
     }
   }
 
-  public function showTest($id = NULL, $uri = NULL)
+  public function showTest(GetAllReleaseVueJsRequest $request)
   {
-    $releases = Apiato::call('ReleaseVueJS@GetAllReleaseVueJsAction');
+    $releases = Apiato::call('ReleaseVueJS@GetAllReleaseVueJsAction', [
+      new DataTransporter($request->all())
+    ]);
 
 
 
