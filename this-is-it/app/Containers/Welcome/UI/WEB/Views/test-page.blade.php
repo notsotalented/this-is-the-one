@@ -25,7 +25,7 @@
         $products = \App\Containers\Product\Models\Product::all();
 
         //Depends on the order
-        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(10);
+        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(request()->paginate ?? 10);
 
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -55,9 +55,15 @@
                 toggleOn = (element.id).replace('date', 'difference');
             }
 
-            document.getElementById(toggleOn).style.display = 'block';
+            document.getElementById(toggleOn).style.display = 'flex';
             element.style.display = 'none';
         }
+
+        function load_page(per_page) {
+        var searchParams = new URLSearchParams(window.location.search);
+        searchParams.set("paginate", per_page);
+        window.location.search = searchParams.toString();
+    }
     </script>
 @endsection
 
@@ -73,8 +79,16 @@
 
 @section('content')
     <!-- begin:timeline -->
+    <div class="container-fluid">
+      <button type="button" class="btn btn-icon btn-white pulse pulse-primary" data-toggle="modal" data-target="#dataSortModal">
+        <i class="flaticon2-dashboard text-primary"></i>
+        <span class="pulse-ring"></span>
+      </button>
+      <label for="level"><b>{{ $releases->appends(Request::all())->links() }}</b></label>
 
-    <div class="example example-basic" style="background-color: ivory">
+    </div>
+
+    <div class="example example-basic bg-white">
         <div class="example-preview">
             <div class="timeline timeline-4">
                 <div class="timeline-bar"></div>
@@ -91,20 +105,18 @@
                                 @else
                                     <div class="bg-danger"></div>
                                 @endif
-
                             </div>
 
                             <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}"
-                                style="display: block;" onclick="toggleDateDisplay(this)">
+                                style="display: flex; flex-direction: @if($key % 2 == 0){{ 'row-reverse' }}@else{{ 'row' }}@endif;" onclick="toggleDateDisplay(this)">
                                 <span class="text-info label label-inline label-light-@if($key % 2 == 0){{ 'success' }}@else{{ 'danger' }}@endif font-weight-bolder">
                                     <!--Pick one-->
-
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
                                 </span>
                             </div>
 
-                            <div class="timeline-label" id="timeline-label_date_{{ $release->id }}" style="display: none;"
+                            <div class="timeline-label" id="timeline-label_date_{{ $release->id }}" style="display: none; flex-direction: @if($key % 2 == 0){{ 'row-reverse' }}@else{{ 'row' }}@endif;"
                                 onclick="toggleDateDisplay(this)">
                                 <span class="text-info label label-inline label-light-@if($key % 2 == 0){{ 'success' }}@else{{ 'danger' }}@endif font-weight-bolder">
                                     <!--Pick one-->
@@ -159,13 +171,13 @@
                                             <div class="tab-pane fade max-h-200px overflow-ellipsis" id="kt_tab_pane_2_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
                                                 {{-- Tab Detail description --}}
-                                                {!! str_replace('src="', 'class="h-50px w-auto" src="', $release->detail_description) !!}
+                                                {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
                                             </div>
                                             <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
-                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 210px">
+                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 310px">
                                                 {{-- Tab images --}}
                                                 @foreach ($release->images as $key => $image)
-                                                  <img class="img-fluid border border-secondary mb-2 max-h-100px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
+                                                  <img class="img-fluid border border-secondary mb-2 max-h-150px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
                                                 @endforeach
                                             </div>
                                         </div>
@@ -180,4 +192,32 @@
         </div>
     </div>
     <!-- end:timeline -->
+
+
+<!-- Modal-->
+<div class="modal fade" id="dataSortModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="dataSortModal">Control panel</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i aria-hidden="true" class="ki ki-close"></i>
+              </button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group mb-3" style="max-width: 16vw">
+              <span class="input-group-text" style="width: 8vw">Per Page</span>
+              <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="10" min="1"
+                  max="100"
+                  value="{{ $_GET['paginate'] ?? '10'}}"
+                  onchange="load_page(this.value)">
+          </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Abort</button>
+              <button type="button" class="btn btn-primary font-weight-bold">Sort</button>
+          </div>
+      </div>
+  </div>
+</div>
 @endsection
