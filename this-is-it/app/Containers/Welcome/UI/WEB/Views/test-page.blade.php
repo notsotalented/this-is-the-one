@@ -25,7 +25,7 @@
         $products = \App\Containers\Product\Models\Product::all();
 
         //Depends on the order
-        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(request()->paginate ?? 10);
+        //$releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(request()->paginate ?? 10);
 
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -84,7 +84,7 @@
         <i class="flaticon2-dashboard text-primary"></i>
         <span class="pulse-ring"></span>
       </button>
-      <label for="level"><b>{{ $releases->appends(Request::all())->links() }}</b></label>
+      <label for="level"><b>{{ $releases->appends(Request::all())->onEachSide(5)->links() }}</b></label>
 
     </div>
 
@@ -187,7 +187,6 @@
                         </div>
                     @endforeach
                 </div>
-
             </div>
         </div>
     </div>
@@ -199,7 +198,7 @@
   <div class="modal-dialog" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="dataSortModal">Control panel</h5>
+              <h5 class="modal-title" id="dataSortModal">Filters</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <i aria-hidden="true" class="ki ki-close"></i>
               </button>
@@ -209,13 +208,12 @@
               <span class="input-group-text" style="width: 8vw">Per Page</span>
               <input type="number" class="form-control" name="per_page" style="width: 8vw" placeholder="10" min="1"
                   max="100"
-                  value="{{ $_GET['paginate'] ?? '10'}}"
-                  onchange="load_page(this.value)">
+                  value="{{ $_GET['paginate'] ?? '10'}}">
           </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Abort</button>
-              <button type="button" class="btn btn-primary font-weight-bold">Sort</button>
+              <button type="button" class="btn btn-primary font-weight-bold">Apply</button>
           </div>
       </div>
   </div>

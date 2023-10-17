@@ -282,25 +282,4 @@ class Controller extends WebController
     $image_resize->destroy();
     unlink($saved_image_uri);
   }
-
-  /*
-  * Đạo tặc
-  *
-  */
-
-  function clientViewPage() {
-    $releases = App::make(GetAllReleaseVueJsAction::class)->run();
-    dd($releases);
-
-    if ($request->expectsJson()) {
-      return response()->json(
-        $releases,
-      );
-    }
-    return view('releasevuejs::client.home', compact('releases'));
-  }
-
-  /*
-  * Hết làm giặc
-  */
 }

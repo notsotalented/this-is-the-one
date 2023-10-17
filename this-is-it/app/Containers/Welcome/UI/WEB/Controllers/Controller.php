@@ -184,6 +184,10 @@ class Controller extends WebController
 
   public function showTest($id = NULL, $uri = NULL)
   {
-    return view('welcome::test-page');
+    $releases = Apiato::call('ReleaseVueJS@GetAllReleaseVueJsAction');
+
+
+
+    return view('welcome::test-page', compact('releases'));
   }
 }
