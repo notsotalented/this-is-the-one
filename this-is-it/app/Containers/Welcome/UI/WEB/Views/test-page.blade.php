@@ -49,14 +49,17 @@
 @section('javascript')
     <script type="text/javascript">
         function toggleDateDisplay(element) {
-            if ((element.id).includes('difference')) {
-                toggleOn = (element.id).replace('difference', 'date');
-            } else {
-                toggleOn = (element.id).replace('date', 'difference');
-            }
+            diff = document.getElementById("display_diff_" + element);
+            date = document.getElementById("display_date_" + element);
 
-            document.getElementById(toggleOn).style.display = 'flex';
-            element.style.display = 'none';
+            if(date.style.display == "none") {
+              date.style.display = "-webkit-inline-box";
+              diff.style.display = "none";
+            }
+            else {
+              date.style.display = "none";
+              diff.style.display = "-webkit-inline-box";
+            }
         }
 
         function load_page(per_page) {
@@ -133,14 +136,15 @@
                 <div class="form-group row">
                     <label for="pagination-number-input" class="col-4 col-form-label">Per page:</label>
                     <div class="col-8">
-                        <input class="form-control" type="number" value="{{ request()->paginate ?? "10" }}" id="pagination-number-input" min="1" />
+                        <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
+                            id="pagination-number-input" min="1" />
                     </div>
                 </div>
                 <div class="form-group row">
-                  <label for="sorted-by-input" class="col-4 col-form-label">Sorted By:</label>
-                  <div class="col-8">
+                    <label for="sorted-by-input" class="col-4 col-form-label">Sorted By:</label>
+                    <div class="col-8">
 
-                  </div>
+                    </div>
                 </div>
                 <div class="form-group">
 
@@ -170,26 +174,21 @@
                                 @endif
                             </div>
 
-                            <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}"
-                                style="display: flex; @if($key % 2 == 0) {{ 'flex-direction: row-reverse; ' }} @endif"
-                                onclick="toggleDateDisplay(this)">
-                                <span
-                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder">
+                            <div class="timeline-label"
+                                onclick="toggleDateDisplay({{ $release->id }})">
+                                <span id="display_diff_{{ $release->id }}"
+                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
+                                    style="display: -webkit-inline-box">
                                     <!--Pick one-->
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
                                 </span>
-                            </div>
-
-                            <div class="timeline-label" id="timeline-label_date_{{ $release->id }}"
-                                style="display: none; @if($key % 2 == 0) {{ 'flex-direction: row-reverse;' }} @endif"
-                                onclick="toggleDateDisplay(this)">
-                                <span
-                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-  danger' }} @endif font-weight-bolder">
+                                <span id="display_date_{{ $release->id }}"
+                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
+                                    style="display: none">
                                     <!--Pick one-->
-
-                                    <i class="flaticon2-calendar-9 fa-sm text-info mr-1"></i>
-                                    {{ date('H:i A d/m/Y', strtotime($release->created_at)) }}
+                                    <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
+                                    {{ date('H:i A d:M:Y', strtotime($release->created_at)) }}
                                 </span>
                             </div>
 
