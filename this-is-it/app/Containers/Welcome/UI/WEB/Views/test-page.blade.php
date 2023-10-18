@@ -171,8 +171,7 @@
                             </div>
 
                             <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}"
-                                {{-- style="display: flex; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;" --}}
-
+                                style="display: flex; @if($key % 2 == 0) {{ 'flex-direction: row-reverse; ' }} @endif"
                                 onclick="toggleDateDisplay(this)">
                                 <span
                                     class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder">
@@ -183,8 +182,7 @@
                             </div>
 
                             <div class="timeline-label" id="timeline-label_date_{{ $release->id }}"
-                                {{-- style="display: flex; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;" --}}
-                                style="display: none"
+                                style="display: none; @if($key % 2 == 0) {{ 'flex-direction: row-reverse;' }} @endif"
                                 onclick="toggleDateDisplay(this)">
                                 <span
                                     class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-  danger' }} @endif font-weight-bolder">
@@ -196,12 +194,12 @@
                             </div>
 
                             <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
-                            <div class="timeline-content">
+                            <div class="timeline-content gutter-b">
                                 <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
                                     <div class="card-header card-header-tabs-line bg-secondary">
                                         <div class="card-title">
                                             <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
-                                                onclick="toggleDateDisplay(this)" href="/releasevuejs/{{ $release->id }}">
+                                                href="/releasevuejs/{{ $release->id }}">
                                                 {{ $release->name }}
                                             </a>
                                         </div>
