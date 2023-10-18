@@ -22,11 +22,8 @@
 
 @section('php')
     @php
-        $products = \App\Containers\Product\Models\Product::all();
 
-        //Depends on the order
-        //$releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(request()->paginate ?? 10);
-
+        //Convert from created_at to Time difference
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
             {
@@ -48,6 +45,7 @@
 
 @section('javascript')
     <script type="text/javascript">
+        //Switch display of Time difference <-> Time create
         function toggleDateDisplay(element) {
             diff = document.getElementById("display_diff_" + element);
             date = document.getElementById("display_date_" + element);
@@ -68,6 +66,7 @@
             window.location.search = searchParams.toString();
         }
 
+        //Blink animation, testing for some Js function
         var openEyes = document.getElementById('sub_title_h5').innerHTML;
         var closedEyes =
             'Clients see releases <i class="far fa-window-minimize text-success"></i> <i class="far fa-window-minimize text-warning"></i>';
@@ -107,6 +106,7 @@
         $('.dropdown-menu').on('click', function(e) {
             e.stopPropagation();
         });
+
         //Reset form on lose-focus
         //$('form').get(0).reset()
     </script>
@@ -132,6 +132,7 @@
             <span class="pulse-ring"></span>
         </button>
         <div class="dropdown-menu dropdown-menu">
+          {{-- Filter input --}}
             <form class="px-8 py-8">
                 <div class="form-group row">
                     <label for="pagination-number-input" class="col-4 col-form-label">Per page:</label>
@@ -164,8 +165,8 @@
                     @foreach ($releases as $key => $release)
                         <div
                             class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
-                            <!--Style Indicator badge, but can be Icon, Images, ... -->
-                            <!--Color code event E.g: Red = Alert, Yellow = Warning, Blue = Information, ...-->
+                            {{-- Badge indicator: at the moment, just for the visual --}}
+                            {{-- Suggestion: use it (and the color scheme) to indicate errors-danger, notification-info, ... --}}
                             <div class="timeline-badge">
                                 @if ($key % 2 == 0)
                                     <div class="bg-success"></div>
@@ -179,20 +180,20 @@
                                 <span id="display_diff_{{ $release->id }}"
                                     class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
                                     style="display: -webkit-inline-box">
-                                    <!--Pick one-->
+                                    {{-- Display time difference (from create till now) --}}
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
                                     {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
                                 </span>
                                 <span id="display_date_{{ $release->id }}"
                                     class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
                                     style="display: none">
-                                    <!--Pick one-->
+                                    {{-- Display create date --}}
                                     <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
-                                    {{ date('H:i A d:M:Y', strtotime($release->created_at)) }}
+                                    {{ date('H:i d-m-y', strtotime($release->created_at)) }}
                                 </span>
                             </div>
 
-                            <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
+                            {{-- Original: <div class="timeline-content max-h-150px overflow-auto" > --}}
                             <div class="timeline-content gutter-b">
                                 <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
                                     <div class="card-header card-header-tabs-line bg-secondary">
