@@ -1120,7 +1120,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="row">
-
+                                      @yield('content')
                                     </div>
                                 </div>
                             </div>
@@ -1128,7 +1128,7 @@
                     </div>
                     <!-- End: Work Minh -->
                 </div>
-                @yield('content')
+
                 <!-- end:: Minh -->
                 <div class="footer bg-white py-4 d-flex flex-lg-column" id="kt_footer">
                     <!--begin::Container-->

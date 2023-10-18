@@ -99,6 +99,13 @@
 
         //go ahead and blink every 2 seconds
         window.onload = setInterval(blink, 6000);
+
+        //Prevent auto-close dropdown
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+        });
+        //Reset form on lose-focus
+        //$('form').get(0).reset()
     </script>
 @endsection
 
@@ -115,11 +122,32 @@
 @section('content')
     <!-- begin:timeline -->
     <div class="container">
-        <button type="button" class="btn btn-circle btn-icon btn-light-primary btn-hover-primary pulse pulse-dark"
-            data-toggle="modal" data-target="#dataSortModal">
+        {{-- Filter button --}}
+        <button class="btn btn-circle btn-icon btn-light-primary btn-hover-primary pulse pulse-dark" type="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="flaticon2-dashboard text-primary"></i>
             <span class="pulse-ring"></span>
         </button>
+        <div class="dropdown-menu dropdown-menu">
+            <form class="px-8 py-8">
+                <div class="form-group row">
+                    <label for="pagination-number-input" class="col-4 col-form-label">Per page:</label>
+                    <div class="col-8">
+                        <input class="form-control" type="number" value="{{ request()->paginate ?? "10" }}" id="pagination-number-input" min="1" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                  <label for="sorted-by-input" class="col-4 col-form-label">Sorted By:</label>
+                  <div class="col-8">
+
+                  </div>
+                </div>
+                <div class="form-group">
+
+                </div>
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </form>
+        </div>
         <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
     </div>
 
@@ -143,7 +171,8 @@
                             </div>
 
                             <div class="timeline-label" id="timeline-label_difference_{{ $release->id }}"
-                                style="display: flex; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;"
+                                {{-- style="display: flex; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;" --}}
+
                                 onclick="toggleDateDisplay(this)">
                                 <span
                                     class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder">
@@ -154,7 +183,8 @@
                             </div>
 
                             <div class="timeline-label" id="timeline-label_date_{{ $release->id }}"
-                                style="display: none; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;"
+                                {{-- style="display: flex; flex-direction: @if ($key % 2 == 0) {{ 'row-reverse' }}@else{{ 'row' }} @endif;" --}}
+                                style="display: none"
                                 onclick="toggleDateDisplay(this)">
                                 <span
                                     class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-  danger' }} @endif font-weight-bolder">
