@@ -79,7 +79,7 @@ class Controller extends WebController
    */
   public function store(StoreReleaseVueJSRequest $request)
   {
-    $requestData = $request->only(['name', 'title_description', 'detail_description', 'is_publish', 'images']);
+    $requestData = $request->only(['name', 'title_description', 'detail_description', 'is_publish']);
 
     if ($request->hasFile('images_from_quill')) {
       $detail_description = $requestData['detail_description'];
@@ -282,25 +282,4 @@ class Controller extends WebController
     $image_resize->destroy();
     unlink($saved_image_uri);
   }
-
-  /*
-  * Đạo tặc
-  *
-  */
-
-  function clientViewPage() {
-    $releases = App::make(GetAllReleaseVueJsAction::class)->run();
-    dd($releases);
-
-    if ($request->expectsJson()) {
-      return response()->json(
-        $releases,
-      );
-    }
-    return view('releasevuejs::client.home', compact('releases'));
-  }
-
-  /*
-  * Hết làm giặc
-  */
 }

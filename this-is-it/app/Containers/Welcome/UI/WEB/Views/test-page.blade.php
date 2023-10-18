@@ -1,6 +1,9 @@
-@extends('includes::layout.app_admin_nova')
+@extends('releasevuejs::layout.layout_cloud')
 
-@section('title', 'Data Tables')
+@section('title')
+    {{ 'Clients see releases' }}
+    {!! '<i class="far fa-eye text-success"></i> <i class="far fa-eye text-warning"></i>' !!}
+@endsection
 
 @section('css')
     <style>
@@ -22,7 +25,7 @@
         $products = \App\Containers\Product\Models\Product::all();
 
         //Depends on the order
-        $releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->get();
+        //$releases = \App\Containers\ReleaseVueJS\Models\ReleaseVueJS::orderByDesc('id')->paginate(request()->paginate ?? 10);
 
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -45,36 +48,67 @@
 
 @section('javascript')
     <script type="text/javascript">
-        function lightsUp(element) {
-          //Do something cool
+        function toggleDateDisplay(element) {
+            diff = document.getElementById("display_diff_" + element);
+            date = document.getElementById("display_date_" + element);
 
+            if(date.style.display == "none") {
+              date.style.display = "-webkit-inline-box";
+              diff.style.display = "none";
+            }
+            else {
+              date.style.display = "none";
+              diff.style.display = "-webkit-inline-box";
+            }
         }
 
-        function lightsDown(element) {
-          //Do something uncool
-
+        function load_page(per_page) {
+            var searchParams = new URLSearchParams(window.location.search);
+            searchParams.set("paginate", per_page);
+            window.location.search = searchParams.toString();
         }
 
-        function calculateTimeDifference(time) {
+        var openEyes = document.getElementById('sub_title_h5').innerHTML;
+        var closedEyes =
+            'Clients see releases <i class="far fa-window-minimize text-success"></i> <i class="far fa-window-minimize text-warning"></i>';
+        //made blink a named function to improve readability a bit
+        var blink = function(isSecondBlink) {
+            //got rid of the ternary expressions since we're always doing
+            //open eyes -> close eyes -> delay -> open eyes
 
-          var inputTime = new Date(time).getTime();
-          var currentTime = new Date().getTime();
-          var timeDifferenceInSeconds = Math.floor((currentTime - inputTime) / 1000);
+            //close both eyes
+            document.getElementById('sub_title_h5').innerHTML = closedEyes;
 
-          var seconds = timeDifferenceInSeconds % 60;
-          var minutes = Math.floor((timeDifferenceInSeconds / 60) % 60);
-          var hours = Math.floor((timeDifferenceInSeconds / 60 / 60) % 24);
-          var days = Math.floor(timeDifferenceInSeconds / 60 / 60 / 24);
+            //let's reopen those eyes after a brief delay to make a nice blink animation
+            //as it happens, humans take ~250ms to blink, so let's use a number close to there
+            setTimeout(function() {
+                document.getElementById('sub_title_h5').innerHTML = openEyes;
+            }, 200);
 
-          var currentDate = new Date();
-          var year = currentDate.getFullYear();
-          var month = currentDate.getMonth() + 1;
-          var day = currentDate.getDate();
+            if (isSecondBlink) {
+                return;
+            } //prevents us from blinking 3+ times
 
-          var formattedTimeDifference = hours + ":" + minutes + ":" + seconds + " " + day + ":" + month + ":" + year;
+            //This provides a 40% chance of blinking twice, adjust as needed
+            var blinkAgain = Math.random() <= 0.3;
 
-          console.log(formattedTimeDifference);
+            //if we need to blink again, go ahead and do it in 300ms
+            if (blinkAgain) {
+                setTimeout(function() {
+                    blink(true);
+                }, 300);
+            }
         }
+
+        //go ahead and blink every 2 seconds
+        window.onload = setInterval(blink, 6000);
+
+        //Prevent auto-close dropdown
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+        });
+        //Reset form on lose-focus
+        //$('form').get(0).reset()
     </script>
 @endsection
 
@@ -90,64 +124,190 @@
 
 @section('content')
     <!-- begin:timeline -->
+    <div class="container">
+        {{-- Filter button --}}
+        <button class="btn btn-circle btn-icon btn-light-primary btn-hover-primary pulse pulse-dark" type="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="flaticon2-dashboard text-primary"></i>
+            <span class="pulse-ring"></span>
+        </button>
+        <div class="dropdown-menu dropdown-menu">
+            <form class="px-8 py-8">
+                <div class="form-group row">
+                    <label for="pagination-number-input" class="col-4 col-form-label">Per page:</label>
+                    <div class="col-8">
+                        <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
+                            id="pagination-number-input" min="1" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sorted-by-input" class="col-4 col-form-label">Sorted By:</label>
+                    <div class="col-8">
 
-    <div class="example example-basic" style="background-color: ivory">
+                    </div>
+                </div>
+                <div class="form-group">
+
+                </div>
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </form>
+        </div>
+        <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
+    </div>
+
+    <div class="example example-basic bg-white">
         <div class="example-preview">
             <div class="timeline timeline-4">
                 <div class="timeline-bar"></div>
                 <div class="timeline-items">
 
                     @foreach ($releases as $key => $release)
-                        <div class="timeline-item timeline-item-@if($key % 2 == 0){{ 'left' }}@else{{ 'right' }}@endif""
-                        onmouseover="lightsUp(this)" onmouseout="lightsDown(this)">
+                        <div
+                            class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
                             <!--Style Indicator badge, but can be Icon, Images, ... -->
                             <!--Color code event E.g: Red = Alert, Yellow = Warning, Blue = Information, ...-->
                             <div class="timeline-badge">
-                                @if ($release->id % 2 == 0)
-                                    <div class="bg-danger"></div>
+                                @if ($key % 2 == 0)
+                                    <div class="bg-success"></div>
                                 @else
-                                    <div class="bg-primary"></div>
+                                    <div class="bg-danger"></div>
                                 @endif
-
                             </div>
 
-                            <div class="timeline-label">
-                                <span class="text-info font-weight-bold">
+                            <div class="timeline-label"
+                                onclick="toggleDateDisplay({{ $release->id }})">
+                                <span id="display_diff_{{ $release->id }}"
+                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
+                                    style="display: -webkit-inline-box">
                                     <!--Pick one-->
-                                    {{-- {{ $release->created_at->format('d-m-Y H:i:s') }} --}}
-
-                                    <i class="fas fa-hourglass-end fa-sm" style="color: gray;"></i> {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) ." ago"}}
-
-                                    {{-- {{ $release->created_at->format('H:i A') }} --}}
+                                    <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
+                                    {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
                                 </span>
-
-                                <b>{{ $release->name }}</b>
+                                <span id="display_date_{{ $release->id }}"
+                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
+                                    style="display: none">
+                                    <!--Pick one-->
+                                    <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
+                                    {{ date('H:i A d:M:Y', strtotime($release->created_at)) }}
+                                </span>
                             </div>
 
                             <!-- Original: <div class="timeline-content max-h-150px overflow-auto" > -->
-                            <div class="timeline-content max-h-30 overflow-auto">
-                                <span class="text-dark-75">
-                                    <h5> <i class="fas fa-coins fa-sm fa-spin" style="color: #dfa134;"></i> {{ $release->title_description }}</h5>
-                                </span>
-                                <br>
-                                <span class="text-dark-75 five-lines">
-                                    <!-- Need to unescape the HTML to display the text as is -->
-                                    {!! $release->detail_description !!}
-                                </span>
-                                <br>
+                            <div class="timeline-content gutter-b">
+                                <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
+                                    <div class="card-header card-header-tabs-line bg-secondary">
+                                        <div class="card-title">
+                                            <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
+                                                href="/releasevuejs/{{ $release->id }}">
+                                                {{ $release->name }}
+                                            </a>
+                                        </div>
+                                        <div class="card-toolbar">
+                                            <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                                                {{-- Title_Description tab --}}
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab"
+                                                        href="#kt_tab_pane_1_3_{{ $release->id }}">
+                                                        <span class="nav-icon"><i class="flaticon2-information"></i></span>
+                                                        <span class="nav-text">Tiêu đề</span>
+                                                    </a>
+                                                </li>
+                                                {{-- Detail_Description tab --}}
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab"
+                                                        href="#kt_tab_pane_2_3_{{ $release->id }}">
+                                                        <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
+                                                        <span class="nav-text">Tóm tắt</span>
+                                                    </a>
+                                                </li>
+                                                {{-- Images tab --}}
+                                                {{-- <li class="nav-item">
+                                                  <a class="nav-link" data-toggle="tab"
+                                                      href="#kt_tab_pane_3_3_{{ $release->id }}">
+                                                      <span class="nav-icon"><i class="flaticon2-photograph mr-2"></i></span>
+                                                      <span class="nav-text">Ảnh</span>
+                                                  </a>
+                                                </li> --}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content five-lines">
+                                            {{-- Tab Short description --}}
+                                            <div class="tab-pane fade show active" id="kt_tab_pane_1_3_{{ $release->id }}"
+                                                role="tabpanel" aria-labelledby="kt_tab_pane_1_3_{{ $release->id }}">
+                                                {{ $release->title_description }}
+                                            </div>
+                                            {{-- Tab Detail description --}}
+                                            <div class="tab-pane fade max-h-200px overflow-ellipsis"
+                                                id="kt_tab_pane_2_3_{{ $release->id }}" role="tabpanel"
+                                                aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
+                                                {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
+                                            </div>
+                                            {{-- Tab images --}}
+                                            {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
+                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 310px">
 
-                                <span class="text-dark-75">
-                                    <!-- Route to specific release -->
-                                    <a href="{{ route('web_releasevuejs_show_detail_release', $release->id) }}"
-                                        class="text-hover-dark" style="float: right">To The Moon</a>
-                                </span>
+                                                @foreach ($release->images as $key => $image)
+                                                  <img class="img-fluid border border-secondary mb-2 max-h-150px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
+                                                @endforeach
+                                            </div> --}}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
-
             </div>
         </div>
     </div>
     <!-- end:timeline -->
+
+
+    <!-- Modal-->
+    <div class="modal fade" id="dataSortModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataSortModal1">Filters</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Show</span></div>
+                            <input type="number" class="form-control" placeholder="Email" min="1"
+                                value="{{ request()->paginate ?? '10' }}" />
+                            <div class="input-group-append"><span class="input-group-text">result(s) per page</span></div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label text-right col-lg-3 col-sm-12">Sorted By</label>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <select class="form-control selectpicker">
+                                <option>Ascending</option>
+                                <option>Descending</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 col-md-9 col-sm-12">
+                            <select class="form-control selectpicker">
+                                <option>Ascending</option>
+                                <option>Descending</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-primary font-weight-bold"
+                        data-dismiss="modal">Abort</button>
+                    <button type="button" class="btn btn-primary font-weight-bold" data-dismiss="modal"
+                        onclick="applyFilter()">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
