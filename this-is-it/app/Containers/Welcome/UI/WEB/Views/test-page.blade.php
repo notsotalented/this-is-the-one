@@ -73,18 +73,25 @@
         function filterFormParams() {
             // Prevent the form from submitting
             link = window.location.href;
+            param = '';
             sortBy = document.querySelector('input[name="sortBy"]');
             orderedBy = document.querySelector('input[name="orderedBy"]');
             paginate = document.querySelector('input[name="paginate"]');
-            filter = document.querySelector('input[name="filter[]"]');
+            filter = document.querySelectorAll('input[name="filter[]"]');
 
-            if (sortBy.value != '') param =
-            if (orderedBy.value == '') orderedBy.setAttribute('disabled', '');
-            if (paginate.value == '10') paginate.setAttribute('disabled', '');
+
+            if (sortBy && sortBy.value != '')(param == '') ? param += '?sortBy=' + sortBy.value : param += '&sortBy=' + sortBy.value;
+            if (orderedBy && orderedBy.value != '')(param == '') ? param += '?orderedBy=' + orderedBy.value : param += '&orderedBy=' +
+                orderedBy.value;
+            if (paginate && paginate.value != '10')(param == '') ? param += '?paginate=' + paginate.value : param += '&paginate=' +
+                paginate.value;
 
             if (isArray(filter.value)) {
-                filter.value = (filter.values.split(',')).join(';');
+                filter.value = (filter.value.split(',')).join(';');
             }
+
+            console.log(filter[1]);
+            console.log(param);
 
 
         }
@@ -248,7 +255,8 @@
                     </div>
                 </div>
 
-                <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden onclick="window.location.replace(location.pathname)">Clear
+                <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
+                    onclick="window.location.replace(location.pathname)">Clear
                     filter <span id="numberOfFilters" class="badge badge-info">
                         {{ count(request()->all()) }}</span></button>
 
@@ -347,8 +355,8 @@
                                                     {{ $release->title_description }}
                                                 </div>
                                                 {{-- Tab Detail description --}}
-                                                <div class="tab-pane fade"
-                                                    id="kt_tab_pane_2_3_{{ $release->id }}" role="tabpanel"
+                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_{{ $release->id }}"
+                                                    role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
                                                     {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
                                                 </div>
