@@ -70,16 +70,15 @@
             element.style.brightness = "1";
         }
 
-        function filterFormParams(event) {
+        function filterFormParams() {
             // Prevent the form from submitting
-            event.preventDefault();
-
+            link = window.location.href;
             sortBy = document.querySelector('input[name="sortBy"]');
             orderedBy = document.querySelector('input[name="orderedBy"]');
             paginate = document.querySelector('input[name="paginate"]');
             filter = document.querySelector('input[name="filter[]"]');
 
-            if (sortBy.value == '') sortBy.setAttribute('disabled', '');
+            if (sortBy.value != '') param =
             if (orderedBy.value == '') orderedBy.setAttribute('disabled', '');
             if (paginate.value == '10') paginate.setAttribute('disabled', '');
 
@@ -87,8 +86,7 @@
                 filter.value = (filter.values.split(',')).join(';');
             }
 
-            // Submit the form
-            event.target.submit();
+
         }
 
         function checkParamsLegitToNotify() {
@@ -256,7 +254,7 @@
 
                 <button type="reset" class="btn btn-light btn-hover-secondary"">Reset
                     <i class="flaticon2-refresh-1"></i></button>
-                <button type="submit" class="btn btn-primary" onclick="filterFormParams(this)">Apply <i
+                <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Apply <i
                         class="flaticon2-check-mark icon-nm"></i></button>
             </form>
         </div>
