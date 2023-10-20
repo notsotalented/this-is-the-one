@@ -9,15 +9,14 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Go-to <i class="fa-solid fa-rocket fa-bounce"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <div class="container-fluid">
                             @can('list-users')
-                                <li><a id="go-to-user" class="dropdown-item"
-                                        href="{{ route('users-profile') }}">Users</a></li>
+                                <li><a id="go-to-user" class="dropdown-item" href="{{ route('users-profile') }}">Users</a>
+                                </li>
                             @endcan
 
                             <li><a id="go-to-products" class="dropdown-item"
@@ -29,8 +28,7 @@
 
                 @can('access-dashboard')
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Dashboard <i class="fa-solid fa-gear fa-spin" style="--fa-animation-duration: 5s;"></i>
                         </a>
                         <ul class="dropdown-menu">
@@ -48,8 +46,8 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" aria-current="page"
-                                            href="{{ route('register-power') }}">Add Power User</a></li>
+                                    <li><a class="dropdown-item" aria-current="page" href="{{ route('register-power') }}">Add
+                                            Power User</a></li>
                                 @endcan
                             </div>
                         </ul>
@@ -62,12 +60,11 @@
                     <li class="nav-item dropdown">
 
                         <div class="input-group me-auto mb-2 mb-lg-0 ml-1">
-                            <span class="input-group-text bg-info" id="search_barr"><i
-                                    class="fa-solid fa-binoculars fa-sm" style="color: white"></i></span>
+                            <span class="input-group-text bg-info" id="search_barr"><i class="fa-solid fa-binoculars fa-sm"
+                                    style="color: white"></i></span>
                             <input data-bs-toggle="dropdown" data-bs-target="alibabon" type="text" id="search_bar"
                                 name="search_bar" class="form-control me-0" placeholder="Search anything"
-                                aria-label="search" aria-describedby="search_box" style="width: 22vw"
-                                autocomplete="off">
+                                aria-label="search" aria-describedby="search_box" style="width: 22vw" autocomplete="off">
 
                             <ul id="alibabon" class="dropdown-menu dropdown-menu-lg-end"
                                 style="overflow:auto; max-height: 50vh;">
@@ -135,7 +132,7 @@
     {{-- MESSAGE CENTER --}}
     @if (session('status'))
         <div id="status_display"
-            class="alert alert-@if(preg_match('/successfully/', session('status'))){{ 'success' }}@else{{ 'warning' }}@endif alert-dismissible fade show"
+            class="alert @if (preg_match('/successfully/', session('status'))) {{ 'alert-success' }}@else{{ 'alert-warning' }} @endif alert-dismissible fade show"
             role="alert">
             <i class="fa-solid fa-circle-info fa"></i> {{ session('status') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -165,8 +162,7 @@
                 <div class="modal-body">
                     {{-- Search section --}}
                     <div class="input-group mb-3">
-                        <select id="search_where" class="form-select" style="width: 10vw"
-                            onchange="search_what()">
+                        <select id="search_where" class="form-select" style="width: 10vw" onchange="search_what()">
                             <option class="dropdown-item" value="/users">Users</option>
                             <option class="dropdown-item" value="/products">Products</option>
                         </select>
@@ -179,15 +175,13 @@
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width: 20%">Name</span>
-                        <input id="search_name" type="text" class="form-control"
-                            placeholder="Relative search" aria-label="search_name"
-                            aria-describedby="search_name">
+                        <input id="search_name" type="text" class="form-control" placeholder="Relative search"
+                            aria-label="search_name" aria-describedby="search_name">
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width: 20%">Email</span>
-                        <input id="search_email" type="text" class="form-control"
-                            placeholder="Relative search" aria-label="search_email"
-                            aria-describedby="search_email">
+                        <input id="search_email" type="text" class="form-control" placeholder="Relative search"
+                            aria-label="search_email" aria-describedby="search_email">
                     </div>
 
                     <hr>

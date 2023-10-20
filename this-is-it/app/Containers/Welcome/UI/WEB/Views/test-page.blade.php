@@ -27,7 +27,7 @@
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
             {
-                $suffix = ['sec(s)', 'min(s)', 'hour(s)', 'day(s)', 'week(s)', 'month(s)', 'year(s)', 'dummy'];
+                $suffix = ['giây', 'phút', 'giờ', 'ngày', 'tuần', 'tháng', 'năm', 'cái này ở đây để khỏi bị lỗi'];
                 $multi = [60, 60, 24, 7, 4.34, 12, 1111];
 
                 $i = 0;
@@ -40,6 +40,7 @@
                 return round($time, 0) . ' ' . $suffix[$i];
             }
         }
+
     @endphp
 @endsection
 
@@ -50,20 +51,72 @@
             diff = document.getElementById("display_diff_" + element);
             date = document.getElementById("display_date_" + element);
 
-            if(date.style.display == "none") {
-              date.style.display = "-webkit-inline-box";
-              diff.style.display = "none";
-            }
-            else {
-              date.style.display = "none";
-              diff.style.display = "-webkit-inline-box";
+            if (date.style.display == "none") {
+                date.style.display = "-webkit-inline-box";
+                diff.style.display = "none";
+            } else {
+                date.style.display = "none";
+                diff.style.display = "-webkit-inline-box";
             }
         }
 
-        function load_page(per_page) {
-            var searchParams = new URLSearchParams(window.location.search);
-            searchParams.set("paginate", per_page);
-            window.location.search = searchParams.toString();
+        //Lights up
+        function lightsUp(element) {
+            element.style.brightness = "0.95";
+        }
+
+        //Lights down
+        function lightsDown(element) {
+            element.style.brightness = "1";
+        }
+
+        function filterFormParams(event) {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            sortBy = document.querySelector('input[name="sortBy"]');
+            orderedBy = document.querySelector('input[name="orderedBy"]');
+            paginate = document.querySelector('input[name="paginate"]');
+            filter = document.querySelector('input[name="filter[]"]');
+
+            if (sortBy.value == '') sortBy.setAttribute('disabled', '');
+            if (orderedBy.value == '') orderedBy.setAttribute('disabled', '');
+            if (paginate.value == '10') paginate.setAttribute('disabled', '');
+
+            if (isArray(filter.value)) {
+                filter.value = (filter.values.split(',')).join(';');
+            }
+
+            // Submit the form
+            event.target.submit();
+        }
+
+        function checkParamsLegitToNotify() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            //Generate parameters object
+            const paramsObject = {};
+            for (const [key, value] of urlParams.entries()) {
+                if (!paramsObject[key]) {
+                    paramsObject[key] = [];
+                }
+                paramsObject[key].push(value);
+            }
+
+            legit = false;
+
+            if ((paramsObject.filter && paramsObject.filter != '') || (paramsObject.sortBy && paramsObject.sortBy != '') ||
+                (paramsObject.orderedBy && paramsObject.orderedBy != '') || (paramsObject.paginate && paramsObject
+                    .paginate != '10')) {
+                legit = true;
+            }
+
+            if (legit) {
+                document.getElementById('filter-button').classList.add('pulse', 'pulse-dark');
+                document.getElementById('clearFilterButton').removeAttribute("hidden");
+            }
+
+            return legit;
         }
 
         //Blink animation, testing for some Js function
@@ -101,14 +154,12 @@
 
         //go ahead and blink every 2 seconds
         window.onload = setInterval(blink, 6000);
+        window.onload = checkParamsLegitToNotify();
 
         //Prevent auto-close dropdown
         $('.dropdown-menu').on('click', function(e) {
             e.stopPropagation();
         });
-
-        //Reset form on lose-focus
-        //$('form').get(0).reset()
     </script>
 @endsection
 
@@ -124,191 +175,206 @@
 
 @section('content')
     <!-- begin:timeline -->
-    <div class="container">
+    {{-- Filter & Pagination --}}
+    <div class="container dropright">
         {{-- Filter button --}}
-        <button class="btn btn-circle btn-icon btn-light-primary btn-hover-primary pulse pulse-dark" type="button"
+        <button id="filter-button" class="btn btn-circle btn-icon btn-light-primary btn-hover-primary" type="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="flaticon2-dashboard text-primary"></i>
             <span class="pulse-ring"></span>
         </button>
-        <div class="dropdown-menu dropdown-menu">
-          {{-- Filter input --}}
-            <form class="px-8 py-8">
+        <div class="dropdown-menu dropdown-menu border border-info">
+            {{-- Filter input --}}
+            <form id="filterForm" class="px-8 py-8">
                 <div class="form-group row">
-                    <label for="pagination-number-input" class="col-4 col-form-label">Per page:</label>
+                    <label for="paginate" class="col-4 col-form-label">Per page:</label>
                     <div class="col-8">
-                        <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
-                            id="pagination-number-input" min="1" />
+                        <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}" name="paginate"
+                            min="1" />
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sorted-by-input" class="col-4 col-form-label">Sorted By:</label>
-                    <div class="col-8">
+                    <label for="sortBy" class="col-4 col-form-label">Sorted By:</label>
+                    <div class="col-4">
+                        <select class="form-control" name="sortBy">
+                            <option value="">...</option>
+                            <option value="id" @if (request()->sortBy == 'id') {{ 'selected' }} @endif>ID</option>
+                            <option value="title_description" @if (request()->sortBy == 'title_description') {{ 'selected' }} @endif>
+                                Title</option>
+                            <option value="detail_description" @if (request()->sortBy == 'detail_description') {{ 'selected' }} @endif>
+                                Detail</option>
+                            <option value="created_at" @if (request()->sortBy == 'created_at') {{ 'selected' }} @endif>Creation
+                                date</option>
+                        </select>
+                    </div>
 
+                    <div class="col-4">
+                        <select class="form-control" name="orderedBy">
+                            <option value="">...</option>
+                            <option @if (request()->orderedBy == 'asc') {{ 'selected' }} @endif value="asc">ASC</option>
+                            <option @if (request()->orderedBy == 'desc') {{ 'selected' }} @endif value="desc">DESC
+                            </option>
+                        </select>
                     </div>
                 </div>
-                <div class="form-group">
 
+                <div class="form-group row">
+                    <div class="col-9 col-form-label">
+                        <div class="checkbox-inline">
+                            <label class="checkbox checkbox-outline checkbox-success">
+                                <input type="checkbox" value="name" name="filter[]"
+                                    @if (strpos(request()->filter ?? '', 'name') !== false) {{ 'checked' }} @endif />
+                                <span></span>
+                                Tên
+                            </label>
+                            <label class="checkbox checkbox-outline checkbox-success">
+                                <input type="checkbox" value="title_description" name="filter[]"
+                                    @if (strpos(request()->filter ?? '', 'title_description') !== false) {{ 'checked' }} @endif />
+                                <span></span>
+                                Tựa đề
+                            </label>
+                            <label class="checkbox checkbox-outline checkbox-success">
+                                <input type="checkbox" value="detail_description" name="filter[]"
+                                    @if (strpos(request()->filter ?? '', 'detail_description') !== false) {{ 'checked' }} @endif />
+                                <span></span>
+                                Tóm tắt
+                            </label>
+                            <label class="checkbox checkbox-outline checkbox-success">
+                                <input type="checkbox" value="created_at" name="filter[]"
+                                    @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
+                                <span></span>
+                                Ngày tạo
+                            </label>
+                        </div>
+                        <span class="form-text text-muted">Only show these items</span>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Sign in</button>
+
+                <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden onclick="window.location.replace(location.pathname)">Clear
+                    filter <span id="numberOfFilters" class="badge badge-info">
+                        {{ count(request()->all()) }}</span></button>
+
+                <button type="reset" class="btn btn-light btn-hover-secondary"">Reset
+                    <i class="flaticon2-refresh-1"></i></button>
+                <button type="submit" class="btn btn-primary" onclick="filterFormParams(this)">Apply <i
+                        class="flaticon2-check-mark icon-nm"></i></button>
             </form>
         </div>
-        <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
-    </div>
 
-    <div class="example example-basic bg-white">
-        <div class="example-preview">
-            <div class="timeline timeline-4">
-                <div class="timeline-bar"></div>
-                <div class="timeline-items">
+        <div class="example example-basic bg-white">
+            <div class="example-preview">
+                <div class="timeline timeline-4">
+                    <div class="timeline-bar"></div>
+                    <div class="timeline-items">
 
-                    @foreach ($releases as $key => $release)
-                        <div
-                            class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
-                            {{-- Badge indicator: at the moment, just for the visual --}}
-                            {{-- Suggestion: use it (and the color scheme) to indicate errors-danger, notification-info, ... --}}
-                            <div class="timeline-badge">
-                                @if ($key % 2 == 0)
-                                    <div class="bg-success"></div>
-                                @else
-                                    <div class="bg-danger"></div>
-                                @endif
-                            </div>
+                        @foreach ($releases as $key => $release)
+                            <div
+                                class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
+                                {{-- Badge indicator: at the moment, just for the visual --}}
+                                {{-- Suggestion: use it (and the color scheme) to indicate errors-danger, notification-info, ... --}}
+                                <div class="timeline-badge">
+                                    @if ($key % 2 == 0)
+                                        <div class="bg-success"></div>
+                                    @else
+                                        <div class="bg-danger"></div>
+                                    @endif
+                                </div>
 
-                            <div class="timeline-label"
-                                onclick="toggleDateDisplay({{ $release->id }})">
-                                <span id="display_diff_{{ $release->id }}"
-                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
-                                    style="display: -webkit-inline-box">
-                                    {{-- Display time difference (from create till now) --}}
-                                    <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
-                                    {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' ago' }}
-                                </span>
-                                <span id="display_date_{{ $release->id }}"
-                                    class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
-                                    style="display: none">
-                                    {{-- Display create date --}}
-                                    <i class="fas fa-hourglass-end fa-sm text-info mr-1"></i>
-                                    {{ date('H:i d-m-y', strtotime($release->created_at)) }}
-                                </span>
-                            </div>
+                                <div class="timeline-label">
+                                    <span id="display_diff_{{ $release->id }}"
+                                        class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
+                                        style="display: -webkit-inline-box"
+                                        onclick="toggleDateDisplay({{ $release->id }})" onmouseup="lightsUp(this)"
+                                        onmouseout="lightsDown(this)">
+                                        {{-- Display time difference (from create till now) --}}
+                                        <i class="far fa-clock icon-nm text-info mr-1"></i>
+                                        {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
+                                    </span>
+                                    <span id="display_date_{{ $release->id }}"
+                                        class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
+                                        style="display: none" onclick="toggleDateDisplay({{ $release->id }})"
+                                        onmouseup="lightsUp(this)" onmouseout="lightsDown(this)">
+                                        {{-- Display create date --}}
+                                        <i class="far fa-calendar-alt icon-nm text-info mr-1"></i>
+                                        {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
+                                    </span>
+                                </div>
 
-                            {{-- Original: <div class="timeline-content max-h-150px overflow-auto" > --}}
-                            <div class="timeline-content gutter-b">
-                                <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
-                                    <div class="card-header card-header-tabs-line bg-secondary">
-                                        <div class="card-title">
-                                            <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
-                                                href="/releasevuejs/{{ $release->id }}">
-                                                {{ $release->name }}
-                                            </a>
-                                        </div>
-                                        <div class="card-toolbar">
-                                            <ul class="nav nav-tabs nav-bold nav-tabs-line">
-                                                {{-- Title_Description tab --}}
-                                                <li class="nav-item">
-                                                    <a class="nav-link active" data-toggle="tab"
-                                                        href="#kt_tab_pane_1_3_{{ $release->id }}">
-                                                        <span class="nav-icon"><i class="flaticon2-information"></i></span>
-                                                        <span class="nav-text">Tiêu đề</span>
-                                                    </a>
-                                                </li>
-                                                {{-- Detail_Description tab --}}
-                                                <li class="nav-item">
-                                                    <a class="nav-link" data-toggle="tab"
-                                                        href="#kt_tab_pane_2_3_{{ $release->id }}">
-                                                        <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
-                                                        <span class="nav-text">Tóm tắt</span>
-                                                    </a>
-                                                </li>
-                                                {{-- Images tab --}}
-                                                {{-- <li class="nav-item">
+                                {{-- Original: <div class="timeline-content max-h-150px overflow-auto" > --}}
+                                <div class="timeline-content gutter-b">
+                                    <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
+                                        <div class="card-header card-header-tabs-line bg-secondary">
+                                            <div class="card-title">
+                                                <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
+                                                    href="/releasevuejs/{{ $release->id }}">
+                                                    {{ $release->name }}
+                                                </a>
+                                            </div>
+                                            <div class="card-toolbar">
+                                                <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                                                    {{-- Title_Description tab --}}
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" data-toggle="tab"
+                                                            href="#kt_tab_pane_1_3_{{ $release->id }}">
+                                                            <span class="nav-icon"><i
+                                                                    class="flaticon2-information"></i></span>
+                                                            <span class="nav-text">Tựa đề</span>
+                                                        </a>
+                                                    </li>
+                                                    {{-- Detail_Description tab --}}
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" data-toggle="tab"
+                                                            href="#kt_tab_pane_2_3_{{ $release->id }}">
+                                                            <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
+                                                            <span class="nav-text">Tóm tắt</span>
+                                                        </a>
+                                                    </li>
+                                                    {{-- Images tab --}}
+                                                    {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
                                                       href="#kt_tab_pane_3_3_{{ $release->id }}">
                                                       <span class="nav-icon"><i class="flaticon2-photograph mr-2"></i></span>
                                                       <span class="nav-text">Ảnh</span>
                                                   </a>
                                                 </li> --}}
-                                            </ul>
+                                                </ul>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="tab-content five-lines">
-                                            {{-- Tab Short description --}}
-                                            <div class="tab-pane fade show active" id="kt_tab_pane_1_3_{{ $release->id }}"
-                                                role="tabpanel" aria-labelledby="kt_tab_pane_1_3_{{ $release->id }}">
-                                                {{ $release->title_description }}
-                                            </div>
-                                            {{-- Tab Detail description --}}
-                                            <div class="tab-pane fade max-h-200px overflow-ellipsis"
-                                                id="kt_tab_pane_2_3_{{ $release->id }}" role="tabpanel"
-                                                aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
-                                                {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
-                                            </div>
-                                            {{-- Tab images --}}
-                                            {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
+                                        <div class="card-body">
+                                            <div class="tab-content five-lines">
+                                                {{-- Tab Short description --}}
+                                                <div class="tab-pane fade show active"
+                                                    id="kt_tab_pane_1_3_{{ $release->id }}" role="tabpanel"
+                                                    aria-labelledby="kt_tab_pane_1_3_{{ $release->id }}">
+                                                    {{ $release->title_description }}
+                                                </div>
+                                                {{-- Tab Detail description --}}
+                                                <div class="tab-pane fade"
+                                                    id="kt_tab_pane_2_3_{{ $release->id }}" role="tabpanel"
+                                                    aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
+                                                    {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
+                                                </div>
+                                                {{-- Tab images --}}
+                                                {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
                                                 role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 310px">
 
                                                 @foreach ($release->images as $key => $image)
                                                   <img class="img-fluid border border-secondary mb-2 max-h-150px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
                                                 @endforeach
                                             </div> --}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- end:timeline -->
+        <!-- end:timeline -->
 
-
-    <!-- Modal-->
-    <div class="modal fade" id="dataSortModal" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dataSortModal1">Filters</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <i aria-hidden="true" class="ki ki-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend"><span class="input-group-text">Show</span></div>
-                            <input type="number" class="form-control" placeholder="Email" min="1"
-                                value="{{ request()->paginate ?? '10' }}" />
-                            <div class="input-group-append"><span class="input-group-text">result(s) per page</span></div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-form-label text-right col-lg-3 col-sm-12">Sorted By</label>
-                        <div class="col-lg-4 col-md-9 col-sm-12">
-                            <select class="form-control selectpicker">
-                                <option>Ascending</option>
-                                <option>Descending</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-4 col-md-9 col-sm-12">
-                            <select class="form-control selectpicker">
-                                <option>Ascending</option>
-                                <option>Descending</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-primary font-weight-bold"
-                        data-dismiss="modal">Abort</button>
-                    <button type="button" class="btn btn-primary font-weight-bold" data-dismiss="modal"
-                        onclick="applyFilter()">Apply</button>
-                </div>
-            </div>
-        </div>
+        {{-- Paginator navigation --}}
+        <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
     </div>
 @endsection
