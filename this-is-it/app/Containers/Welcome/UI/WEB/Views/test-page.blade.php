@@ -84,16 +84,17 @@
             if (orderBy && orderBy.value != '')(param == '') ? param += '?orderBy=' + orderBy.value : param +=
                 '&orderBy=' +
                 orderBy.value;
-            if (sortedBy && sortedBy.value != '')(param == '') ? param += '?sortedBy=' + sortedBy.value : param += '&sortedBy=' +
+            if (sortedBy && sortedBy.value != '')(param == '') ? param += '?sortedBy=' + sortedBy.value : param +=
+                '&sortedBy=' +
                 sortedBy.value;
 
 
-            filter_string = 'id;';
+            filter_string = '';
             filter.forEach(element => {
-                (element.checked) ? (filter_string == 'id;') ? filter_string += element.value: filter_string +=
+                (element.checked) ? (filter_string == '') ? filter_string += element.value: filter_string +=
                     ';' + element.value: null
             });
-            (filter_string != 'id;') ? (param == '') ? param += '?filter=' + filter_string: param += '&filter=' +
+            (filter_string != '') ? (param == '') ? param += '?filter=' + filter_string: param += '&filter=' +
                 filter_string: null;
 
             window.location.href = window.location.pathname + param;
@@ -115,7 +116,8 @@
 
             legit = false;
 
-            if ((paramsObject.filter && paramsObject.filter != '') || (paramsObject.sortedBy && paramsObject.sortedBy != '') ||
+            if ((paramsObject.filter && paramsObject.filter != '') || (paramsObject.sortedBy && paramsObject.sortedBy !=
+                    '') ||
                 (paramsObject.orderBy && paramsObject.orderBy != '') || (paramsObject.paginate && paramsObject
                     .paginate != '10')) {
                 legit = true;
@@ -129,6 +131,12 @@
             return legit;
         }
 
+        //Prevent auto-close dropdown
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+        //THIS IS A TEST FOR ANIMATION
         //Blink animation, testing for some Js function
         var openEyes = document.getElementById('sub_title_h5').innerHTML;
         var closedEyes =
@@ -165,11 +173,7 @@
         //go ahead and blink every 2 seconds
         window.onload = setInterval(blink, 6000);
         window.onload = checkParamsLegitToNotify();
-
-        //Prevent auto-close dropdown
-        $('.dropdown-menu').on('click', function(e) {
-            e.stopPropagation();
-        });
+        //END TEST
     </script>
 @endsection
 
@@ -233,12 +237,12 @@
                 <div class="form-group row">
                     <div class="col-9 col-form-label">
                         <div class="checkbox-inline">
-                          <label class="checkbox checkbox-outline checkbox-success disabled">
-                            <input type="checkbox" value="id"
-                                checked disabled />
-                            <span></span>
-                            ID
-                          </label>
+                            <label class="checkbox checkbox-outline checkbox-success disabled">
+                                <input type="checkbox" value="id"
+                                    name="filter[]"@if (strpos(request()->filter, 'id') !== false) {{ 'checked' }} @endif />
+                                <span></span>
+                                ID
+                            </label>
                             <label class="checkbox checkbox-outline checkbox-success">
                                 <input type="checkbox" value="name" name="filter[]"
                                     @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
@@ -300,18 +304,18 @@
                                 </div>
 
                                 <div class="timeline-label">
-                                    <span id="display_diff_{{ $release->id }}"
+                                    <span id="display_diff_{{ $key }}"
                                         class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
                                         style="display: -webkit-inline-box"
-                                        onclick="toggleDateDisplay({{ $release->id }})" onmouseup="lightsUp(this)"
+                                        onclick="toggleDateDisplay({{ $key }})" onmouseup="lightsUp(this)"
                                         onmouseout="lightsDown(this)">
                                         {{-- Display time difference (from create till now) --}}
                                         <i class="far fa-clock icon-nm text-info mr-1"></i>
                                         {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
                                     </span>
-                                    <span id="display_date_{{ $release->id }}"
+                                    <span id="display_date_{{ $key }}"
                                         class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
-                                        style="display: none" onclick="toggleDateDisplay({{ $release->id }})"
+                                        style="display: none" onclick="toggleDateDisplay({{ $key }})"
                                         onmouseup="lightsUp(this)" onmouseout="lightsDown(this)">
                                         {{-- Display create date --}}
                                         <i class="far fa-calendar-alt icon-nm text-info mr-1"></i>
@@ -321,11 +325,11 @@
 
                                 {{-- Original: <div class="timeline-content max-h-150px overflow-auto" > --}}
                                 <div class="timeline-content gutter-b">
-                                    <div class="card card-custom card-stretch" id="kt_card_{{ $release->id }}">
+                                    <div class="card card-custom card-stretch" id="kt_card_{{ $key }}">
                                         <div class="card-header card-header-tabs-line bg-secondary">
                                             <div class="card-title">
                                                 <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
-                                                    href="/releasevuejs/{{ $release->id }}">
+                                                    href="/releasevuejs/{{ $key }}">
                                                     {{ $release->name }}
                                                 </a>
                                             </div>
@@ -334,7 +338,7 @@
                                                     {{-- Title_Description tab --}}
                                                     <li class="nav-item">
                                                         <a class="nav-link active" data-toggle="tab"
-                                                            href="#kt_tab_pane_1_3_{{ $release->id }}">
+                                                            href="#kt_tab_pane_1_3_{{ $key }}">
                                                             <span class="nav-icon"><i
                                                                     class="flaticon2-information"></i></span>
                                                             <span class="nav-text">Tựa đề</span>
@@ -343,7 +347,7 @@
                                                     {{-- Detail_Description tab --}}
                                                     <li class="nav-item">
                                                         <a class="nav-link" data-toggle="tab"
-                                                            href="#kt_tab_pane_2_3_{{ $release->id }}">
+                                                            href="#kt_tab_pane_2_3_{{ $key }}">
                                                             <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
                                                             <span class="nav-text">Tóm tắt</span>
                                                         </a>
@@ -351,7 +355,7 @@
                                                     {{-- Images tab --}}
                                                     {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
-                                                      href="#kt_tab_pane_3_3_{{ $release->id }}">
+                                                      href="#kt_tab_pane_3_3_{{ $key }}">
                                                       <span class="nav-icon"><i class="flaticon2-photograph mr-2"></i></span>
                                                       <span class="nav-text">Ảnh</span>
                                                   </a>
@@ -363,19 +367,19 @@
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
                                                 <div class="tab-pane fade show active"
-                                                    id="kt_tab_pane_1_3_{{ $release->id }}" role="tabpanel"
-                                                    aria-labelledby="kt_tab_pane_1_3_{{ $release->id }}">
+                                                    id="kt_tab_pane_1_3_{{ $key }}" role="tabpanel"
+                                                    aria-labelledby="kt_tab_pane_1_3_{{ $key }}">
                                                     {{ $release->title_description }}
                                                 </div>
                                                 {{-- Tab Detail description --}}
-                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_{{ $release->id }}"
+                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_{{ $key }}"
                                                     role="tabpanel"
-                                                    aria-labelledby="kt_tab_pane_2_3_{{ $release->id }}">
+                                                    aria-labelledby="kt_tab_pane_2_3_{{ $key }}">
                                                     {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
                                                 </div>
                                                 {{-- Tab images --}}
-                                                {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $release->id }}"
-                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $release->id }}" style="max-height: 310px">
+                                                {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $key }}"
+                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $key }}" style="max-height: 310px">
 
                                                 @foreach ($release->images as $key => $image)
                                                   <img class="img-fluid border border-secondary mb-2 max-h-150px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
@@ -394,6 +398,7 @@
         <!-- end:timeline -->
 
         {{-- Paginator navigation --}}
+        {{-- Edit onEachSide() for manipulating the display of pages --}}
         <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
     </div>
 @endsection
