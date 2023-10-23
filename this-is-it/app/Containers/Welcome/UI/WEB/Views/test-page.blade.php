@@ -40,7 +40,6 @@
                 return round($time, 0) . ' ' . $suffix[$i];
             }
         }
-
     @endphp
 @endsection
 
@@ -74,24 +73,30 @@
             // Prevent the form from submitting
             link = window.location.href;
             param = '';
-            sortBy = document.querySelector('input[name="sortBy"]');
-            orderedBy = document.querySelector('input[name="orderedBy"]');
+            sortedBy = document.querySelector('select[name="sortedBy"]');
+            orderBy = document.querySelector('select[name="orderBy"]');
             paginate = document.querySelector('input[name="paginate"]');
             filter = document.querySelectorAll('input[name="filter[]"]');
 
-
-            if (sortBy && sortBy.value != '')(param == '') ? param += '?sortBy=' + sortBy.value : param += '&sortBy=' + sortBy.value;
-            if (orderedBy && orderedBy.value != '')(param == '') ? param += '?orderedBy=' + orderedBy.value : param += '&orderedBy=' +
-                orderedBy.value;
-            if (paginate && paginate.value != '10')(param == '') ? param += '?paginate=' + paginate.value : param += '&paginate=' +
+            if (paginate && paginate.value != '10')(param == '') ? param += '?paginate=' + paginate.value : param +=
+                '&paginate=' +
                 paginate.value;
+            if (orderBy && orderBy.value != '')(param == '') ? param += '?orderBy=' + orderBy.value : param +=
+                '&orderBy=' +
+                orderBy.value;
+            if (sortedBy && sortedBy.value != '')(param == '') ? param += '?sortedBy=' + sortedBy.value : param += '&sortedBy=' +
+                sortedBy.value;
 
-            if (isArray(filter.value)) {
-                filter.value = (filter.value.split(',')).join(';');
-            }
 
-            console.log(filter[1]);
-            console.log(param);
+            filter_string = 'id;';
+            filter.forEach(element => {
+                (element.checked) ? (filter_string == 'id;') ? filter_string += element.value: filter_string +=
+                    ';' + element.value: null
+            });
+            (filter_string != 'id;') ? (param == '') ? param += '?filter=' + filter_string: param += '&filter=' +
+                filter_string: null;
+
+            window.location.href = window.location.pathname + param;
 
 
         }
@@ -110,8 +115,8 @@
 
             legit = false;
 
-            if ((paramsObject.filter && paramsObject.filter != '') || (paramsObject.sortBy && paramsObject.sortBy != '') ||
-                (paramsObject.orderedBy && paramsObject.orderedBy != '') || (paramsObject.paginate && paramsObject
+            if ((paramsObject.filter && paramsObject.filter != '') || (paramsObject.sortedBy && paramsObject.sortedBy != '') ||
+                (paramsObject.orderBy && paramsObject.orderBy != '') || (paramsObject.paginate && paramsObject
                     .paginate != '10')) {
                 legit = true;
             }
@@ -192,32 +197,34 @@
             {{-- Filter input --}}
             <form id="filterForm" class="px-8 py-8">
                 <div class="form-group row">
-                    <label for="paginate" class="col-4 col-form-label">Per page:</label>
+                    <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối đa:</label>
                     <div class="col-8">
                         <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}" name="paginate"
                             min="1" />
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sortBy" class="col-4 col-form-label">Sorted By:</label>
+                    <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Lọc theo:</label>
                     <div class="col-4">
-                        <select class="form-control" name="sortBy">
+                        <select class="form-control" name="orderBy">
                             <option value="">...</option>
-                            <option value="id" @if (request()->sortBy == 'id') {{ 'selected' }} @endif>ID</option>
-                            <option value="title_description" @if (request()->sortBy == 'title_description') {{ 'selected' }} @endif>
-                                Title</option>
-                            <option value="detail_description" @if (request()->sortBy == 'detail_description') {{ 'selected' }} @endif>
-                                Detail</option>
-                            <option value="created_at" @if (request()->sortBy == 'created_at') {{ 'selected' }} @endif>Creation
-                                date</option>
+                            <option value="id" @if (request()->orderBy == 'id') {{ 'selected' }} @endif>ID</option>
+                            <option value="title_description" @if (request()->orderBy == 'title_description') {{ 'selected' }} @endif>
+                                Tựa đề</option>
+                            <option value="detail_description" @if (request()->orderBy == 'detail_description') {{ 'selected' }} @endif>
+                                Tóm tắt</option>
+                            <option value="created_at" @if (request()->orderBy == 'created_at') {{ 'selected' }} @endif>Ngày
+                                khởi tạo</option>
                         </select>
                     </div>
 
                     <div class="col-4">
-                        <select class="form-control" name="orderedBy">
+                        <select class="form-control" name="sortedBy">
                             <option value="">...</option>
-                            <option @if (request()->orderedBy == 'asc') {{ 'selected' }} @endif value="asc">ASC</option>
-                            <option @if (request()->orderedBy == 'desc') {{ 'selected' }} @endif value="desc">DESC
+                            <option @if (request()->sortedBy == 'asc') {{ 'selected' }} @endif value="asc">
+                                {{-- ASC --}}Tăng</option>
+                            <option @if (request()->sortedBy == 'desc') {{ 'selected' }} @endif value="desc">
+                                {{-- DESC --}}Giảm
                             </option>
                         </select>
                     </div>
@@ -226,9 +233,15 @@
                 <div class="form-group row">
                     <div class="col-9 col-form-label">
                         <div class="checkbox-inline">
+                          <label class="checkbox checkbox-outline checkbox-success disabled">
+                            <input type="checkbox" value="id"
+                                checked disabled />
+                            <span></span>
+                            ID
+                          </label>
                             <label class="checkbox checkbox-outline checkbox-success">
                                 <input type="checkbox" value="name" name="filter[]"
-                                    @if (strpos(request()->filter ?? '', 'name') !== false) {{ 'checked' }} @endif />
+                                    @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
                                 <span></span>
                                 Tên
                             </label>
@@ -248,21 +261,21 @@
                                 <input type="checkbox" value="created_at" name="filter[]"
                                     @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
                                 <span></span>
-                                Ngày tạo
+                                Ngày khởi tạo
                             </label>
                         </div>
-                        <span class="form-text text-muted">Only show these items</span>
+                        <span class="form-text text-muted">Chọn các nội dung cần hiện và ẩn những thứ khác</span>
                     </div>
                 </div>
 
                 <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
-                    onclick="window.location.replace(location.pathname)">Clear
-                    filter <span id="numberOfFilters" class="badge badge-info">
+                    onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
+                        class="badge badge-info">
                         {{ count(request()->all()) }}</span></button>
 
-                <button type="reset" class="btn btn-light btn-hover-secondary"">Reset
+                <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
                     <i class="flaticon2-refresh-1"></i></button>
-                <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Apply <i
+                <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Áp dụng <i
                         class="flaticon2-check-mark icon-nm"></i></button>
             </form>
         </div>
