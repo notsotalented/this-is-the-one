@@ -1134,7 +1134,7 @@
                         class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
                         <!--begin::Copyright-->
                         <div class="text-dark order-2 order-md-1" style="font-size:12px">
-
+                          @yield('footer')
                         </div>
                         <!--end::Copyright-->
                         <!--begin::Nav-->

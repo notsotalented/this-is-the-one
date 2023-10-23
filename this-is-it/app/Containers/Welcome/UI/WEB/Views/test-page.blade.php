@@ -17,12 +17,16 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        input[type="checkbox"] {
+            vertical-align: middle;
+            display: -webkit-inline-flex
+        }
     </style>
 @endsection
 
 @section('php')
     @php
-
         //Convert from created_at to Time difference
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -38,6 +42,44 @@
                 }
 
                 return round($time, 0) . ' ' . $suffix[$i];
+            }
+        }
+
+        if(!function_exists('dateColorFading')) {
+            function dateColorFading($date = null, $elem = 1) {
+                if ($date === null) {
+                    return 'bg-success-o-20 text-dark-50';
+                }
+
+                $date = strtotime($date);
+                $now = time();
+
+                $diff = $now - $date;
+                $result = '';
+                if($diff < 60*60*24*7) {
+                  $background = 'bg-success-o-70';
+                  $text = 'text-primary';
+                }
+                elseif ($diff >= 60*60*24*7 && $diff < 60*60*24*30) {
+                  $background = 'bg-success-o-40';
+                  $text = 'text-dark-75';
+                }
+                else {
+                  $background = 'bg-success-o-20';
+                  $text = 'text-dark-50';
+                }
+
+                switch ($elem) {
+                  case '1':
+                    return $background . ' ' . $text;
+                    break;
+                  case '2':
+                    return $text;
+                    break;
+                  default:
+                    return $background . ' ' . $text;
+                    break;
+                }
             }
         }
     @endphp
@@ -124,17 +166,12 @@
             }
 
             if (legit) {
-                document.getElementById('filter-button').classList.add('pulse', 'pulse-dark');
+                document.getElementById('pulseRingHere').classList.add('pulse', 'pulse-success');
                 document.getElementById('clearFilterButton').removeAttribute("hidden");
             }
 
             return legit;
         }
-
-        //Prevent auto-close dropdown
-        $('.dropdown-menu').on('click', function(e) {
-            e.stopPropagation();
-        });
 
         //THIS IS A TEST FOR ANIMATION
         //Blink animation, testing for some Js function
@@ -189,103 +226,135 @@
 
 @section('content')
     <!-- begin:timeline -->
-    {{-- Filter & Pagination --}}
-    <div class="container dropright">
-        {{-- Filter button --}}
-        <button id="filter-button" class="btn btn-circle btn-icon btn-light-primary btn-hover-primary" type="button"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="flaticon2-dashboard text-primary"></i>
-            <span class="pulse-ring"></span>
-        </button>
-        <div class="dropdown-menu dropdown-menu border border-info">
-            {{-- Filter input --}}
-            <form id="filterForm" class="px-8 py-8">
-                <div class="form-group row">
-                    <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối đa:</label>
-                    <div class="col-8">
-                        <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}" name="paginate"
-                            min="1" />
+    {{-- Filter --}}
+    <div class="container">
+        {{-- Filter section --}}
+        <div class="accordion accordion-solid accordion-svg-toggle" id="accordionFilter">
+            <div class="card">
+                <div class="card-header" id="headingOne6">
+                    <div class="card-title bg-secondary collapsed" data-toggle="collapse" data-target="#collapseFilter"
+                        aria-expanded="false">
+                        <span id="pulseRingHere" class="label label-white mr-2">
+                            <span class="pulse-ring"></span>
+                            <span
+                                class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/Tools/Tools.svg--><svg
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24" />
+                                        <path
+                                            d="M15.9497475,3.80761184 L13.0246125,6.73274681 C12.2435639,7.51379539 12.2435639,8.78012535 13.0246125,9.56117394 L14.4388261,10.9753875 C15.2198746,11.7564361 16.4862046,11.7564361 17.2672532,10.9753875 L20.1923882,8.05025253 C20.7341101,10.0447871 20.2295941,12.2556873 18.674559,13.8107223 C16.8453326,15.6399488 14.1085592,16.0155296 11.8839934,14.9444337 L6.75735931,20.0710678 C5.97631073,20.8521164 4.70998077,20.8521164 3.92893219,20.0710678 C3.1478836,19.2900192 3.1478836,18.0236893 3.92893219,17.2426407 L9.05556629,12.1160066 C7.98447038,9.89144078 8.36005124,7.15466739 10.1892777,5.32544095 C11.7443127,3.77040588 13.9552129,3.26588995 15.9497475,3.80761184 Z"
+                                            fill="#000000" />
+                                        <path
+                                            d="M16.6568542,5.92893219 L18.0710678,7.34314575 C18.4615921,7.73367004 18.4615921,8.36683502 18.0710678,8.75735931 L16.6913928,10.1370344 C16.3008685,10.5275587 15.6677035,10.5275587 15.2771792,10.1370344 L13.8629656,8.7228208 C13.4724413,8.33229651 13.4724413,7.69913153 13.8629656,7.30860724 L15.2426407,5.92893219 C15.633165,5.5384079 16.26633,5.5384079 16.6568542,5.92893219 Z"
+                                            fill="#000000" opacity="0.3" />
+                                    </g>
+                                </svg><!--end::Svg Icon--></span>
+                        </span>
+                        <span class="mr-2 font-weight-bold">Bộ lọc</span>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Lọc theo:</label>
-                    <div class="col-4">
-                        <select class="form-control" name="orderBy">
-                            <option value="">...</option>
-                            <option value="id" @if (request()->orderBy == 'id') {{ 'selected' }} @endif>ID</option>
-                            <option value="title_description" @if (request()->orderBy == 'title_description') {{ 'selected' }} @endif>
-                                Tựa đề</option>
-                            <option value="detail_description" @if (request()->orderBy == 'detail_description') {{ 'selected' }} @endif>
-                                Tóm tắt</option>
-                            <option value="created_at" @if (request()->orderBy == 'created_at') {{ 'selected' }} @endif>Ngày
-                                khởi tạo</option>
-                        </select>
-                    </div>
+                <div id="collapseFilter" class="collapse" data-parent="#accordionFilter">
+                    <div class="card-body">
+                        {{-- Filter input --}}
+                        <div class="form-group row">
 
-                    <div class="col-4">
-                        <select class="form-control" name="sortedBy">
-                            <option value="">...</option>
-                            <option @if (request()->sortedBy == 'asc') {{ 'selected' }} @endif value="asc">
-                                {{-- ASC --}}Tăng</option>
-                            <option @if (request()->sortedBy == 'desc') {{ 'selected' }} @endif value="desc">
-                                {{-- DESC --}}Giảm
-                            </option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <div class="col-9 col-form-label">
-                        <div class="checkbox-inline">
-                            <label class="checkbox checkbox-outline checkbox-success disabled">
-                                <input type="checkbox" value="id"
-                                    name="filter[]"@if (strpos(request()->filter, 'id') !== false) {{ 'checked' }} @endif />
-                                <span></span>
-                                ID
-                            </label>
-                            <label class="checkbox checkbox-outline checkbox-success">
-                                <input type="checkbox" value="name" name="filter[]"
-                                    @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
-                                <span></span>
-                                Tên
-                            </label>
-                            <label class="checkbox checkbox-outline checkbox-success">
-                                <input type="checkbox" value="title_description" name="filter[]"
-                                    @if (strpos(request()->filter ?? '', 'title_description') !== false) {{ 'checked' }} @endif />
-                                <span></span>
-                                Tựa đề
-                            </label>
-                            <label class="checkbox checkbox-outline checkbox-success">
-                                <input type="checkbox" value="detail_description" name="filter[]"
-                                    @if (strpos(request()->filter ?? '', 'detail_description') !== false) {{ 'checked' }} @endif />
-                                <span></span>
-                                Tóm tắt
-                            </label>
-                            <label class="checkbox checkbox-outline checkbox-success">
-                                <input type="checkbox" value="created_at" name="filter[]"
-                                    @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
-                                <span></span>
-                                Ngày khởi tạo
-                            </label>
                         </div>
-                        <span class="form-text text-muted">Chọn các nội dung cần hiện và ẩn những thứ khác</span>
+                        <div class="form-group row">
+                            <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối
+                                đa:</label>
+                            <div class="col-8">
+                                <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
+                                    name="paginate" min="1" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Sắp xếp theo:</label>
+                            <div class="col-4" style="display: -webkit-inline-block">
+                                <select class="form-control" name="orderBy">
+                                    <option value="">...</option>
+                                    <option value="id" @if (request()->orderBy == 'id') {{ 'selected' }} @endif>
+                                        ID</option>
+                                    <option value="title_description"
+                                        @if (request()->orderBy == 'title_description') {{ 'selected' }} @endif>
+                                        Tựa đề</option>
+                                    <option value="detail_description"
+                                        @if (request()->orderBy == 'detail_description') {{ 'selected' }} @endif>
+                                        Tóm tắt</option>
+                                    <option value="created_at" @if (request()->orderBy == 'created_at') {{ 'selected' }} @endif>
+                                        Ngày
+                                        khởi tạo</option>
+                                </select>
+                            </div>
+
+                            <div class="col-4">
+                                <select class="form-control" name="sortedBy">
+                                    <option value="">...</option>
+                                    <option @if (request()->sortedBy == 'asc') {{ 'selected' }} @endif value="asc">
+                                        {{-- ASC --}}Tăng</option>
+                                    <option @if (request()->sortedBy == 'desc') {{ 'selected' }} @endif value="desc">
+                                        {{-- DESC --}}Giảm
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-9 col-form-label">
+                                <div class="checkbox-inline-flex">
+                                    <label class="checkbox checkbox-outline checkbox-success">
+                                        <input type="checkbox" value="id"
+                                            name="filter[]"@if (strpos(request()->filter, 'id') !== false) {{ 'checked' }} @endif />
+                                        <span></span>
+                                        ID
+                                    </label>
+                                    <label class="checkbox checkbox-outline checkbox-success">
+                                        <input type="checkbox" value="name" name="filter[]"
+                                            @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
+                                        <span></span>
+                                        Tên
+                                    </label>
+                                    <label class="checkbox checkbox-outline checkbox-success">
+                                        <input type="checkbox" value="title_description" name="filter[]"
+                                            @if (strpos(request()->filter ?? '', 'title_description') !== false) {{ 'checked' }} @endif />
+                                        <span></span>
+                                        Tựa đề
+                                    </label>
+                                    <label class="checkbox checkbox-outline checkbox-success">
+                                        <input type="checkbox" value="detail_description" name="filter[]"
+                                            @if (strpos(request()->filter ?? '', 'detail_description') !== false) {{ 'checked' }} @endif />
+                                        <span></span>
+                                        Tóm tắt
+                                    </label>
+                                    <label class="checkbox checkbox-outline checkbox-success">
+                                        <input type="checkbox" value="created_at" name="filter[]"
+                                            @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
+                                        <span></span>
+                                        Ngày khởi tạo
+                                    </label>
+                                </div>
+                                <span class="form-text text-muted">Chọn các nội dung cần hiện và ẩn những thứ
+                                    khác</span>
+                            </div>
+                        </div>
+
+                        <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
+                            onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
+                                class="badge badge-info">
+                                {{ count(request()->all()) }}</span></button>
+
+                        <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
+                            <i class="flaticon2-refresh-1"></i></button>
+                        <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Áp dụng <i
+                                class="flaticon2-check-mark icon-nm"></i></button>
+
                     </div>
                 </div>
-
-                <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
-                    onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
-                        class="badge badge-info">
-                        {{ count(request()->all()) }}</span></button>
-
-                <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
-                    <i class="flaticon2-refresh-1"></i></button>
-                <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Áp dụng <i
-                        class="flaticon2-check-mark icon-nm"></i></button>
-            </form>
+            </div>
         </div>
 
-        <div class="example example-basic bg-white">
-            <div class="example-preview">
+        <div class="example example-basic">
+            <div class="example-preview bg-white">
                 <div class="timeline timeline-4">
                     <div class="timeline-bar"></div>
                     <div class="timeline-items">
@@ -305,20 +374,17 @@
 
                                 <div class="timeline-label">
                                     <span id="display_diff_{{ $key }}"
-                                        class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
-                                        style="display: -webkit-inline-box"
-                                        onclick="toggleDateDisplay({{ $key }})" onmouseup="lightsUp(this)"
-                                        onmouseout="lightsDown(this)">
+                                        class=" label label-inline label-light-success {{ dateColorFading($release->created_at, 1) }} font-weight-bolder"
+                                        style="display: -webkit-inline-box;"
+                                        onclick="toggleDateDisplay({{ $key }})">
                                         {{-- Display time difference (from create till now) --}}
-                                        <i class="far fa-clock icon-nm text-info mr-1"></i>
+                                        <i class="far fa-clock icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
                                         {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
                                     </span>
                                     <span id="display_date_{{ $key }}"
-                                        class="text-info label label-inline @if ($key % 2 == 0) {{ 'label-light-success' }}@else{{ 'label-light-danger' }} @endif font-weight-bolder"
-                                        style="display: none" onclick="toggleDateDisplay({{ $key }})"
-                                        onmouseup="lightsUp(this)" onmouseout="lightsDown(this)">
-                                        {{-- Display create date --}}
-                                        <i class="far fa-calendar-alt icon-nm text-info mr-1"></i>
+                                        class=" label label-inline label-light-success {{ dateColorFading($release->created_at, 1) }} font-weight-bolder"
+                                        style="display: none;" onclick="toggleDateDisplay({{ $key }})">                                        {{-- Display create date --}}
+                                        <i class="far fa-calendar-alt icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
                                         {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
                                     </span>
                                 </div>
@@ -399,6 +465,10 @@
 
         {{-- Paginator navigation --}}
         {{-- Edit onEachSide() for manipulating the display of pages --}}
-        <label for="level"><b>{{ $releases->withQueryString()->onEachSide(2)->links() }}</b></label>
+        <label for="level"><b>{!! $releases->withQueryString()->onEachSide(2)->links() !!}</b></label>
     </div>
+@endsection
+
+@section('footer')
+    Footer placeholder nhưng mà hình như không có set attribute 'yield' hoặc em 'yield' sai chỗ
 @endsection
