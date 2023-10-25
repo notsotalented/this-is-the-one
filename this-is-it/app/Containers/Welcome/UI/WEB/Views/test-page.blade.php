@@ -27,15 +27,17 @@
 
 @section('php')
     @php
-        //Convert from created_at to Time difference
+        //Convert from created_at to Time difference (i.e 01-01-2021 <--> 3 years ago)
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
             {
                 $suffix = ['giây', 'phút', 'giờ', 'ngày', 'tuần', 'tháng', 'năm', 'cái này ở đây để khỏi bị lỗi'];
+                //Minute-Hour-Day-"Month"-Year
                 $multi = [60, 60, 24, 7, 4.34, 12, 1111];
 
                 $i = 0;
 
+                //Repeatedly find the appropriate time different (i.e 1000/60 = 16.67 = ~17 mins ago; 10000/60/60 = 2.78 = ~3 hours ago)
                 while ($time >= $multi[$i] && $i <= 5) {
                     $time /= $multi[$i];
                     $i++;
@@ -45,8 +47,10 @@
             }
         }
 
-        if(!function_exists('dateColorFading')) {
-            function dateColorFading($date = null, $elem = 1) {
+        //Adjust date color depends on the time difference ([0-7): fresh [7:30): medium [30:infinity): old)
+        if (!function_exists('dateColorFading')) {
+            function dateColorFading($date = null, $elem = 1)
+            {
                 if ($date === null) {
                     return 'bg-success-o-20 text-dark-50';
                 }
@@ -56,29 +60,30 @@
 
                 $diff = $now - $date;
                 $result = '';
-                if($diff < 60*60*24*7) {
-                  $background = 'bg-success-o-70';
-                  $text = 'text-primary';
-                }
-                elseif ($diff >= 60*60*24*7 && $diff < 60*60*24*30) {
-                  $background = 'bg-success-o-40';
-                  $text = 'text-dark-75';
-                }
-                else {
-                  $background = 'bg-success-o-20';
-                  $text = 'text-dark-50';
+                if ($diff < 60 * 60 * 24 * 7) {
+                  //Fresh [0:7)
+                    $background = 'bg-success-o-70';
+                    $text = 'text-primary';
+                } elseif ($diff >= 60 * 60 * 24 * 7 && $diff < 60 * 60 * 24 * 30) {
+                  //Medium [7:30)
+                    $background = 'bg-success-o-40';
+                    $text = 'text-dark-75';
+                } else {
+                  //Old [30:infinity)
+                    $background = 'bg-success-o-20';
+                    $text = 'text-dark-50';
                 }
 
                 switch ($elem) {
-                  case '1':
-                    return $background . ' ' . $text;
-                    break;
-                  case '2':
-                    return $text;
-                    break;
-                  default:
-                    return $background . ' ' . $text;
-                    break;
+                    case '1':
+                        return $background . ' ' . $text;
+                        break;
+                    case '2':
+                        return $text;
+                        break;
+                    default:
+                        return $background . ' ' . $text;
+                        break;
                 }
             }
         }
@@ -87,7 +92,7 @@
 
 @section('javascript')
     <script type="text/javascript">
-        //Switch display of Time difference <-> Time create
+        //Switch display of Time difference <-> Time create (i.e 01-01-2021 <--> 3 years ago)
         function toggleDateDisplay(element) {
             diff = document.getElementById("display_diff_" + element);
             date = document.getElementById("display_date_" + element);
@@ -101,25 +106,27 @@
             }
         }
 
-        //Lights up
+        //Lights "up"
         function lightsUp(element) {
             element.style.brightness = "0.95";
         }
 
-        //Lights down
+        //Lights "down"
         function lightsDown(element) {
             element.style.brightness = "1";
         }
 
+        //Add filter to url (i.e ?filter=id;name;...)
         function filterFormParams() {
-            // Prevent the form from submitting
+            //Get url
             link = window.location.href;
+            //Prepare all params
             param = '';
             sortedBy = document.querySelector('select[name="sortedBy"]');
             orderBy = document.querySelector('select[name="orderBy"]');
             paginate = document.querySelector('input[name="paginate"]');
             filter = document.querySelectorAll('input[name="filter[]"]');
-
+            //Add existed params to the param variable, prefix ? if param empty or & if not empty
             if (paginate && paginate.value != '10')(param == '') ? param += '?paginate=' + paginate.value : param +=
                 '&paginate=' +
                 paginate.value;
@@ -129,8 +136,7 @@
             if (sortedBy && sortedBy.value != '')(param == '') ? param += '?sortedBy=' + sortedBy.value : param +=
                 '&sortedBy=' +
                 sortedBy.value;
-
-
+            //Filter string, add ; if filter_string not empty when element is checked (i.e checked fields - name, id, ...)
             filter_string = '';
             filter.forEach(element => {
                 (element.checked) ? (filter_string == '') ? filter_string += element.value: filter_string +=
@@ -138,10 +144,8 @@
             });
             (filter_string != '') ? (param == '') ? param += '?filter=' + filter_string: param += '&filter=' +
                 filter_string: null;
-
+            //Redirect
             window.location.href = window.location.pathname + param;
-
-
         }
 
         function checkParamsLegitToNotify() {
@@ -211,10 +215,17 @@
         window.onload = setInterval(blink, 6000);
         window.onload = checkParamsLegitToNotify();
         //END TEST
+
+        function submitFunction(e) {
+            if (document.activeElement != document.getElementById('apply-filter-btn')) {
+              e.preventDefault();
+            }
+        }
     </script>
 @endsection
 
 @section('header_sub')
+    {{-- Header/Title --}}
     <div class="subheader py-2 py-lg-4  subheader-solid " id="kt_subheader">
         <div class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
             <div class="d-flex align-items-center flex-wrap mr-1">
@@ -226,9 +237,8 @@
 
 @section('content')
     <!-- begin:timeline -->
-    {{-- Filter --}}
+    {{-- Filter Accordion --}}
     <div class="container">
-        {{-- Filter section --}}
         <div class="accordion accordion-solid accordion-svg-toggle" id="accordionFilter">
             <div class="card">
                 <div class="card-header" id="headingOne6">
@@ -256,98 +266,103 @@
                 </div>
                 <div id="collapseFilter" class="collapse" data-parent="#accordionFilter">
                     <div class="card-body">
-                        {{-- Filter input --}}
-                        <form>
-                        <div class="form-group row">
+                        {{-- Filter input fake form --}}
+                        <form id="filter_input" onsubmit="submitFunction(this)">
+                          {{-- Exploit to disable submit form while hit Enter inside a text input field --}}
+                          <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+                            <div class="form-group row">
 
-                        </div>
-                        <div class="form-group row">
-                            <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối
-                                đa:</label>
-                            <div class="col-8">
-                                <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
-                                    name="paginate" min="1" />
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Sắp xếp theo:</label>
-                            <div class="col-4" style="display: -webkit-inline-block">
-                                <select class="form-control" name="orderBy">
-                                    <option value="">...</option>
-                                    <option value="id" @if (request()->orderBy == 'id') {{ 'selected' }} @endif>
-                                        ID</option>
-                                    <option value="title_description"
-                                        @if (request()->orderBy == 'title_description') {{ 'selected' }} @endif>
-                                        Tựa đề</option>
-                                    <option value="detail_description"
-                                        @if (request()->orderBy == 'detail_description') {{ 'selected' }} @endif>
-                                        Tóm tắt</option>
-                                    <option value="created_at" @if (request()->orderBy == 'created_at') {{ 'selected' }} @endif>
-                                        Ngày
-                                        khởi tạo</option>
-                                </select>
-                            </div>
-
-                            <div class="col-4">
-                                <select class="form-control" name="sortedBy">
-                                    <option value="">...</option>
-                                    <option @if (request()->sortedBy == 'asc') {{ 'selected' }} @endif value="asc">
-                                        {{-- ASC --}}Tăng</option>
-                                    <option @if (request()->sortedBy == 'desc') {{ 'selected' }} @endif value="desc">
-                                        {{-- DESC --}}Giảm
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-9 col-form-label">
-                                <div class="checkbox-inline-flex">
-                                    <label class="checkbox checkbox-outline checkbox-success">
-                                        <input type="checkbox" value="id"
-                                            name="filter[]"@if (strpos(request()->filter, 'id') !== false) {{ 'checked' }} @endif />
-                                        <span></span>
-                                        ID
-                                    </label>
-                                    <label class="checkbox checkbox-outline checkbox-success">
-                                        <input type="checkbox" value="name" name="filter[]"
-                                            @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
-                                        <span></span>
-                                        Tên
-                                    </label>
-                                    <label class="checkbox checkbox-outline checkbox-success">
-                                        <input type="checkbox" value="title_description" name="filter[]"
-                                            @if (strpos(request()->filter ?? '', 'title_description') !== false) {{ 'checked' }} @endif />
-                                        <span></span>
-                                        Tựa đề
-                                    </label>
-                                    <label class="checkbox checkbox-outline checkbox-success">
-                                        <input type="checkbox" value="detail_description" name="filter[]"
-                                            @if (strpos(request()->filter ?? '', 'detail_description') !== false) {{ 'checked' }} @endif />
-                                        <span></span>
-                                        Tóm tắt
-                                    </label>
-                                    <label class="checkbox checkbox-outline checkbox-success">
-                                        <input type="checkbox" value="created_at" name="filter[]"
-                                            @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
-                                        <span></span>
-                                        Ngày khởi tạo
-                                    </label>
+                            <div class="form-group row">
+                                <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối
+                                    đa:</label>
+                                <div class="col-8">
+                                    <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
+                                        name="paginate" min="1" />
                                 </div>
-                                <span class="form-text text-muted">Chọn các nội dung cần hiện và ẩn những thứ
-                                    khác</span>
                             </div>
-                        </div>
+                            <div class="form-group row">
+                                <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Sắp xếp
+                                    theo:</label>
+                                <div class="col-4" style="display: -webkit-inline-block">
+                                    <select class="form-control" name="orderBy">
+                                        <option value="">...</option>
+                                        <option value="id" @if (request()->orderBy == 'id') {{ 'selected' }} @endif>
+                                            ID</option>
+                                        <option value="title_description"
+                                            @if (request()->orderBy == 'title_description') {{ 'selected' }} @endif>
+                                            Tựa đề</option>
+                                        <option value="detail_description"
+                                            @if (request()->orderBy == 'detail_description') {{ 'selected' }} @endif>
+                                            Tóm tắt</option>
+                                        <option value="created_at"
+                                            @if (request()->orderBy == 'created_at') {{ 'selected' }} @endif>
+                                            Ngày
+                                            khởi tạo</option>
+                                    </select>
+                                </div>
 
-                        <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
-                            onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
-                                class="badge badge-info">
-                                {{ count(request()->all()) }}</span></button>
+                                <div class="col-4">
+                                    <select class="form-control" name="sortedBy">
+                                        <option value="">...</option>
+                                        <option @if (request()->sortedBy == 'asc') {{ 'selected' }} @endif value="asc">
+                                            {{-- ASC --}}Tăng</option>
+                                        <option @if (request()->sortedBy == 'desc') {{ 'selected' }} @endif value="desc">
+                                            {{-- DESC --}}Giảm
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
 
-                        <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
-                            <i class="flaticon2-refresh-1"></i></button>
-                        <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Áp dụng <i
-                                class="flaticon2-check-mark icon-nm"></i></button>
+                            <div class="form-group row">
+                                <div class="col-9 col-form-label">
+                                    <div class="checkbox-inline-flex">
+                                        <label class="checkbox checkbox-outline checkbox-success">
+                                            <input type="checkbox" value="id"
+                                                name="filter[]"@if (strpos(request()->filter, 'id') !== false) {{ 'checked' }} @endif />
+                                            <span></span>
+                                            ID
+                                        </label>
+                                        <label class="checkbox checkbox-outline checkbox-success">
+                                            <input type="checkbox" value="name" name="filter[]"
+                                                @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
+                                            <span></span>
+                                            Tên
+                                        </label>
+                                        <label class="checkbox checkbox-outline checkbox-success">
+                                            <input type="checkbox" value="title_description" name="filter[]"
+                                                @if (strpos(request()->filter ?? '', 'title_description') !== false) {{ 'checked' }} @endif />
+                                            <span></span>
+                                            Tựa đề
+                                        </label>
+                                        <label class="checkbox checkbox-outline checkbox-success">
+                                            <input type="checkbox" value="detail_description" name="filter[]"
+                                                @if (strpos(request()->filter ?? '', 'detail_description') !== false) {{ 'checked' }} @endif />
+                                            <span></span>
+                                            Tóm tắt
+                                        </label>
+                                        <label class="checkbox checkbox-outline checkbox-success">
+                                            <input type="checkbox" value="created_at" name="filter[]"
+                                                @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
+                                            <span></span>
+                                            Ngày khởi tạo
+                                        </label>
+                                    </div>
+                                    <span class="form-text text-muted">Chọn các nội dung cần hiện và ẩn những thứ
+                                        khác</span>
+                                </div>
+                            </div>
+
+                            <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
+                                onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
+                                    class="badge badge-info">
+                                    {{ count(request()->all()) }}</span></button>
+
+                            <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
+                                <i class="flaticon2-refresh-1"></i></button>
+                            <button id='apply-filter-btn' type="button" class="btn btn-primary"
+                                onclick="filterFormParams(this)">Áp dụng <i
+                                    class="flaticon2-check-mark icon-nm"></i></button>
                         </form>
                     </div>
                 </div>
@@ -379,21 +394,24 @@
                                         style="display: -webkit-inline-box;"
                                         onclick="toggleDateDisplay({{ $key }})">
                                         {{-- Display time difference (from create till now) --}}
-                                        <i class="far fa-clock icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
-                                        @if($release->created_at)
-                                        {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
+                                        <i
+                                            class="far fa-clock icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
+                                        @if ($release->created_at)
+                                            {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
                                         @else
-                                        {{ 'Thời gian đã ẩn' }}
+                                            {{ 'Thời gian đã ẩn' }}
                                         @endif
                                     </span>
                                     <span id="display_date_{{ $key }}"
                                         class=" label label-inline label-light-success {{ dateColorFading($release->created_at, 1) }} font-weight-bolder"
-                                        style="display: none;" onclick="toggleDateDisplay({{ $key }})">                                        {{-- Display create date --}}
-                                        <i class="far fa-calendar-alt icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
-                                        @if($release->created_at)
-                                          {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
-                                          @else
-                                          {{ 'Thời gian đã ẩn' }}
+                                        style="display: none;" onclick="toggleDateDisplay({{ $key }})">
+                                        {{-- Display create date --}}
+                                        <i
+                                            class="far fa-calendar-alt icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
+                                        @if ($release->created_at)
+                                            {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
+                                        @else
+                                            {{ 'Thời gian đã ẩn' }}
                                         @endif
                                     </span>
                                 </div>
@@ -404,7 +422,7 @@
                                         <div class="card-header card-header-tabs-line bg-secondary">
                                             <div class="card-title">
                                                 <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
-                                                    href="/releasevuejs/{{ $key }}">
+                                                    @isset($release->id){{ "href=/releasevuejs/$release->id" }}@else {{ 'role="link" aria-disabled="true"' }}@endisset>
                                                     {{ $release->name }}
                                                 </a>
                                             </div>
@@ -478,6 +496,7 @@
     </div>
 @endsection
 
+{{-- Footer, if any --}}
 @section('footer')
     Footer placeholder nhưng mà hình như không có set attribute 'yield' hoặc em 'yield' sai chỗ
 @endsection
