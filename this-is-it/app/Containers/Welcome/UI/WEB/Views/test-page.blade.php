@@ -257,6 +257,7 @@
                 <div id="collapseFilter" class="collapse" data-parent="#accordionFilter">
                     <div class="card-body">
                         {{-- Filter input --}}
+                        <form>
                         <div class="form-group row">
 
                         </div>
@@ -347,7 +348,7 @@
                             <i class="flaticon2-refresh-1"></i></button>
                         <button type="button" class="btn btn-primary" onclick="filterFormParams(this)">Áp dụng <i
                                 class="flaticon2-check-mark icon-nm"></i></button>
-
+                        </form>
                     </div>
                 </div>
             </div>
@@ -379,13 +380,21 @@
                                         onclick="toggleDateDisplay({{ $key }})">
                                         {{-- Display time difference (from create till now) --}}
                                         <i class="far fa-clock icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
+                                        @if($release->created_at)
                                         {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
+                                        @else
+                                        {{ 'Thời gian đã ẩn' }}
+                                        @endif
                                     </span>
                                     <span id="display_date_{{ $key }}"
                                         class=" label label-inline label-light-success {{ dateColorFading($release->created_at, 1) }} font-weight-bolder"
                                         style="display: none;" onclick="toggleDateDisplay({{ $key }})">                                        {{-- Display create date --}}
                                         <i class="far fa-calendar-alt icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
-                                        {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
+                                        @if($release->created_at)
+                                          {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
+                                          @else
+                                          {{ 'Thời gian đã ẩn' }}
+                                        @endif
                                     </span>
                                 </div>
 
