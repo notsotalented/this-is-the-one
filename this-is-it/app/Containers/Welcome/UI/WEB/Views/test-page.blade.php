@@ -54,26 +54,26 @@
                 if ($date === null) {
                     return 'bg-success-o-20 text-dark-50';
                 }
-
+                //Get input time and current time
                 $date = strtotime($date);
                 $now = time();
 
                 $diff = $now - $date;
                 $result = '';
                 if ($diff < 60 * 60 * 24 * 7) {
-                  //Fresh [0:7)
+                    //Fresh [0:7)
                     $background = 'bg-success-o-70';
                     $text = 'text-primary';
                 } elseif ($diff >= 60 * 60 * 24 * 7 && $diff < 60 * 60 * 24 * 30) {
-                  //Medium [7:30)
+                    //Medium [7:30)
                     $background = 'bg-success-o-40';
                     $text = 'text-dark-75';
                 } else {
-                  //Old [30:infinity)
+                    //Old [30:infinity)
                     $background = 'bg-success-o-20';
                     $text = 'text-dark-50';
                 }
-
+                //Elem 1 =
                 switch ($elem) {
                     case '1':
                         return $background . ' ' . $text;
@@ -218,7 +218,7 @@
 
         function submitFunction(e) {
             if (document.activeElement != document.getElementById('apply-filter-btn')) {
-              e.preventDefault();
+                e.preventDefault();
             }
         }
     </script>
@@ -241,6 +241,7 @@
     <div class="container">
         <div class="accordion accordion-solid accordion-svg-toggle" id="accordionFilter">
             <div class="card">
+              {{-- Filter header --}}
                 <div class="card-header" id="headingOne6">
                     <div class="card-title bg-secondary collapsed" data-toggle="collapse" data-target="#collapseFilter"
                         aria-expanded="false">
@@ -264,12 +265,13 @@
                         <span class="mr-2 font-weight-bold">Bộ lọc</span>
                     </div>
                 </div>
+                {{-- Filter content --}}
                 <div id="collapseFilter" class="collapse" data-parent="#accordionFilter">
                     <div class="card-body">
                         {{-- Filter input fake form --}}
                         <form id="filter_input" onsubmit="submitFunction(this)">
-                          {{-- Exploit to disable submit form while hit Enter inside a text input field --}}
-                          <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+                            {{-- Exploit to disable submit form while hit Enter inside a text input field --}}
+                            <button type="submit" disabled style="display: none" aria-hidden="true"></button>
                             <div class="form-group row">
 
                             </div>
@@ -355,7 +357,7 @@
 
                             <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
                                 onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
-                                    class="badge badge-info">
+                                    class="badge badge-danger">
                                     {{ count(request()->all()) }}</span></button>
 
                             <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
@@ -389,6 +391,9 @@
                                 </div>
 
                                 <div class="timeline-label">
+                                    @if(date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
+                                    <span class="label label-danger label-inline">New</span>
+                                    @endif
                                     <span id="display_diff_{{ $key }}"
                                         class=" label label-inline label-light-success {{ dateColorFading($release->created_at, 1) }} font-weight-bolder"
                                         style="display: -webkit-inline-box;"
@@ -496,7 +501,7 @@
     </div>
 @endsection
 
-{{-- Footer, if any --}}
+
 @section('footer')
     Footer placeholder nhưng mà hình như không có set attribute 'yield' hoặc em 'yield' sai chỗ
 @endsection
