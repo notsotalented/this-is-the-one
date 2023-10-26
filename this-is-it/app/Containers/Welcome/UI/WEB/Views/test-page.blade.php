@@ -94,9 +94,10 @@
     <script type="text/javascript">
         //Switch display of Time difference <-> Time create (i.e 01-01-2021 <--> 3 years ago)
         function toggleDateDisplay(element) {
+            //Get elems
             diff = document.getElementById("display_diff_" + element);
             date = document.getElementById("display_date_" + element);
-
+            //Alternate between 2 display style: none vs -webkit-inline-box (hide vs show)
             if (date.style.display == "none") {
                 date.style.display = "-webkit-inline-box";
                 diff.style.display = "none";
@@ -241,7 +242,7 @@
     <div class="container">
         <div class="accordion accordion-solid accordion-svg-toggle" id="accordionFilter">
             <div class="card">
-              {{-- Filter header --}}
+                {{-- Filter header --}}
                 <div class="card-header" id="headingOne6">
                     <div class="card-title bg-secondary collapsed" data-toggle="collapse" data-target="#collapseFilter"
                         aria-expanded="false">
@@ -389,10 +390,11 @@
                                         <div class="bg-danger"></div>
                                     @endif
                                 </div>
-
+                                {{-- Date/Time difference label --}}
                                 <div class="timeline-label">
-                                    @if(date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
-                                    <span class="label label-danger label-inline">New</span>
+                                    @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
+                                        <span class="label label-danger label-inline" style="font-style: italic">Mới ra
+                                            lò</span>
                                     @endif
                                     <span id="display_diff_{{ $key }}"
                                         class=" label label-inline label-light-success {{ dateColorFading($release->created_at, 1) }} font-weight-bolder"
@@ -403,8 +405,10 @@
                                             class="far fa-clock icon-nm {{ dateColorFading($release->created_at, 2) }} mr-1"></i>
                                         @if ($release->created_at)
                                             {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
-                                        @else
+                                        @elseif ($release->created_at && strpos(request()->filter ?? '', 'created_at') === false)
                                             {{ 'Thời gian đã ẩn' }}
+                                        @else
+                                            {{ 'Không có dữ liệu thời gian' }}
                                         @endif
                                     </span>
                                     <span id="display_date_{{ $key }}"
@@ -416,7 +420,7 @@
                                         @if ($release->created_at)
                                             {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
                                         @else
-                                            {{ 'Thời gian đã ẩn' }}
+                                            {{ 'Không có dữ liệu thời gian' }}
                                         @endif
                                     </span>
                                 </div>
@@ -426,6 +430,7 @@
                                     <div class="card card-custom card-stretch" id="kt_card_{{ $key }}">
                                         <div class="card-header card-header-tabs-line bg-secondary">
                                             <div class="card-title">
+                                              {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
                                                 <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
                                                     @isset($release->id){{ "href=/releasevuejs/$release->id" }}@else {{ 'role="link" aria-disabled="true"' }}@endisset>
                                                     {{ $release->name }}
@@ -467,12 +472,17 @@
                                                 <div class="tab-pane fade show active"
                                                     id="kt_tab_pane_1_3_{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_1_3_{{ $key }}">
-                                                    {{ $release->title_description }}
+                                                    @if ($release->title_description)
+                                                        {{ $release->title_description }}
+                                                    @else
+                                                        {{ 'Không có dữ liệu' }}
+                                                    @endif
                                                 </div>
                                                 {{-- Tab Detail description --}}
                                                 <div class="tab-pane fade" id="kt_tab_pane_2_3_{{ $key }}"
                                                     role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_2_3_{{ $key }}">
+                                                    {{-- Add h-75px w-auto to image, sort of "limitation" of the images' frame --}}
                                                     {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
                                                 </div>
                                                 {{-- Tab images --}}
@@ -491,13 +501,13 @@
                         @endforeach
                     </div>
                 </div>
+
+                {{-- Paginator navigation --}}
+                {{-- Edit onEachSide() for manipulating the display of number of pages --}}
+                <label for="level" class="d-flex justify-content-center"><b>{!! $releases->withQueryString()->onEachSide(2)->links() !!}</b></label>
             </div>
         </div>
         <!-- end:timeline -->
-
-        {{-- Paginator navigation --}}
-        {{-- Edit onEachSide() for manipulating the display of pages --}}
-        <label for="level"><b>{!! $releases->withQueryString()->onEachSide(2)->links() !!}</b></label>
     </div>
 @endsection
 

@@ -190,8 +190,6 @@ class Controller extends WebController
       new DataTransporter($request->all())
     ]);
 
-
-
     return view('welcome::test-page', compact('releases'));
   }
 }
