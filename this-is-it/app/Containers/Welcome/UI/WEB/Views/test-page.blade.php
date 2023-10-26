@@ -94,7 +94,7 @@
     <script type="text/javascript">
         //Switch display of Time difference <-> Time create (i.e 01-01-2021 <--> 3 years ago)
         function toggleDateDisplay(element) {
-            //Get elems
+            //Get elements
             diff = document.getElementById("display_diff_" + element);
             date = document.getElementById("display_date_" + element);
             //Alternate between 2 display style: none vs -webkit-inline-box (hide vs show)
@@ -217,11 +217,28 @@
         window.onload = checkParamsLegitToNotify();
         //END TEST
 
+        //Prevent "accidental" filter-input-form submission via hit Enter inside a text input field
         function submitFunction(e) {
             if (document.activeElement != document.getElementById('apply-filter-btn')) {
                 e.preventDefault();
             }
         }
+
+        //Check if the form != it's initial state, disable the "Apply button" accordingly
+        myForm = document.getElementById("filter_input");
+        const initialFormData = new FormData(myForm);
+        //Listen to the input changes
+        myForm.addEventListener('input', function() {
+            //Get current form data
+            var currentFormData = new FormData(myForm);
+            //Compare the current data to the initial data and act accordingly
+            if (new URLSearchParams(initialFormData).toString() == new URLSearchParams(currentFormData).toString()) {
+                document.getElementById('apply-filter-btn').disabled = true;
+            }
+            else {
+                document.getElementById('apply-filter-btn').disabled = false;
+            }
+        });
     </script>
 @endsection
 
@@ -361,10 +378,10 @@
                                     class="badge badge-danger">
                                     {{ count(request()->all()) }}</span></button>
 
-                            <button type="reset" class="btn btn-light btn-hover-secondary"">Cài lại
+                            <button type="reset" class="btn btn-light btn-hover-secondary" onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
                                 <i class="flaticon2-refresh-1"></i></button>
                             <button id='apply-filter-btn' type="button" class="btn btn-primary"
-                                onclick="filterFormParams(this)">Áp dụng <i
+                                onclick="filterFormParams(this)" disabled>Áp dụng <i
                                     class="flaticon2-check-mark icon-nm"></i></button>
                         </form>
                     </div>
@@ -430,7 +447,7 @@
                                     <div class="card card-custom card-stretch" id="kt_card_{{ $key }}">
                                         <div class="card-header card-header-tabs-line bg-secondary">
                                             <div class="card-title">
-                                              {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
+                                                {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
                                                 <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
                                                     @isset($release->id){{ "href=/releasevuejs/$release->id" }}@else {{ 'role="link" aria-disabled="true"' }}@endisset>
                                                     {{ $release->name }}
