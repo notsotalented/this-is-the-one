@@ -52,17 +52,17 @@
             function dateColorFading($date = null, $elem = 1)
             {
                 if ($date === null) {
-                switch ($elem) {
-                    case '1':
-                        return 'bg-success-o-20 svg-icon-secondary text-dark-50';
-                        break;
-                    case '2':
-                        return 'text-dark-75';
-                        break;
-                    default:
-                        return 'bg-success-o-20 svg-icon-secondary text-dark-50';
+                    switch ($elem) {
+                        case '1':
+                            return 'bg-success-o-20 svg-icon-secondary text-dark-50';
+                            break;
+                        case '2':
+                            return 'text-dark-75';
+                            break;
+                        default:
+                            return 'bg-success-o-20 svg-icon-secondary text-dark-50';
+                    }
                 }
-              }
                 //Get input time and current time
                 $date = strtotime($date);
                 $now = time();
@@ -251,7 +251,7 @@
         function loadingOnLoad() {
             KTApp.block('#timeline_display', {
                 overlayColor: '#000000',
-                state: 'info',
+                state: 'primary',
                 message: 'Processing...',
                 fadeIn: '100',
                 fadeOut: '300',
@@ -453,8 +453,9 @@
                                         <div class="card-header card-header-tabs-line bg-secondary">
                                             <div class="card-title">
                                                 {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
-                                                <a class="card-label spinner spinner-info font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
+                                                <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
                                                     role="link" aria-disabled="true">
+                                                    ...
                                                 </a>
                                             </div>
                                             <div class="card-toolbar">
@@ -490,10 +491,9 @@
                                         <div class="card-body">
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
-                                                <div class="tab-pane fade show active"
+                                                <div class="tab-pane fade show active spinner spinner-track spinner-primary"
                                                     id="kt_tab_pane_1_3_F{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_1_3_F{{ $key }}">
-                                                    ...
                                                 </div>
                                                 {{-- Tab Detail description --}}
                                                 <div class="tab-pane fade" id="kt_tab_pane_2_3_F{{ $key }}"
@@ -535,8 +535,7 @@
                                 <div class="timeline-label">
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
                                         <span class="label label-xl label-inline label-light-danger">
-                                          @if($release->created_at == $releases->first()->created_at)
-                                            <em>Mới ra lò</em>
+                                            <em>Mới</em>
                                             <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
                                                 style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -550,10 +549,6 @@
                                                             fill="#000000" />
                                                     </g>
                                                 </svg><!--end::Svg Icon--></span>
-                                          @else
-                                            <em>Mới</em>
-                                          @endif
-
                                         </span>
                                     @endif
                                     <span id="display_diff_{{ $key }}"
@@ -604,7 +599,7 @@
                                                 </g>
                                             </svg><!--end::Svg Icon--></span>
                                         @if ($release->created_at)
-                                            {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
+                                            {{ date('d-m-Y H:i:s', strtotime($release->created_at)) }}
                                         @else
                                             {{ 'Không có dữ liệu' }}
                                         @endif
