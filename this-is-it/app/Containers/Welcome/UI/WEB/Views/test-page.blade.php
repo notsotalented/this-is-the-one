@@ -310,6 +310,11 @@
                                 </svg><!--end::Svg Icon--></span>
                         </span>
                         <span class="mr-2 font-weight-bold">Bộ lọc</span>
+                        <button class="btn btn-icon btn-circle btn-outline-primary btn-sm" data-toggle="popover" title="Popover title"
+                            data-html="true"
+                            data-content="And here's some amazing <span class='label label-inline font-weight-bold label-light-primary'>HTML</span> content. It's very <code>engaging</code>. Right?">
+                            <i class="flaticon2-help icon-lg"></i>
+                        </button>
                     </div>
                 </div>
                 {{-- Filter content --}}
@@ -518,7 +523,6 @@
                         @endfor
                     </div>
                     <div class="timeline-items" id="timeline_items_display" style="display: none">
-
                         @foreach ($releases as $key => $release)
                             <div
                                 class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
@@ -533,22 +537,26 @@
                                 </div>
                                 {{-- Date/Time difference label --}}
                                 <div class="timeline-label">
+                                    {{-- Hot new label: the latest one has text with fire, otherwise in the same day elements will have text label --}}
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
                                         <span class="label label-xl label-inline label-light-danger">
                                             <em>Mới</em>
-                                            <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
-                                                style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
-                                                    height="24px" viewBox="0 0 24 24" version="1.1">
-                                                    <g stroke="none" stroke-width="1" fill="none"
-                                                        fill-rule="evenodd">
-                                                        <rect x="0" y="0" width="24" height="24" />
-                                                        <path
-                                                            d="M14,7 C13.6666667,10.3333333 12.6666667,12.1167764 11,12.3503292 C11,12.3503292 12.5,6.5 10.5,3.5 C10.5,3.5 10.287918,6.71444735 8.14498739,10.5717225 C7.14049032,12.3798172 6,13.5986793 6,16 C6,19.428689 9.51143904,21.2006583 12.0057195,21.2006583 C14.5,21.2006583 18,20.0006172 18,15.8004732 C18,14.0733981 16.6666667,11.1399071 14,7 Z"
-                                                            fill="#000000" />
-                                                    </g>
-                                                </svg><!--end::Svg Icon--></span>
+                                            @if ($release->created_at == DB::table('releasevuejs')->max('created_at'))
+                                                <em class="ml-1">nhứt</em>
+                                                <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
+                                                    style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                                                        height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none"
+                                                            fill-rule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24" />
+                                                            <path
+                                                                d="M14,7 C13.6666667,10.3333333 12.6666667,12.1167764 11,12.3503292 C11,12.3503292 12.5,6.5 10.5,3.5 C10.5,3.5 10.287918,6.71444735 8.14498739,10.5717225 C7.14049032,12.3798172 6,13.5986793 6,16 C6,19.428689 9.51143904,21.2006583 12.0057195,21.2006583 C14.5,21.2006583 18,20.0006172 18,15.8004732 C18,14.0733981 16.6666667,11.1399071 14,7 Z"
+                                                                fill="#000000" />
+                                                        </g>
+                                                    </svg><!--end::Svg Icon--></span>
+                                            @endif
                                         </span>
                                     @endif
                                     <span id="display_diff_{{ $key }}"
