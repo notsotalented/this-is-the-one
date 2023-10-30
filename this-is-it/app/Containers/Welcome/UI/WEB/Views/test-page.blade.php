@@ -232,12 +232,33 @@
             //Get current form data
             var currentFormData = new FormData(myForm);
             //Compare the current data to the initial data and act accordingly
-            if (new URLSearchParams(initialFormData).toString() == new URLSearchParams(currentFormData).toString()) {
+            if (new URLSearchParams(initialFormData).toString() == new URLSearchParams(currentFormData)
+                .toString()) {
                 document.getElementById('apply-filter-btn').disabled = true;
-            }
-            else {
+            } else {
                 document.getElementById('apply-filter-btn').disabled = false;
             }
+        });
+
+        function loadingOnLoad() {
+            KTApp.block('#timeline_display', {
+                overlayColor: '#000000',
+                state: 'info',
+                message: 'Processing...',
+                fadeIn: '100',
+                fadeOut: '300',
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadingOnLoad();
+        });
+
+        $(window).on('load', function() {
+            KTApp.unblock('#timeline_display');
+
+            document.getElementById('timeline_items_loading').style.display = 'none';
+            document.getElementById('timeline_items_display').style.display = 'block';
         });
     </script>
 @endsection
@@ -256,7 +277,7 @@
 @section('content')
     <!-- begin:timeline -->
     {{-- Filter Accordion --}}
-    <div class="container">
+    <div id="contentDisplay" class="container">
         <div class="accordion accordion-solid accordion-svg-toggle" id="accordionFilter">
             <div class="card">
                 {{-- Filter header --}}
@@ -378,7 +399,8 @@
                                     class="badge badge-danger">
                                     {{ count(request()->all()) }}</span></button>
 
-                            <button type="reset" class="btn btn-light btn-hover-secondary" onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
+                            <button type="reset" class="btn btn-light btn-hover-secondary"
+                                onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
                                 <i class="flaticon2-refresh-1"></i></button>
                             <button id='apply-filter-btn' type="button" class="btn btn-primary"
                                 onclick="filterFormParams(this)" disabled>Áp dụng <i
@@ -390,10 +412,104 @@
         </div>
 
         <div class="example example-basic">
-            <div class="example-preview bg-white">
+            <div class="example-preview bg-white" id="timeline_display">
                 <div class="timeline timeline-4">
                     <div class="timeline-bar"></div>
-                    <div class="timeline-items">
+                    <div class="timeline-items" id="timeline_items_loading" style="display: block">
+                        @for ($key = 0; $key < 3; $key++)
+                            <div
+                                class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
+                                {{-- Badge indicator: at the moment, just for the visual --}}
+                                {{-- Suggestion: use it (and the color scheme) to indicate errors-danger, notification-info, ... --}}
+                                <div class="timeline-badge">
+                                    @if ($key % 2 == 0)
+                                        <div class="bg-success"></div>
+                                    @else
+                                        <div class="bg-danger"></div>
+                                    @endif
+                                </div>
+                                {{-- Date/Time difference label --}}
+                                <div class="timeline-label">
+                                    <span id="display_diff_F{{ $key }}"
+                                        class="label label-xl label-inline label-light-success"
+                                        style="display: -webkit-inline-box;"
+                                        onclick="toggleDateDisplay({{ $key }})">
+                                        {{-- Display time difference (from create till now) --}}
+                                        ...
+                                    </span>
+                                </div>
+
+                                {{-- Original: <div class="timeline-content max-h-150px overflow-auto" > --}}
+                                <div class="timeline-content gutter-b">
+                                    <div class="card card-custom card-stretch" id="kt_card_F{{ $key }}">
+                                        <div class="card-header card-header-tabs-line bg-secondary">
+                                            <div class="card-title">
+                                                {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
+                                                <a class="card-label spinner spinner-info font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
+                                                    role="link" aria-disabled="true">
+                                                </a>
+                                            </div>
+                                            <div class="card-toolbar">
+                                                <ul class="nav nav-tabs nav-bold nav-tabs-line">
+                                                    {{-- Title_Description tab --}}
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" data-toggle="tab"
+                                                            href="#kt_tab_pane_1_3_F{{ $key }}">
+                                                            <span class="nav-icon"><i
+                                                                    class="flaticon2-information"></i></span>
+                                                            <span class="nav-text">Tựa đề</span>
+                                                        </a>
+                                                    </li>
+                                                    {{-- Detail_Description tab --}}
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" data-toggle="tab"
+                                                            href="#kt_tab_pane_2_3_F{{ $key }}">
+                                                            <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
+                                                            <span class="nav-text">Tóm tắt</span>
+                                                        </a>
+                                                    </li>
+                                                    {{-- Images tab --}}
+                                                    {{-- <li class="nav-item">
+                                                  <a class="nav-link" data-toggle="tab"
+                                                      href="#kt_tab_pane_3_3_{{ $key }}">
+                                                      <span class="nav-icon"><i class="flaticon2-photograph mr-2"></i></span>
+                                                      <span class="nav-text">Ảnh</span>
+                                                  </a>
+                                                </li> --}}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="tab-content five-lines">
+                                                {{-- Tab Short description --}}
+                                                <div class="tab-pane fade show active"
+                                                    id="kt_tab_pane_1_3_F{{ $key }}" role="tabpanel"
+                                                    aria-labelledby="kt_tab_pane_1_3_F{{ $key }}">
+                                                    ...
+                                                </div>
+                                                {{-- Tab Detail description --}}
+                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_F{{ $key }}"
+                                                    role="tabpanel"
+                                                    aria-labelledby="kt_tab_pane_2_3_F{{ $key }}">
+                                                    {{-- Add h-75px w-auto to image, sort of "limitation" of the images' frame --}}
+                                                    ...
+                                                </div>
+                                                {{-- Tab images --}}
+                                                {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $key }}"
+                                                role="tabpanel" aria-labelledby="kt_tab_pane_3_3_{{ $key }}" style="max-height: 310px">
+
+                                                @foreach ($release->images as $key => $image)
+                                                  <img class="img-fluid border border-secondary mb-2 max-h-150px w-auto" src="{{ $image }}" alt="{{  $image  }}" width="100%" height="100%">
+                                                @endforeach
+                                            </div> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                    <div class="timeline-items" id="timeline_items_display" style="display: none">
 
                         @foreach ($releases as $key => $release)
                             <div
@@ -411,27 +527,42 @@
                                 <div class="timeline-label">
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
                                         <span class="label label-xl label-inline label-light-danger"><em>Mới ra
-                                            lò</em>
-                                            <span class="svg-icon svg-icon-warning svg-icon-sm ml-1" style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                  <rect x="0" y="0" width="24" height="24"/>
-                                                  <path d="M14,7 C13.6666667,10.3333333 12.6666667,12.1167764 11,12.3503292 C11,12.3503292 12.5,6.5 10.5,3.5 C10.5,3.5 10.287918,6.71444735 8.14498739,10.5717225 C7.14049032,12.3798172 6,13.5986793 6,16 C6,19.428689 9.51143904,21.2006583 12.0057195,21.2006583 C14.5,21.2006583 18,20.0006172 18,15.8004732 C18,14.0733981 16.6666667,11.1399071 14,7 Z" fill="#000000"/>
-                                              </g>
-                                          </svg><!--end::Svg Icon--></span></span>
-
+                                                lò</em>
+                                            <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
+                                                style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                                                    height="24px" viewBox="0 0 24 24" version="1.1">
+                                                    <g stroke="none" stroke-width="1" fill="none"
+                                                        fill-rule="evenodd">
+                                                        <rect x="0" y="0" width="24" height="24" />
+                                                        <path
+                                                            d="M14,7 C13.6666667,10.3333333 12.6666667,12.1167764 11,12.3503292 C11,12.3503292 12.5,6.5 10.5,3.5 C10.5,3.5 10.287918,6.71444735 8.14498739,10.5717225 C7.14049032,12.3798172 6,13.5986793 6,16 C6,19.428689 9.51143904,21.2006583 12.0057195,21.2006583 C14.5,21.2006583 18,20.0006172 18,15.8004732 C18,14.0733981 16.6666667,11.1399071 14,7 Z"
+                                                            fill="#000000" />
+                                                    </g>
+                                                </svg><!--end::Svg Icon--></span></span>
                                     @endif
                                     <span id="display_diff_{{ $key }}"
                                         class=" label label-xl label-inline label-light-success {{ dateColorFading($release->created_at, 1) }}"
                                         style="display: -webkit-inline-box;"
                                         onclick="toggleDateDisplay({{ $key }})">
                                         {{-- Display time difference (from create till now) --}}
-                                      <span class="svg-icon  svg-icon-sm {{ dateColorFading($release->created_at, 2) }} mr-1" style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/Home/Clock.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                            <rect x="0" y="0" width="24" height="24"/>
-                                            <path d="M12,22 C7.02943725,22 3,17.9705627 3,13 C3,8.02943725 7.02943725,4 12,4 C16.9705627,4 21,8.02943725 21,13 C21,17.9705627 16.9705627,22 12,22 Z" fill="#000000" opacity="0.3"/>
-                                            <path d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z" fill="#000000"/>
-                                        </g>
-                                    </svg><!--end::Svg Icon--></span>
+                                        <span
+                                            class="svg-icon  svg-icon-sm {{ dateColorFading($release->created_at, 2) }} mr-1"
+                                            style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/Home/Clock.svg--><svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
+                                                viewBox="0 0 24 24" version="1.1">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <rect x="0" y="0" width="24" height="24" />
+                                                    <path
+                                                        d="M12,22 C7.02943725,22 3,17.9705627 3,13 C3,8.02943725 7.02943725,4 12,4 C16.9705627,4 21,8.02943725 21,13 C21,17.9705627 16.9705627,22 12,22 Z"
+                                                        fill="#000000" opacity="0.3" />
+                                                    <path
+                                                        d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z"
+                                                        fill="#000000" />
+                                                </g>
+                                            </svg><!--end::Svg Icon--></span>
                                         @if ($release->created_at)
                                             {{ convertTimeToAppropriateFormat(time() - strtotime($release->created_at)) . ' trước' }}
                                         @else
@@ -442,13 +573,22 @@
                                         class="label label-xl label-inline label-light-success {{ dateColorFading($release->created_at, 1) }}"
                                         style="display: none;" onclick="toggleDateDisplay({{ $key }})">
                                         {{-- Display create date --}}
-                                        <span class="svg-icon svg-icon-sm {{ dateColorFading($release->created_at, 2) }} mr-1" style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/Weather/Suset1.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                              <polygon points="0 0 24 0 24 24 0 24"/>
-                                              <path d="M8,16 C8,13.790861 9.790861,12 12,12 C14.209139,12 16,13.790861 16,16 C16,16 8,16 8,16 Z M4,18 L20,18 C20.5522847,18 21,18.4477153 21,19 C21,19.5522847 20.5522847,20 20,20 L4,20 C3.44771525,20 3,19.5522847 3,19 C3,18.4477153 3.44771525,18 4,18 Z" fill="#000000" fill-rule="nonzero"/>
-                                              <path d="M19.5,13 L21,13 C21.8284271,13 22.5,13.6715729 22.5,14.5 C22.5,15.3284271 21.8284271,16 21,16 L19.5,16 C18.6715729,16 18,15.3284271 18,14.5 C18,13.6715729 18.6715729,13 19.5,13 Z M16.0606602,8.87132034 L17.1213203,7.81066017 C17.7071068,7.22487373 18.6568542,7.22487373 19.2426407,7.81066017 C19.8284271,8.39644661 19.8284271,9.34619408 19.2426407,9.93198052 L18.1819805,10.9926407 C17.5961941,11.5784271 16.6464466,11.5784271 16.0606602,10.9926407 C15.4748737,10.4068542 15.4748737,9.45710678 16.0606602,8.87132034 Z M3,13 L4.5,13 C5.32842712,13 6,13.6715729 6,14.5 C6,15.3284271 5.32842712,16 4.5,16 L3,16 C2.17157288,16 1.5,15.3284271 1.5,14.5 C1.5,13.6715729 2.17157288,13 3,13 Z M12,4.5 C12.8284271,4.5 13.5,5.17157288 13.5,6 L13.5,7.5 C13.5,8.32842712 12.8284271,9 12,9 C11.1715729,9 10.5,8.32842712 10.5,7.5 L10.5,6 C10.5,5.17157288 11.1715729,4.5 12,4.5 Z M4.81066017,7.81066017 C5.39644661,7.22487373 6.34619408,7.22487373 6.93198052,7.81066017 L7.99264069,8.87132034 C8.57842712,9.45710678 8.57842712,10.4068542 7.99264069,10.9926407 C7.40685425,11.5784271 6.45710678,11.5784271 5.87132034,10.9926407 L4.81066017,9.93198052 C4.22487373,9.34619408 4.22487373,8.39644661 4.81066017,7.81066017 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
-                                          </g>
-                                      </svg><!--end::Svg Icon--></span>
+                                        <span
+                                            class="svg-icon svg-icon-sm {{ dateColorFading($release->created_at, 2) }} mr-1"
+                                            style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/Weather/Suset1.svg--><svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px"
+                                                viewBox="0 0 24 24" version="1.1">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <polygon points="0 0 24 0 24 24 0 24" />
+                                                    <path
+                                                        d="M8,16 C8,13.790861 9.790861,12 12,12 C14.209139,12 16,13.790861 16,16 C16,16 8,16 8,16 Z M4,18 L20,18 C20.5522847,18 21,18.4477153 21,19 C21,19.5522847 20.5522847,20 20,20 L4,20 C3.44771525,20 3,19.5522847 3,19 C3,18.4477153 3.44771525,18 4,18 Z"
+                                                        fill="#000000" fill-rule="nonzero" />
+                                                    <path
+                                                        d="M19.5,13 L21,13 C21.8284271,13 22.5,13.6715729 22.5,14.5 C22.5,15.3284271 21.8284271,16 21,16 L19.5,16 C18.6715729,16 18,15.3284271 18,14.5 C18,13.6715729 18.6715729,13 19.5,13 Z M16.0606602,8.87132034 L17.1213203,7.81066017 C17.7071068,7.22487373 18.6568542,7.22487373 19.2426407,7.81066017 C19.8284271,8.39644661 19.8284271,9.34619408 19.2426407,9.93198052 L18.1819805,10.9926407 C17.5961941,11.5784271 16.6464466,11.5784271 16.0606602,10.9926407 C15.4748737,10.4068542 15.4748737,9.45710678 16.0606602,8.87132034 Z M3,13 L4.5,13 C5.32842712,13 6,13.6715729 6,14.5 C6,15.3284271 5.32842712,16 4.5,16 L3,16 C2.17157288,16 1.5,15.3284271 1.5,14.5 C1.5,13.6715729 2.17157288,13 3,13 Z M12,4.5 C12.8284271,4.5 13.5,5.17157288 13.5,6 L13.5,7.5 C13.5,8.32842712 12.8284271,9 12,9 C11.1715729,9 10.5,8.32842712 10.5,7.5 L10.5,6 C10.5,5.17157288 11.1715729,4.5 12,4.5 Z M4.81066017,7.81066017 C5.39644661,7.22487373 6.34619408,7.22487373 6.93198052,7.81066017 L7.99264069,8.87132034 C8.57842712,9.45710678 8.57842712,10.4068542 7.99264069,10.9926407 C7.40685425,11.5784271 6.45710678,11.5784271 5.87132034,10.9926407 L4.81066017,9.93198052 C4.22487373,9.34619408 4.22487373,8.39644661 4.81066017,7.81066017 Z"
+                                                        fill="#000000" fill-rule="nonzero" opacity="0.3" />
+                                                </g>
+                                            </svg><!--end::Svg Icon--></span>
                                         @if ($release->created_at)
                                             {{ date('d-m-y H:i:s', strtotime($release->created_at)) }}
                                         @else
@@ -465,10 +605,10 @@
                                                 {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
                                                 <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
                                                     @isset($release->id){{ "href=/releasevuejs/$release->id" }}@else {{ 'role="link" aria-disabled="true"' }}@endisset>
-                                                    @if($release->name)
-                                                      {{ $release->name }}
+                                                    @if ($release->name)
+                                                        {{ $release->name }}
                                                     @else
-                                                      {{ 'Không có dữ liệu' }}
+                                                        {{ 'Không có dữ liệu' }}
                                                     @endif
                                                 </a>
                                             </div>

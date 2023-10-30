@@ -1223,6 +1223,8 @@
     <!--end::Page Vendors-->
     <!--begin::Page Scripts(used by this page)-->
     <script src="theme/base/assets/js/pages/widgets.js?v=7.0.3"></script>
+    <script src="/theme/base/assets/js/pages/features/miscellaneous/blockui.js?v=7.0.3"></script>
+    <iframe id="_hjSafeContext_94917652" title="_hjSafeContext" tabindex="-1" aria-hidden="true" src="about:blank" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <!-- <script src="theme/base/assets/js/pages/crud/ktdatatable/base/data-local.js"></script> -->
     <script src="theme/base/js/utils.js"></script>
     <!--end::Page Scripts-->
