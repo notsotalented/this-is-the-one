@@ -52,24 +52,32 @@
             function dateColorFading($date = null, $elem = 1)
             {
                 if ($date === null) {
-                    return 'bg-success-o-20 text-dark-50 svg-icon-secondary';
+                switch ($elem) {
+                    case '1':
+                        return 'bg-success-o-20 svg-icon-secondary text-dark-50';
+                        break;
+                    case '2':
+                        return 'text-dark-75';
+                        break;
+                    default:
+                        return 'bg-success-o-20 svg-icon-secondary text-dark-50';
                 }
+              }
                 //Get input time and current time
                 $date = strtotime($date);
                 $now = time();
 
                 $diff = $now - $date;
-                $result = '';
                 if ($diff < 60 * 60 * 24 * 7) {
-                    //Fresh [0:7)
+                    //Fresh [0:7) days
                     $background = 'bg-success-o-70';
                     $text = 'text-primary svg-icon-primary';
                 } elseif ($diff >= 60 * 60 * 24 * 7 && $diff < 60 * 60 * 24 * 30) {
-                    //Medium [7:30)
+                    //Medium [7:30) days
                     $background = 'bg-success-o-40 svg-icon-secondary';
                     $text = 'text-dark-75';
                 } else {
-                    //Old [30:infinity)
+                    //Old [30:infinity) days
                     $background = 'bg-success-o-20 svg-icon-secondary';
                     $text = 'text-dark-50';
                 }
@@ -416,7 +424,7 @@
                 <div class="timeline timeline-4">
                     <div class="timeline-bar"></div>
                     <div class="timeline-items" id="timeline_items_loading" style="display: block">
-                        @for ($key = 0; $key < 3; $key++)
+                        @for ($key = 0; $key < count($releases); $key++)
                             <div
                                 class="timeline-item @if ($key % 2 == 0) {{ 'timeline-item-left' }}@else{{ 'timeline-item-right' }} @endif"">
                                 {{-- Badge indicator: at the moment, just for the visual --}}
@@ -526,8 +534,9 @@
                                 {{-- Date/Time difference label --}}
                                 <div class="timeline-label">
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
-                                        <span class="label label-xl label-inline label-light-danger"><em>Mới ra
-                                                lò</em>
+                                        <span class="label label-xl label-inline label-light-danger">
+                                          @if($release->created_at == $releases->first()->created_at)
+                                            <em>Mới ra lò</em>
                                             <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
                                                 style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -540,7 +549,12 @@
                                                             d="M14,7 C13.6666667,10.3333333 12.6666667,12.1167764 11,12.3503292 C11,12.3503292 12.5,6.5 10.5,3.5 C10.5,3.5 10.287918,6.71444735 8.14498739,10.5717225 C7.14049032,12.3798172 6,13.5986793 6,16 C6,19.428689 9.51143904,21.2006583 12.0057195,21.2006583 C14.5,21.2006583 18,20.0006172 18,15.8004732 C18,14.0733981 16.6666667,11.1399071 14,7 Z"
                                                             fill="#000000" />
                                                     </g>
-                                                </svg><!--end::Svg Icon--></span></span>
+                                                </svg><!--end::Svg Icon--></span>
+                                          @else
+                                            <em>Mới</em>
+                                          @endif
+
+                                        </span>
                                     @endif
                                     <span id="display_diff_{{ $key }}"
                                         class=" label label-xl label-inline label-light-success {{ dateColorFading($release->created_at, 1) }}"
