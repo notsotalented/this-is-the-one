@@ -252,7 +252,7 @@
             KTApp.block('#timeline_display', {
                 overlayColor: '#000000',
                 state: 'primary',
-                message: 'Processing...',
+                message: 'Đang xử lí...',
                 fadeIn: '100',
                 fadeOut: '300',
             });
@@ -310,7 +310,7 @@
                                 </svg><!--end::Svg Icon--></span>
                         </span>
                         <span class="mr-2 font-weight-bold">Bộ lọc</span>
-                        <button class="btn btn-icon btn-circle btn-outline-primary btn-sm" data-toggle="popover" title="Popover title"
+                        <button class="btn btn-circle btn-icon btn-outline-primary btn-sm" data-toggle="popover" title="Popover title"
                             data-html="true"
                             data-content="And here's some amazing <span class='label label-inline font-weight-bold label-light-primary'>HTML</span> content. It's very <code>engaging</code>. Right?">
                             <i class="flaticon2-help icon-lg"></i>
