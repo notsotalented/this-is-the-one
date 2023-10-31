@@ -27,6 +27,9 @@
 
 @section('php')
     @php
+        //Get max created_at
+        $latest_entry = DB::table('releasevuejs')->max('created_at');
+
         //Convert from created_at to Time difference (i.e 01-01-2021 <--> 3 years ago)
         if (!function_exists('convertTimeToAppropriateFormat')) {
             function convertTimeToAppropriateFormat($time)
@@ -252,7 +255,7 @@
             KTApp.block('#timeline_display', {
                 overlayColor: '#000000',
                 state: 'primary',
-                message: 'Đang xử lí...',
+                message: 'Processing...',
                 fadeIn: '100',
                 fadeOut: '300',
             });
@@ -268,6 +271,20 @@
             document.getElementById('timeline_items_loading').style.display = 'none';
             document.getElementById('timeline_items_display').style.display = 'block';
         });
+
+        function refreshPageOnDemand(event = NULL) {
+            $.ajax({
+                type: 'GET',
+                url: '{{ URL::to('/test-page') }}',
+                data: {
+                },
+                dataType: "json",
+
+                success: function(data) {
+                    alert(data);
+                }
+            });
+        }
     </script>
 @endsection
 
@@ -310,11 +327,6 @@
                                 </svg><!--end::Svg Icon--></span>
                         </span>
                         <span class="mr-2 font-weight-bold">Bộ lọc</span>
-                        <button class="btn btn-circle btn-icon btn-outline-primary btn-sm" data-toggle="popover" title="Popover title"
-                            data-html="true"
-                            data-content="And here's some amazing <span class='label label-inline font-weight-bold label-light-primary'>HTML</span> content. It's very <code>engaging</code>. Right?">
-                            <i class="flaticon2-help icon-lg"></i>
-                        </button>
                     </div>
                 </div>
                 {{-- Filter content --}}
@@ -416,7 +428,7 @@
                                 onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
                                 <i class="flaticon2-refresh-1"></i></button>
                             <button id='apply-filter-btn' type="button" class="btn btn-primary"
-                                onclick="filterFormParams(this)" disabled>Áp dụng <i
+                                onclick="refreshPageOnDemand(this); filterFormParams(this)" disabled>Áp dụng <i
                                     class="flaticon2-check-mark icon-nm"></i></button>
                         </form>
                     </div>
@@ -541,7 +553,7 @@
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
                                         <span class="label label-xl label-inline label-light-danger">
                                             <em>Mới</em>
-                                            @if ($release->created_at == DB::table('releasevuejs')->max('created_at'))
+                                            @if ($release->created_at == $latest_entry)
                                                 <em class="ml-1">nhứt</em>
                                                 <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
                                                     style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg

@@ -192,6 +192,4 @@ class Controller extends WebController
 
     return view('welcome::test-page', compact('releases'));
   }
-
-
 }
