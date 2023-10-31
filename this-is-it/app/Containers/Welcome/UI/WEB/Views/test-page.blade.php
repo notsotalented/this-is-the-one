@@ -128,6 +128,23 @@
             element.style.brightness = "1";
         }
 
+        function loadingOnLoad() {
+            KTApp.block('#timeline_display', {
+                overlayColor: '#000000',
+                state: 'primary',
+                message: 'Processing...',
+                fadeIn: '100',
+                fadeOut: '300',
+            });
+        };
+
+        function unloadingOnLoad() {
+            KTApp.unblock('#timeline_display');
+
+            document.getElementById('timeline_items_loading').style.display = 'none';
+            document.getElementById('timeline_items_display').style.display = 'block';
+        }
+
         //Add filter to url (i.e ?filter=id;name;...)
         function filterFormParams() {
             //Get url
@@ -157,7 +174,25 @@
             (filter_string != '') ? (param == '') ? param += '?filter=' + filter_string: param += '&filter=' +
                 filter_string: null;
             //Redirect
-            window.location.href = window.location.pathname + param;
+            window.location.href = window.location.pathname +  param;
+
+            // $.ajax({
+            //     type: 'GET',
+            //     url: '{{ URL::to('/test-page') }}' + param,
+            //     success: function(data) {
+            //         // Handle the response data here
+            //         $("#contentDisplay").replaceWith($(data).find("#contentDisplay"));
+
+            //         console.log($(data).find("#contentDisplay"));
+            //         unloadingOnLoad();
+            //         checkParamsLegitToNotify();
+            //         //$('#contentDisplay').replaceWith(data);
+            //     },
+            //     error: function(xhr, status, error) {
+            //         // Handle any errors that occur during the request
+            //         console.error(error);
+            //     }
+            // });
         }
 
         function checkParamsLegitToNotify() {
@@ -251,40 +286,16 @@
             }
         });
 
-        function loadingOnLoad() {
-            KTApp.block('#timeline_display', {
-                overlayColor: '#000000',
-                state: 'primary',
-                message: 'Processing...',
-                fadeIn: '100',
-                fadeOut: '300',
-            });
-        };
-
         document.addEventListener('DOMContentLoaded', function() {
             loadingOnLoad();
         });
 
         $(window).on('load', function() {
-            KTApp.unblock('#timeline_display');
+          setTimeout(() => {
+            unloadingOnLoad();
+          }, Math.floor(Math.random() * (1250 - 250 + 1)) + 250);
 
-            document.getElementById('timeline_items_loading').style.display = 'none';
-            document.getElementById('timeline_items_display').style.display = 'block';
         });
-
-        function refreshPageOnDemand(event = NULL) {
-            $.ajax({
-                type: 'GET',
-                url: '{{ URL::to('/test-page') }}',
-                data: {
-                },
-                dataType: "json",
-
-                success: function(data) {
-                    alert(data);
-                }
-            });
-        }
     </script>
 @endsection
 
@@ -337,7 +348,7 @@
                             {{-- Exploit to disable submit form while hit Enter inside a text input field --}}
                             <button type="submit" disabled style="display: none" aria-hidden="true"></button>
                             <div class="form-group row">
-
+                              {{-- Can be search field --}}
                             </div>
                             <div class="form-group row">
                                 <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối
@@ -428,7 +439,7 @@
                                 onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
                                 <i class="flaticon2-refresh-1"></i></button>
                             <button id='apply-filter-btn' type="button" class="btn btn-primary"
-                                onclick="refreshPageOnDemand(this); filterFormParams(this)" disabled>Áp dụng <i
+                                onclick="filterFormParams(this);" disabled>Áp dụng <i
                                     class="flaticon2-check-mark icon-nm"></i></button>
                         </form>
                     </div>

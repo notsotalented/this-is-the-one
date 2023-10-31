@@ -1115,7 +1115,7 @@
                         </div>
                     </div>
                     <!-- Begin:: Work Minh -->
-                    <div class="d-flex flex-column-fluid">
+                    <div id="kt_yield_content" class="d-flex flex-column-fluid">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-md-12">

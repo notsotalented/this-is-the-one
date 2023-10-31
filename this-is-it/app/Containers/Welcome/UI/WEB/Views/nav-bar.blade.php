@@ -310,11 +310,6 @@
                         $('#alibaba').css('display', 'block');
                     });
 
-
-
-                    //func search_this()
-                    //console.log(data);
-
                 }
             });
         } else {
