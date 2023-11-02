@@ -20,7 +20,7 @@
 
         input[type="checkbox"] {
             vertical-align: middle;
-            display: -webkit-inline-flex
+            display: -webkit-inline-flex;
         }
     </style>
 @endsection
@@ -128,6 +128,7 @@
             element.style.brightness = "1";
         }
 
+        //Loading effect (block the UI) at the start
         function loadingOnLoad() {
             KTApp.block('#timeline_display', {
                 overlayColor: '#000000',
@@ -138,6 +139,7 @@
             });
         };
 
+        //"Un"loading effect (unblock the UI) when finished loading
         function unloadingOnLoad() {
             KTApp.unblock('#timeline_display');
 
@@ -195,6 +197,7 @@
             // });
         }
 
+        //Display pulse ring around the Filter button or not
         function checkParamsLegitToNotify() {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
@@ -286,15 +289,17 @@
             }
         });
 
+        //When the HTML just finished loading, block the UI
         document.addEventListener('DOMContentLoaded', function() {
             loadingOnLoad();
         });
 
+        //When the document is ready, unblock the UI
         $(window).on('load', function() {
+          //Add randomly 250ms to 1250ms to the loading effect for "lagging" simulation
           setTimeout(() => {
             unloadingOnLoad();
-          }, Math.floor(Math.random() * (1250 - 250 + 1)) + 250);
-
+          }, Math.floor(Math.random() * (1250 - 500 + 1)) + 500);
         });
     </script>
 @endsection
