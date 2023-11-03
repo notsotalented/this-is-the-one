@@ -499,22 +499,22 @@
                                             <div class="card-toolbar">
                                                 <ul class="nav nav-tabs nav-bold nav-tabs-line">
                                                     {{-- Title_Description tab --}}
-                                                    <li class="nav-item">
+                                                    {{-- <li class="nav-item">
                                                         <a class="nav-link active" data-toggle="tab"
                                                             href="#kt_tab_pane_1_3_F{{ $key }}">
                                                             <span class="nav-icon"><i
                                                                     class="flaticon2-information"></i></span>
                                                             <span class="nav-text">Tựa đề</span>
                                                         </a>
-                                                    </li>
+                                                    </li> --}}
                                                     {{-- Detail_Description tab --}}
-                                                    <li class="nav-item">
+                                                    {{-- <li class="nav-item">
                                                         <a class="nav-link" data-toggle="tab"
                                                             href="#kt_tab_pane_2_3_F{{ $key }}">
                                                             <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
                                                             <span class="nav-text">Tóm tắt</span>
                                                         </a>
-                                                    </li>
+                                                    </li> --}}
                                                     {{-- Images tab --}}
                                                     {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
@@ -529,12 +529,12 @@
                                         <div class="card-body">
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
-                                                <div class="tab-pane fade show active spinner spinner-track spinner-primary"
+                                                {{-- <div class="tab-pane fade spinner spinner-track spinner-primary"
                                                     id="kt_tab_pane_1_3_F{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_1_3_F{{ $key }}">
-                                                </div>
+                                                </div> --}}
                                                 {{-- Tab Detail description --}}
-                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_F{{ $key }}"
+                                                <div class="tab-pane fade show active" id="kt_tab_pane_2_3_F{{ $key }}"
                                                     role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_2_3_F{{ $key }}">
                                                     {{-- Add h-75px w-auto to image, sort of "limitation" of the images' frame --}}
@@ -668,22 +668,24 @@
                                             <div class="card-toolbar">
                                                 <ul class="nav nav-tabs nav-bold nav-tabs-line">
                                                     {{-- Title_Description tab --}}
-                                                    <li class="nav-item">
+                                                    {{-- <li class="nav-item">
                                                         <a class="nav-link active" data-toggle="tab"
                                                             href="#kt_tab_pane_1_3_{{ $key }}">
                                                             <span class="nav-icon"><i
                                                                     class="flaticon2-information"></i></span>
                                                             <span class="nav-text">Tựa đề</span>
                                                         </a>
-                                                    </li>
+                                                    </li> --}}
                                                     {{-- Detail_Description tab --}}
+                                                    @isset(request()->tomtat)
                                                     <li class="nav-item">
-                                                        <a class="nav-link" data-toggle="tab"
+                                                        <a class="nav-link active" data-toggle="tab"
                                                             href="#kt_tab_pane_2_3_{{ $key }}">
                                                             <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
                                                             <span class="nav-text">Tóm tắt</span>
                                                         </a>
                                                     </li>
+                                                    @endisset
                                                     {{-- Images tab --}}
                                                     {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
@@ -699,7 +701,7 @@
                                         <div class="card-body">
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
-                                                <div class="tab-pane fade show active"
+                                                {{-- <div class="tab-pane fade show active"
                                                     id="kt_tab_pane_1_3_{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_1_3_{{ $key }}">
                                                     @if ($release->title_description)
@@ -707,9 +709,9 @@
                                                     @else
                                                         {{ 'Không có dữ liệu' }}
                                                     @endif
-                                                </div>
+                                                </div> --}}
                                                 {{-- Tab Detail description --}}
-                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_{{ $key }}"
+                                                <div class="tab-pane fade show active" id="kt_tab_pane_2_3_{{ $key }}"
                                                     role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_2_3_{{ $key }}">
                                                     {{-- Add h-75px w-auto to image, sort of "limitation" of the images' frame --}}
@@ -732,8 +734,8 @@
                     </div>
                 </div>
 
-                {{-- Paginator navigation --}}
-                {{-- Edit onEachSide() for manipulating the display of number of pages --}}
+                {{-- Pagination navigation --}}
+                {{-- Edit onEachSide(integer) for manipulating the display of number of pages --}}
                 <label for="level" class="d-flex justify-content-center"><b>{!! $releases->withQueryString()->onEachSide(2)->links() !!}</b></label>
             </div>
         </div>
