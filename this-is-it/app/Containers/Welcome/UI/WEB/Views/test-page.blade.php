@@ -326,6 +326,7 @@
                 <div class="card-header" id="headingOne6">
                     <div class="card-title bg-secondary collapsed" data-toggle="collapse" data-target="#collapseFilter"
                         aria-expanded="false">
+                        {{-- Pulse ring --}}
                         <span id="pulseRingHere" class="label label-white mr-2">
                             <span class="pulse-ring"></span>
                             <span
@@ -364,6 +365,7 @@
                                         name="paginate" min="1" />
                                 </div>
                             </div>
+                            {{-- Order and Sorted --}}
                             <div class="form-group row">
                                 <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Sắp xếp
                                     theo:</label>
@@ -384,7 +386,6 @@
                                             khởi tạo</option>
                                     </select>
                                 </div>
-
                                 <div class="col-4">
                                     <select class="form-control" name="sortedBy">
                                         <option value="">...</option>
@@ -397,7 +398,7 @@
                                     </select>
                                 </div>
                             </div>
-
+                            {{-- Filter --}}
                             <div class="form-group row">
                                 <div class="col-9 col-form-label">
                                     <div class="checkbox-inline-flex">
@@ -436,15 +437,16 @@
                                         khác</span>
                                 </div>
                             </div>
-
+                            {{-- Clear filter button, visible only when there are active filters --}}
                             <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
                                 onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
                                     class="badge badge-danger">
                                     {{ count(request()->all()) }}</span></button>
-
+                            {{-- Reset the form to original state (initial state when the page loaded) --}}
                             <button type="reset" class="btn btn-light btn-hover-secondary"
                                 onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
                                 <i class="flaticon2-refresh-1"></i></button>
+                            {{-- Apply button --}}
                             <button id='apply-filter-btn' type="button" class="btn btn-primary"
                                 onclick="filterFormParams(this);" disabled>Áp dụng <i
                                     class="flaticon2-check-mark icon-nm"></i></button>
@@ -453,11 +455,12 @@
                 </div>
             </div>
         </div>
-
+        {{-- Begin actual timeline items --}}
         <div class="example example-basic">
             <div class="example-preview bg-white" id="timeline_display">
                 <div class="timeline timeline-4">
                     <div class="timeline-bar"></div>
+                    {{-- Place holder timeline items while loading --}}
                     <div class="timeline-items" id="timeline_items_loading" style="display: block">
                         @for ($key = 0; $key < count($releases); $key++)
                             <div
@@ -552,6 +555,7 @@
                             </div>
                         @endfor
                     </div>
+                    {{-- Real time line for display data --}}
                     <div class="timeline-items" id="timeline_items_display" style="display: none">
                         @foreach ($releases as $key => $release)
                             <div
@@ -588,6 +592,7 @@
                                             @endif
                                         </span>
                                     @endif
+                                    {{-- Time difference label: 1 hour/day/week/month/year ago --}}
                                     <span id="display_diff_{{ $key }}"
                                         class=" label label-xl label-inline label-light-success {{ dateColorFading($release->created_at, 1) }}"
                                         style="display: -webkit-inline-box;"
@@ -615,6 +620,7 @@
                                             {{ 'Không có dữ liệu' }}
                                         @endif
                                     </span>
+                                    {{-- Time label: show created_at timestamp --}}
                                     <span id="display_date_{{ $key }}"
                                         class="label label-xl label-inline label-light-success {{ dateColorFading($release->created_at, 1) }}"
                                         style="display: none;" onclick="toggleDateDisplay({{ $key }})">
@@ -642,7 +648,7 @@
                                         @endif
                                     </span>
                                 </div>
-
+                                {{-- Actual card content --}}
                                 {{-- Original: <div class="timeline-content max-h-150px overflow-auto" > --}}
                                 <div class="timeline-content gutter-b">
                                     <div class="card card-custom card-stretch" id="kt_card_{{ $key }}">
@@ -658,6 +664,7 @@
                                                     @endif
                                                 </a>
                                             </div>
+                                            {{-- Card nav bar --}}
                                             <div class="card-toolbar">
                                                 <ul class="nav nav-tabs nav-bold nav-tabs-line">
                                                     {{-- Title_Description tab --}}
@@ -688,6 +695,7 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                        {{-- Card body --}}
                                         <div class="card-body">
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
