@@ -418,7 +418,7 @@
                                     {{-- Hot new label: the latest one has text with fire, otherwise in the same day elements will have text label --}}
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
                                         <span class="label label-xl label-inline label-light-danger">
-                                            <strong><em>Mới</em></strong>
+                                            <em>Mới</em>
                                             @if ($release->created_at == $latest_entry)
                                                 <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
                                                     style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
