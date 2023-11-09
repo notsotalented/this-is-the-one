@@ -1,7 +1,7 @@
 @extends('releasevuejs::layout.layout_cloud')
 
 @section('title')
-    {{ 'Clients see releases' }}
+    {{ 'CHI TIẾT CẬP NHẬT' }}
     {!! '<i class="far fa-eye text-success"></i> <i class="far fa-eye text-warning"></i>' !!}
 @endsection
 
@@ -74,14 +74,14 @@
                 if ($diff < 60 * 60 * 24 * 7) {
                     //Fresh [0:7) days
                     $background = 'bg-success-o-70';
-                    $text = 'text-primary svg-icon-primary';
+                    $text = 'text-primary svg-icon-primary font-weight-bolder';
                 } elseif ($diff >= 60 * 60 * 24 * 7 && $diff < 60 * 60 * 24 * 30) {
                     //Medium [7:30) days
-                    $background = 'bg-success-o-40 svg-icon-secondary';
+                    $background = 'bg-success-o-40 svg-icon-secondary font-weight-bolder';
                     $text = 'text-dark-75';
                 } else {
                     //Old [30:infinity) days
-                    $background = 'bg-success-o-20 svg-icon-secondary';
+                    $background = 'bg-success-o-10 svg-icon-secondary font-weight-bolder';
                     $text = 'text-dark-50';
                 }
                 //Elem 1 =
@@ -177,7 +177,7 @@
             (filter_string != '') ? (param == '') ? param += '?filter=' + filter_string: param += '&filter=' +
                 filter_string: null;
             //Redirect
-            window.location.href = window.location.pathname +  param;
+            window.location.href = window.location.pathname + param;
 
             // $.ajax({
             //     type: 'GET',
@@ -274,22 +274,6 @@
             }
         }
 
-        //Check if the form != it's initial state, disable the "Apply button" accordingly
-        myForm = document.getElementById("filter_input");
-        const initialFormData = new FormData(myForm);
-        //Listen to the input changes
-        myForm.addEventListener('input', function() {
-            //Get current form data
-            var currentFormData = new FormData(myForm);
-            //Compare the current data to the initial data and act accordingly
-            if (new URLSearchParams(initialFormData).toString() == new URLSearchParams(currentFormData)
-                .toString()) {
-                document.getElementById('apply-filter-btn').disabled = true;
-            } else {
-                document.getElementById('apply-filter-btn').disabled = false;
-            }
-        });
-
         //When the HTML just finished loading, block the UI
         document.addEventListener('DOMContentLoaded', function() {
             loadingOnLoad();
@@ -297,10 +281,10 @@
 
         //When the document is ready, unblock the UI
         $(window).on('load', function() {
-          //Add randomly 250ms to 1250ms to the loading effect for "lagging" simulation
-          setTimeout(() => {
-            unloadingOnLoad();
-          }, Math.floor(Math.random() * (1250 - 500 + 1)) + 500);
+            //Add randomly 250ms to 1250ms to the loading effect for "lagging" simulation
+            setTimeout(() => {
+                unloadingOnLoad();
+            }, Math.floor(Math.random() * (1250 - 500 + 1)) + 500);
         });
     </script>
 @endsection
@@ -320,141 +304,7 @@
     <!-- begin:timeline -->
     {{-- Filter Accordion --}}
     <div id="contentDisplay" class="container">
-        <div class="accordion accordion-solid accordion-svg-toggle" id="accordionFilter">
-            <div class="card">
-                {{-- Filter header --}}
-                <div class="card-header" id="headingOne6">
-                    <div class="card-title bg-secondary collapsed" data-toggle="collapse" data-target="#collapseFilter"
-                        aria-expanded="false">
-                        {{-- Pulse ring --}}
-                        <span id="pulseRingHere" class="label label-white mr-2">
-                            <span class="pulse-ring"></span>
-                            <span
-                                class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/Tools/Tools.svg--><svg
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24" />
-                                        <path
-                                            d="M15.9497475,3.80761184 L13.0246125,6.73274681 C12.2435639,7.51379539 12.2435639,8.78012535 13.0246125,9.56117394 L14.4388261,10.9753875 C15.2198746,11.7564361 16.4862046,11.7564361 17.2672532,10.9753875 L20.1923882,8.05025253 C20.7341101,10.0447871 20.2295941,12.2556873 18.674559,13.8107223 C16.8453326,15.6399488 14.1085592,16.0155296 11.8839934,14.9444337 L6.75735931,20.0710678 C5.97631073,20.8521164 4.70998077,20.8521164 3.92893219,20.0710678 C3.1478836,19.2900192 3.1478836,18.0236893 3.92893219,17.2426407 L9.05556629,12.1160066 C7.98447038,9.89144078 8.36005124,7.15466739 10.1892777,5.32544095 C11.7443127,3.77040588 13.9552129,3.26588995 15.9497475,3.80761184 Z"
-                                            fill="#000000" />
-                                        <path
-                                            d="M16.6568542,5.92893219 L18.0710678,7.34314575 C18.4615921,7.73367004 18.4615921,8.36683502 18.0710678,8.75735931 L16.6913928,10.1370344 C16.3008685,10.5275587 15.6677035,10.5275587 15.2771792,10.1370344 L13.8629656,8.7228208 C13.4724413,8.33229651 13.4724413,7.69913153 13.8629656,7.30860724 L15.2426407,5.92893219 C15.633165,5.5384079 16.26633,5.5384079 16.6568542,5.92893219 Z"
-                                            fill="#000000" opacity="0.3" />
-                                    </g>
-                                </svg><!--end::Svg Icon--></span>
-                        </span>
-                        <span class="mr-2 font-weight-bold">Bộ lọc</span>
-                    </div>
-                </div>
-                {{-- Filter content --}}
-                <div id="collapseFilter" class="collapse" data-parent="#accordionFilter">
-                    <div class="card-body">
-                        {{-- Filter input fake form --}}
-                        <form id="filter_input" onsubmit="submitFunction(this)">
-                            {{-- Exploit to disable submit form while hit Enter inside a text input field --}}
-                            <button type="submit" disabled style="display: none" aria-hidden="true"></button>
-                            <div class="form-group row">
-                              {{-- Can be search field --}}
-                            </div>
-                            <div class="form-group row">
-                                <label for="paginate" class="col-4 col-form-label">{{-- Per page: --}}Hiển thị tối
-                                    đa:</label>
-                                <div class="col-8">
-                                    <input class="form-control" type="number" value="{{ request()->paginate ?? '10' }}"
-                                        name="paginate" min="1" />
-                                </div>
-                            </div>
-                            {{-- Order and Sorted --}}
-                            <div class="form-group row">
-                                <label for="orderBy" class="col-4 col-form-label">{{-- Sorted By: --}}Sắp xếp
-                                    theo:</label>
-                                <div class="col-4" style="display: -webkit-inline-block">
-                                    <select class="form-control" name="orderBy">
-                                        <option value="">...</option>
-                                        <option value="id" @if (request()->orderBy == 'id') {{ 'selected' }} @endif>
-                                            ID</option>
-                                        <option value="title_description"
-                                            @if (request()->orderBy == 'title_description') {{ 'selected' }} @endif>
-                                            Tựa đề</option>
-                                        <option value="detail_description"
-                                            @if (request()->orderBy == 'detail_description') {{ 'selected' }} @endif>
-                                            Tóm tắt</option>
-                                        <option value="created_at"
-                                            @if (request()->orderBy == 'created_at') {{ 'selected' }} @endif>
-                                            Ngày
-                                            khởi tạo</option>
-                                    </select>
-                                </div>
-                                <div class="col-4">
-                                    <select class="form-control" name="sortedBy">
-                                        <option value="">...</option>
-                                        <option @if (request()->sortedBy == 'asc') {{ 'selected' }} @endif value="asc">
-                                            {{-- ASC --}}Tăng
-                                        </option>
-                                        <option @if (request()->sortedBy == 'desc') {{ 'selected' }} @endif value="desc">
-                                            {{-- DESC --}}Giảm
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            {{-- Filter --}}
-                            <div class="form-group row">
-                                <div class="col-9 col-form-label">
-                                    <div class="checkbox-inline-flex">
-                                        <label class="checkbox checkbox-outline checkbox-success">
-                                            <input type="checkbox" value="id"
-                                                name="filter[]"@if (strpos(request()->filter, 'id') !== false) {{ 'checked' }} @endif />
-                                            <span></span>
-                                            ID
-                                        </label>
-                                        <label class="checkbox checkbox-outline checkbox-success">
-                                            <input type="checkbox" value="name" name="filter[]"
-                                                @if (strpos(request()->filter, 'name') !== false) {{ 'checked' }} @endif />
-                                            <span></span>
-                                            Tên
-                                        </label>
-                                        <label class="checkbox checkbox-outline checkbox-success">
-                                            <input type="checkbox" value="title_description" name="filter[]"
-                                                @if (strpos(request()->filter ?? '', 'title_description') !== false) {{ 'checked' }} @endif />
-                                            <span></span>
-                                            Tựa đề
-                                        </label>
-                                        <label class="checkbox checkbox-outline checkbox-success">
-                                            <input type="checkbox" value="detail_description" name="filter[]"
-                                                @if (strpos(request()->filter ?? '', 'detail_description') !== false) {{ 'checked' }} @endif />
-                                            <span></span>
-                                            Tóm tắt
-                                        </label>
-                                        <label class="checkbox checkbox-outline checkbox-success">
-                                            <input type="checkbox" value="created_at" name="filter[]"
-                                                @if (strpos(request()->filter ?? '', 'created_at') !== false) {{ 'checked' }} @endif />
-                                            <span></span>
-                                            Ngày khởi tạo
-                                        </label>
-                                    </div>
-                                    <span class="form-text text-muted">Chọn các nội dung cần hiện và ẩn những thứ
-                                        khác</span>
-                                </div>
-                            </div>
-                            {{-- Clear filter button, visible only when there are active filters --}}
-                            <button id="clearFilterButton" type="button" class="btn btn-secondary" hidden
-                                onclick="window.location.replace(location.pathname)">Xóa bộ lọc <span id="numberOfFilters"
-                                    class="badge badge-danger">
-                                    {{ count(request()->all()) }}</span></button>
-                            {{-- Reset the form to original state (initial state when the page loaded) --}}
-                            <button type="reset" class="btn btn-light btn-hover-secondary"
-                                onclick="document.getElementById('apply-filter-btn').disabled = true;">Cài lại
-                                <i class="flaticon2-refresh-1"></i></button>
-                            {{-- Apply button --}}
-                            <button id='apply-filter-btn' type="button" class="btn btn-primary"
-                                onclick="filterFormParams(this);" disabled>Áp dụng <i
-                                    class="flaticon2-check-mark icon-nm"></i></button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         {{-- Begin actual timeline items --}}
         <div class="example example-basic">
             <div class="example-preview bg-white" id="timeline_display">
@@ -468,11 +318,8 @@
                                 {{-- Badge indicator: at the moment, just for the visual --}}
                                 {{-- Suggestion: use it (and the color scheme) to indicate errors-danger, notification-info, ... --}}
                                 <div class="timeline-badge">
-                                    @if ($key % 2 == 0)
-                                        <div class="bg-success"></div>
-                                    @else
-                                        <div class="bg-danger"></div>
-                                    @endif
+                                    <i
+                                        class="fa fa-genderless @if ($key % 2 == 0) {{ 'text-success' }} @else {{ 'text-danger' }} @endif"></i>
                                 </div>
                                 {{-- Date/Time difference label --}}
                                 <div class="timeline-label">
@@ -499,22 +346,22 @@
                                             <div class="card-toolbar">
                                                 <ul class="nav nav-tabs nav-bold nav-tabs-line">
                                                     {{-- Title_Description tab --}}
-                                                    <li class="nav-item">
+                                                    {{-- <li class="nav-item">
                                                         <a class="nav-link active" data-toggle="tab"
                                                             href="#kt_tab_pane_1_3_F{{ $key }}">
                                                             <span class="nav-icon"><i
                                                                     class="flaticon2-information"></i></span>
                                                             <span class="nav-text">Tựa đề</span>
                                                         </a>
-                                                    </li>
+                                                    </li> --}}
                                                     {{-- Detail_Description tab --}}
-                                                    <li class="nav-item">
+                                                    {{-- <li class="nav-item">
                                                         <a class="nav-link" data-toggle="tab"
                                                             href="#kt_tab_pane_2_3_F{{ $key }}">
                                                             <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
                                                             <span class="nav-text">Tóm tắt</span>
                                                         </a>
-                                                    </li>
+                                                    </li> --}}
                                                     {{-- Images tab --}}
                                                     {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
@@ -529,13 +376,13 @@
                                         <div class="card-body">
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
-                                                <div class="tab-pane fade show active spinner spinner-track spinner-primary"
+                                                {{-- <div class="tab-pane fade spinner spinner-track spinner-primary"
                                                     id="kt_tab_pane_1_3_F{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_1_3_F{{ $key }}">
-                                                </div>
+                                                </div> --}}
                                                 {{-- Tab Detail description --}}
-                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_F{{ $key }}"
-                                                    role="tabpanel"
+                                                <div class="tab-pane fade show active"
+                                                    id="kt_tab_pane_2_3_F{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_2_3_F{{ $key }}">
                                                     {{-- Add h-75px w-auto to image, sort of "limitation" of the images' frame --}}
                                                     ...
@@ -563,18 +410,15 @@
                                 {{-- Badge indicator: at the moment, just for the visual --}}
                                 {{-- Suggestion: use it (and the color scheme) to indicate errors-danger, notification-info, ... --}}
                                 <div class="timeline-badge">
-                                    @if ($key % 2 == 0)
-                                        <div class="bg-success"></div>
-                                    @else
-                                        <div class="bg-danger"></div>
-                                    @endif
+                                    <i
+                                        class="fa fa-genderless @if ($key % 2 == 0) {{ 'text-success' }} @else {{ 'text-danger' }} @endif"></i>
                                 </div>
                                 {{-- Date/Time difference label --}}
                                 <div class="timeline-label">
                                     {{-- Hot new label: the latest one has text with fire, otherwise in the same day elements will have text label --}}
                                     @if (date('Y-m-d', strtotime($release->created_at)) == date('Y-m-d'))
                                         <span class="label label-xl label-inline label-light-danger">
-                                            <strong><em>Mới</em></strong>
+                                            <em>Mới</em>
                                             @if ($release->created_at == $latest_entry)
                                                 <span class="svg-icon svg-icon-warning svg-icon-sm ml-1"
                                                     style="position: relative; top: -2px;"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Fire.svg--><svg
@@ -655,8 +499,26 @@
                                         <div class="card-header card-header-tabs-line bg-secondary">
                                             <div class="card-title">
                                                 {{-- Card title, with optional "dummy anchor <a>" when the IDs are hidden --}}
-                                                <a class="card-label font-weight-bolder @if ($key % 2 == 0) {{ 'text-success' }}@else{{ 'text-danger' }} @endif"
+                                                <a class="card-label font-weight-bolder {{ 'text-primary' }}"
                                                     @isset($release->id){{ "href=/releasevuejs/$release->id" }}@else {{ 'role="link" aria-disabled="true"' }}@endisset>
+                                                    <span
+                                                        class="svg-icon svg-icon-primary svg-icon-lg"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo2/dist/../src/media/svg/icons/General/Attachment1.svg--><svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
+                                                            height="24px" viewBox="0 0 24 24" version="1.1">
+                                                            <g stroke="none" stroke-width="1" fill="none"
+                                                                fill-rule="evenodd">
+                                                                <rect x="0" y="0" width="24" height="24" />
+                                                                <path
+                                                                    d="M12.4644661,14.5355339 L9.46446609,14.5355339 C8.91218134,14.5355339 8.46446609,14.9832492 8.46446609,15.5355339 C8.46446609,16.0878187 8.91218134,16.5355339 9.46446609,16.5355339 L12.4644661,16.5355339 L12.4644661,17.5355339 C12.4644661,18.6401034 11.5690356,19.5355339 10.4644661,19.5355339 L6.46446609,19.5355339 C5.35989659,19.5355339 4.46446609,18.6401034 4.46446609,17.5355339 L4.46446609,13.5355339 C4.46446609,12.4309644 5.35989659,11.5355339 6.46446609,11.5355339 L10.4644661,11.5355339 C11.5690356,11.5355339 12.4644661,12.4309644 12.4644661,13.5355339 L12.4644661,14.5355339 Z"
+                                                                    fill="#000000" opacity="0.3"
+                                                                    transform="translate(8.464466, 15.535534) rotate(-45.000000) translate(-8.464466, -15.535534) " />
+                                                                <path
+                                                                    d="M11.5355339,9.46446609 L14.5355339,9.46446609 C15.0878187,9.46446609 15.5355339,9.01675084 15.5355339,8.46446609 C15.5355339,7.91218134 15.0878187,7.46446609 14.5355339,7.46446609 L11.5355339,7.46446609 L11.5355339,6.46446609 C11.5355339,5.35989659 12.4309644,4.46446609 13.5355339,4.46446609 L17.5355339,4.46446609 C18.6401034,4.46446609 19.5355339,5.35989659 19.5355339,6.46446609 L19.5355339,10.4644661 C19.5355339,11.5690356 18.6401034,12.4644661 17.5355339,12.4644661 L13.5355339,12.4644661 C12.4309644,12.4644661 11.5355339,11.5690356 11.5355339,10.4644661 L11.5355339,9.46446609 Z"
+                                                                    fill="#000000"
+                                                                    transform="translate(15.535534, 8.464466) rotate(-45.000000) translate(-15.535534, -8.464466) " />
+                                                            </g>
+                                                        </svg><!--end::Svg Icon--></span>
                                                     @if ($release->name)
                                                         {{ $release->name }}
                                                     @else
@@ -668,22 +530,24 @@
                                             <div class="card-toolbar">
                                                 <ul class="nav nav-tabs nav-bold nav-tabs-line">
                                                     {{-- Title_Description tab --}}
-                                                    <li class="nav-item">
+                                                    {{-- <li class="nav-item">
                                                         <a class="nav-link active" data-toggle="tab"
                                                             href="#kt_tab_pane_1_3_{{ $key }}">
                                                             <span class="nav-icon"><i
                                                                     class="flaticon2-information"></i></span>
                                                             <span class="nav-text">Tựa đề</span>
                                                         </a>
-                                                    </li>
+                                                    </li> --}}
                                                     {{-- Detail_Description tab --}}
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" data-toggle="tab"
-                                                            href="#kt_tab_pane_2_3_{{ $key }}">
-                                                            <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
-                                                            <span class="nav-text">Tóm tắt</span>
-                                                        </a>
-                                                    </li>
+                                                    @isset(request()->tomtat)
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active" data-toggle="tab"
+                                                                href="#kt_tab_pane_2_3_{{ $key }}">
+                                                                <span class="nav-icon"><i class="flaticon2-list-2"></i></span>
+                                                                <span class="nav-text">Tóm tắt</span>
+                                                            </a>
+                                                        </li>
+                                                    @endisset
                                                     {{-- Images tab --}}
                                                     {{-- <li class="nav-item">
                                                   <a class="nav-link" data-toggle="tab"
@@ -699,7 +563,7 @@
                                         <div class="card-body">
                                             <div class="tab-content five-lines">
                                                 {{-- Tab Short description --}}
-                                                <div class="tab-pane fade show active"
+                                                {{-- <div class="tab-pane fade show active"
                                                     id="kt_tab_pane_1_3_{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_1_3_{{ $key }}">
                                                     @if ($release->title_description)
@@ -707,13 +571,13 @@
                                                     @else
                                                         {{ 'Không có dữ liệu' }}
                                                     @endif
-                                                </div>
+                                                </div> --}}
                                                 {{-- Tab Detail description --}}
-                                                <div class="tab-pane fade" id="kt_tab_pane_2_3_{{ $key }}"
-                                                    role="tabpanel"
+                                                <div class="tab-pane fade show active"
+                                                    id="kt_tab_pane_2_3_{{ $key }}" role="tabpanel"
                                                     aria-labelledby="kt_tab_pane_2_3_{{ $key }}">
                                                     {{-- Add h-75px w-auto to image, sort of "limitation" of the images' frame --}}
-                                                    {!! str_replace('src="', 'class="h-75px w-auto" src="', $release->detail_description) !!}
+                                                    {!! str_replace('src="', 'class="h-85px w-auto" src="', $release->detail_description) !!}
                                                 </div>
                                                 {{-- Tab images --}}
                                                 {{-- <div class="tab-pane fade overflow-ellipsis max-hpx" id="kt_tab_pane_3_3_{{ $key }}"
@@ -732,8 +596,8 @@
                     </div>
                 </div>
 
-                {{-- Paginator navigation --}}
-                {{-- Edit onEachSide() for manipulating the display of number of pages --}}
+                {{-- Pagination navigation --}}
+                {{-- Edit onEachSide(integer) for manipulating the display of number of pages --}}
                 <label for="level" class="d-flex justify-content-center"><b>{!! $releases->withQueryString()->onEachSide(2)->links() !!}</b></label>
             </div>
         </div>

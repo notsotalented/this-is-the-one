@@ -23,7 +23,7 @@ class UpdateReleaseVueJSRequest extends Request
      * @var  array
      */
     protected $access = [
-        'permissions' => 'update-users',
+        'permissions' => '',
         'roles'       => 'admin',
     ];
 

@@ -16,9 +16,9 @@ class GetAllReleaseVueJsTask extends Task
         $this->repository = $repository;
     }
 
-    public function run($paginate = 10)
+    public function run()
     {
-        return $this->repository->paginate($paginate);
+        return $this->repository->paginate();
     }
     public function ordered()
     {
