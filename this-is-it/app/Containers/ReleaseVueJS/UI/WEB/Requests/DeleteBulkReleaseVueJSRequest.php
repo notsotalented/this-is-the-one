@@ -15,7 +15,7 @@ class DeleteBulkReleaseVueJSRequest extends Request
      * @var  array
      */
     protected $access = [
-        'permissions' => 'delete-users',
+        'permissions' => '',
         'roles'       => 'admin',
     ];
 

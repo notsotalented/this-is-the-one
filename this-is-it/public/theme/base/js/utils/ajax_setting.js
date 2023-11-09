@@ -1,5 +1,4 @@
-
-async function ajax_setting(url, data, method) {
+async function handleCallAjax(url, data, method) {
     let response;
 
     await $.ajax({
@@ -12,8 +11,9 @@ async function ajax_setting(url, data, method) {
                 status: xhr.status,
             }
         },
-        error: function (data) {
-            console.log(data)
+        error: function (xhr) {
+            console.log("error delete");
+            window.location.href = "/error/" + xhr.status;
         },
     });
 

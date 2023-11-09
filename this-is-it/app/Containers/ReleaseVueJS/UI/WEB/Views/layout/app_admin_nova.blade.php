@@ -6,12 +6,12 @@
     <link href="{{ asset('/theme/base/nova_assets/css/custom.css') }}?version=04082023" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    {{-- import ajax_setting from resource --}}
-    <script src="{{ asset('/theme/base/js/util/ajax_setting.js') }}"></script>
 
-    {{-- <link href="{{ asset('/theme/base/css/admin_create_release_css.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/theme/base/css/admin_show_detail_css.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/theme/base/css/admin_show_release_css.css') }}" rel="stylesheet" type="text/css" /> --}}
+    {{-- import ajax_setting from resource --}}
+    <script src="{{ asset('/theme/base/js/utils/ajax_setting.js') }}"></script>
+    <script src="{{ asset('/theme/base/js/utils/paginate_setting.js') }}"></script>
+
+
 </head>
 <style>
     .pagination {

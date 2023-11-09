@@ -23,7 +23,7 @@ class StoreReleaseVueJSRequest extends Request
      * @var  array
      */
     protected $access = [
-        'permissions' => 'create-admins',
+        'permissions' => '',
         'roles'       => 'admin',
     ];
 
@@ -52,12 +52,14 @@ class StoreReleaseVueJSRequest extends Request
     public function rules()
     {
         return [
-            'name'               => 'required|unique:releasevuejs,name|max:40|min:3',
-            'title_description'  => 'required|max:255|min:3',
-            'detail_description' => 'required|string|min:3',
-            'is_publish'         => 'boolean',
-            'images'             => 'array',
-            'images.*'           => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:6144',
+            'name'                => 'required|unique:releasevuejs,name|max:40|min:3',
+            'title_description'   => 'required|max:255|min:3',
+            'detail_description'  => 'required|string|min:3',
+            'is_publish'          => 'boolean',
+            'images'              => 'array',
+            'images.*'            => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:6144',
+            'images_from_quill'   => 'array',
+            'images_from_quill.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:6144',
         ];
     }
 

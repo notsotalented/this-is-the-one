@@ -1,7 +1,7 @@
 @extends('releasevuejs::layout.layout_cloud')
 
 @section('title')
-    {{ 'Clients see releases' }}
+    {{ 'CHI TIẾT CẬP NHẬT' }}
     {!! '<i class="far fa-eye text-success"></i> <i class="far fa-eye text-warning"></i>' !!}
 @endsection
 

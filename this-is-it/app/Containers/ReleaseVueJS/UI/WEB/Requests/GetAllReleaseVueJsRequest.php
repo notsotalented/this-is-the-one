@@ -23,8 +23,8 @@ class GetAllReleaseVueJsRequest extends Request
      * @var  array
      */
     protected $access = [
-        'permissions' => 'list-users',
-        'roles'       => ['admin', 'user'],
+        'permissions' => '',
+        'roles'       => 'admin',
     ];
 
     /**
